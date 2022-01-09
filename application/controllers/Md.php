@@ -64,6 +64,27 @@ class Md extends CI_Controller {
 		echo json_encode($ret);
 	}
 	
+	public function lov()
+	{
+		$usr=$this->session->userdata('user_data');
+		$data=array();
+		if(isset($usr)){
+			$c=base64_decode($this->input->post("c"));
+			$w=base64_decode($this->input->post("w"));
+			$t=base64_decode($this->input->post("t"));
+			$onclick=base64_decode($this->input->post("o"));
+			$sql="select $c from $t where $w";
+			$data=$this->db->query($sql)->result_array();
+			for($i=0;$i<count($res);$i++){
+				$dum=array_values($res[$i]);
+				$dum[0]='<input type="radio" name="pilih" onclick="'.$onclick.'" value="'.$dum[0].'"> '.$dum[0];
+				$data[]=$dum;
+			}
+		}
+		$ret=array('data'=>$data);
+		echo json_encode($ret);
+	}
+	
 	public function sv()
 	{
 		$usr=$this->session->userdata('user_data');

@@ -51,7 +51,7 @@ $bux=base_url();
             </a>
           </li>
 		  <li class="nav-item">
-            <a href="<?php echo $bux;?>mp" class="nav-link">
+            <a href="<?php echo $bux;?>mp" class="nav-link mp">
               <i class="nav-icon fas fa-ad"></i>
               <p>
                 Media Plan
@@ -70,7 +70,25 @@ $bux=base_url();
               <li class="nav-item">
                 <a href="#" class="nav-link ">
                   <i class="fas fa-angle-right nav-icon"></i>
-                  <p>Invoice</p>
+                  <p>Client's PO</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link ">
+                  <i class="fas fa-angle-right nav-icon"></i>
+                  <p>Media Order</p>
+                </a>
+              </li>
+			  <li class="nav-item">
+                <a href="#" class="nav-link ">
+                  <i class="fas fa-angle-right nav-icon"></i>
+                  <p>Supplier Invoice</p>
+                </a>
+              </li>
+			  <li class="nav-item">
+                <a href="#" class="nav-link ">
+                  <i class="fas fa-angle-right nav-icon"></i>
+                  <p>Screenshot</p>
                 </a>
               </li>
               <li class="nav-item">
@@ -94,6 +112,12 @@ $bux=base_url();
                 <a href="<?php echo $bux?>md/?p=clients" class="nav-link clients">
                   <i class="fas fa-angle-right nav-icon"></i>
                   <p>Client</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="<?php echo $bux?>md/?p=products" class="nav-link products">
+                  <i class="fas fa-angle-right nav-icon"></i>
+                  <p>Product</p>
                 </a>
               </li>
               <li class="nav-item">

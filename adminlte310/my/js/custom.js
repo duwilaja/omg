@@ -148,6 +148,10 @@ function openForm(frmid,modal,url,overlay='',id=0,t='',c=''){
 				if(overlay!='') $(overlay).hide();
 			}
 		});
+	}else{
+		if(typeof(formLoaded)=='function'){
+			formLoaded(frmid,modal,overlay);
+		}
 	}
 }
 function afterOpenForm(frm,modal,overlay='',data=''){
@@ -160,6 +164,9 @@ function afterOpenForm(frm,modal,overlay='',data=''){
 			$.each(json['data'][0],function (key,val){
 				$('#'+key).val(val);
 			});
+			if(typeof(formLoaded)=='function'){
+				formLoaded(frm,modal,overlay,json['data'][0]);
+			}
 		}catch(e){
 			alrt(data,'error');
 			log(data);
@@ -202,4 +209,11 @@ function getCombo(u,t,c,w,tgt,dv='',blnk=''){
 			console.log("Error:"+xhr);
 		}
 	});
+}
+function initDatePicker(arr){
+	for(var i=0;i<arr.length;i++){
+		$(arr[i]).datetimepicker({
+			format: 'YYYY-MM-DD'
+		});
+	}
 }
