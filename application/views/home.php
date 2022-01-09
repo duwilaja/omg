@@ -40,12 +40,12 @@ $this->load->view("_sidebar",$data);
 	  
         <!-- Info boxes -->
         <div class="row">
-          <div class="col-12 col-sm-6 col-md-3">
+          <div class="col-12 col-sm-6 col-md-4">
             <div class="info-box">
-              <span class="info-box-icon bg-info elevation-1"><i class="fas fa-sun"></i></span>
+              <span class="info-box-icon bg-info elevation-1"><i class="fas fa-tasks"></i></span>
 
               <div class="info-box-content">
-                <span class="info-box-text">New</span>
+                <span class="info-box-text">Pending Tasks</span>
                 <span class="info-box-number">
                   10
                 </span>
@@ -55,12 +55,12 @@ $this->load->view("_sidebar",$data);
             <!-- /.info-box -->
           </div>
           <!-- /.col -->
-          <div class="col-12 col-sm-6 col-md-3">
+          <div class="col-12 col-sm-6 col-md-4">
             <div class="info-box mb-3">
-              <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-money-check-alt"></i></span>
+              <span class="info-box-icon bg-success elevation-1"><i class="fas fa-people-carry"></i></span>
 
               <div class="info-box-content">
-                <span class="info-box-text">Invoice</span>
+                <span class="info-box-text">Ongoing Tasks</span>
                 <span class="info-box-number">41,410</span>
               </div>
               <!-- /.info-box-content -->
@@ -72,26 +72,13 @@ $this->load->view("_sidebar",$data);
           <!-- fix for small devices only -->
           <div class="clearfix hidden-md-up"></div>
 
-          <div class="col-12 col-sm-6 col-md-3">
+          <div class="col-12 col-sm-6 col-md-4">
             <div class="info-box mb-3">
-              <span class="info-box-icon bg-success elevation-1"><i class="fas fa-money-bill-alt"></i></span>
+              <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-money-check-alt"></i></span>
 
               <div class="info-box-content">
-                <span class="info-box-text">Billing</span>
+                <span class="info-box-text">Completed Tasks</span>
                 <span class="info-box-number">760</span>
-              </div>
-              <!-- /.info-box-content -->
-            </div>
-            <!-- /.info-box -->
-          </div>
-          <!-- /.col -->
-          <div class="col-12 col-sm-6 col-md-3">
-            <div class="info-box mb-3">
-              <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-file-image"></i></span>
-
-              <div class="info-box-content">
-                <span class="info-box-text">Screenshot</span>
-                <span class="info-box-number">2,000</span>
               </div>
               <!-- /.info-box-content -->
             </div>
@@ -106,7 +93,7 @@ $this->load->view("_sidebar",$data);
             <!-- PIE CHART -->
             <div class="card card-danger">
               <div class="card-header">
-                <h3 class="card-title">Pie Chart</h3>
+                <h3 class="card-title">By Client</h3>
 
                 <div class="card-tools">
                   <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -130,7 +117,7 @@ $this->load->view("_sidebar",$data);
             <!-- LINE CHART -->
             <div class="card card-info">
               <div class="card-header">
-                <h3 class="card-title">Line Chart</h3>
+                <h3 class="card-title">Monthly Bill</h3>
 
                 <div class="card-tools">
                   <button type="button" class="btn btn-tool" data-card-widget="collapse">

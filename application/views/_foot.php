@@ -59,7 +59,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   <footer class="main-footer">
     <!-- To the right -->
     <div class="float-right d-none d-sm-inline">
-      Media Plan Workflow
+      OMNICOM DATA SYSTEM ( ODS )
     </div>
     <!-- Default to the left -->
     <strong>Copyright &copy; 2021-2022.</strong> All rights reserved.
@@ -81,9 +81,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <!-- SweetAlert2 -->
 <script src="<?php echo $bu;?>/plugins/sweetalert2/sweetalert2.all.min.js"></script>
 
+<!-- jquery-fancybox -->
+<script src="<?php echo $bu;?>/plugins/jquery-fancybox/jquery.fancybox.min.js"></script>
+
 <!-- ChartJS -->
 <script src="<?php echo $bu;?>/plugins/chart.js/Chart.min.js"></script>
 
+<!-- date-range-picker -->
+<script src="<?php echo $bu;?>/plugins/moment/moment.min.js"></script>
+<script src="<?php echo $bu;?>/plugins/daterangepicker/daterangepicker.js"></script>
+<!-- Tempusdominus Bootstrap 4 -->
+<script src="<?php echo $bu;?>/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
 
 <!-- DataTables  & Plugins -->
 <script src="<?php echo $bu;?>/plugins/datatables/jquery.dataTables.min.js"></script>

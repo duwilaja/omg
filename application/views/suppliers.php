@@ -9,8 +9,8 @@ $data["pmenu"]="master";
 $data["session"]=$session;
 $data["bu"]=$bu;
 
-$sql="select suppid,suppname,rowid from t_suppliers";
-$c="suppid,suppname";
+$sql="select suppid,suppname,channel,rowid from t_suppliers";
+$c="suppid,suppname,channel";
 $t="t_suppliers";
 
 $this->load->view("_head",$data);
@@ -29,8 +29,8 @@ $this->load->view("_sidebar",$data);
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#"></a></li>
-              <li class="breadcrumb-item active"></li>
+              <li class="breadcrumb-item">Master Data</li>
+              <li class="breadcrumb-item active">Suppliers</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -51,6 +51,7 @@ $this->load->view("_sidebar",$data);
 					  <tr>
 						<th>ID</th>
 						<th>Name</th>
+						<th>Channel</th>
 					  </tr>
                   </thead>
                   <tbody>
@@ -97,6 +98,12 @@ $this->load->view("_sidebar",$data);
 				<label for="" class="col-sm-4 col-form-label">Name</label>
 				<div class="col-sm-8 input-group">
 				  <input type="text" name="suppname" class="form-control form-control-sm" id="suppname" placeholder="...">
+				</div>
+			  </div>
+			  <div class="form-group row">
+				<label for="" class="col-sm-4 col-form-label">Channel</label>
+				<div class="col-sm-8 input-group">
+				  <input type="text" name="channel" class="form-control form-control-sm" id="channel" placeholder="...">
 				</div>
 			  </div>
 			</div>

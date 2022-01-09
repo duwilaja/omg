@@ -8,7 +8,7 @@ $bu=base_url()."adminlte310";
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Media Plan Workflow | Log in</title>
+  <title>ODS | Log in</title>
 
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -21,10 +21,10 @@ $bu=base_url()."adminlte310";
 </head>
 <body class="hold-transition login-page">
 <div class="login-box">
-  <div class="login-logo">
+  <div class="login-logo" style="font-size:1.9rem;">
 	<p><img src="<?php echo $bu;?>/my/img/logo.png" /></p>
     
-    <b>Media Plan Workflow</b>
+    <b>OMNICOM DATA SYSTEM (ODS)</b>
   </div>
   <!-- /.login-logo -->
   <div class="card">

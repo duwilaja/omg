@@ -3,15 +3,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 $bu=base_url()."adminlte310";
 
-$data["title"]="User Group";
-$data["menu"]="usergrps";
-$data["pmenu"]="setting";
+$data["title"]="Products";
+$data["menu"]="products";
+$data["pmenu"]="master";
 $data["session"]=$session;
 $data["bu"]=$bu;
 
-$sql="select grpid,grpname,rowid from t_usergrp";
-$c="grpid,grpname";
-$t="t_usergrp";
+$sql="select prodid,prodname,client,rowid from t_products";
+$c="prodid,prodname,client";
+$t="t_products";
 
 $this->load->view("_head",$data);
 $this->load->view("_navbar",$data);
@@ -29,8 +29,8 @@ $this->load->view("_sidebar",$data);
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item">Setting</li>
-              <li class="breadcrumb-item active">User Group</li>
+              <li class="breadcrumb-item">Master Data</li>
+              <li class="breadcrumb-item active">Products</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -51,6 +51,7 @@ $this->load->view("_sidebar",$data);
 					  <tr>
 						<th>ID</th>
 						<th>Name</th>
+						<th>Client</th>
 					  </tr>
                   </thead>
                   <tbody>
@@ -90,13 +91,21 @@ $this->load->view("_sidebar",$data);
 			  <div class="form-group row">
 				<label for="" class="col-sm-4 col-form-label">ID</label>
 				<div class="col-sm-8 input-group">
-				  <input type="text" name="grpid" class="form-control form-control-sm" id="grpid" placeholder="...">
+				  <input type="text" name="prodid" class="form-control form-control-sm" id="prodid" placeholder="...">
 				</div>
 			  </div>
 			  <div class="form-group row">
 				<label for="" class="col-sm-4 col-form-label">Name</label>
 				<div class="col-sm-8 input-group">
-				  <input type="text" name="grpname" class="form-control form-control-sm" id="grpname" placeholder="...">
+				  <input type="text" name="prodname" class="form-control form-control-sm" id="prodname" placeholder="...">
+				</div>
+			  </div>
+			  <div class="form-group row">
+				<label for="" class="col-sm-4 col-form-label">Client</label>
+				<div class="col-sm-8 input-group">
+				  <!--input type="text" name="ugrp" class="form-control form-control-sm" id="ugrp" placeholder="..."-->
+				  <select name="client" class="form-control form-control-sm" id="client" placeholder="...">
+				  </select>
 				</div>
 			  </div>
 			</div>
@@ -120,6 +129,9 @@ $this->load->view("_sidebar",$data);
   
 <?php
 $this->load->view("_foot",$data);
+$cc="clientid as v,clientname as t";
+$ct="t_clients";
+$cw="1=1";
 ?>
 <script>
 var  mytbl;
@@ -138,7 +150,7 @@ $(document).ready(function(){
 	});
 	$("#myf").validate({
 		rules: {
-		  grpid: {
+		  prodid: {
 			required: true
 		  },
 		  upwd: {
@@ -148,10 +160,10 @@ $(document).ready(function(){
 					return false;
 				}
 		  },
-		  grpname: {
+		  prodname: {
 			required: true
 		  },
-		  ugrp: {
+		  client: {
 			required: true
 		  },
 		  uaccess: {
@@ -162,7 +174,9 @@ $(document).ready(function(){
 			  email: true
 		  }
 		}
-	})
+	});
+	
+	getCombo("md/gets",'<?php echo base64_encode($ct)?>','<?php echo base64_encode($cc)?>','<?php echo base64_encode($cw)?>','#client');
 });
 
 function reloadTable(frm){
