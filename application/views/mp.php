@@ -10,13 +10,13 @@ $data["session"]=$session;
 $data["bu"]=$bu;
 
 $t="t_mediaplans";
-$sql="select mpnumber,client,product,campaign,po,FORMAT(startdt,'YYYY-MM-DD') as stdt,FORMAT(enddt,'YYYY-MM-DD') as endt,FORMAT(submitdt,'YYYY-MM-DD') as submdt,curr,stts,rowid from $t";
-$cq="mpnumber,client,product,campaign,po,FORMAT(startdt,'YYYY-MM-DD') as stdt,FORMAT(enddt,'YYYY-MM-DD') as endt,FORMAT(submitdt,'YYYY-MM-DD') as submdt,curr,stts";
+$sql="select mpnumber,client,product,campaign,placement,po,FORMAT(startdt,'YYYY-MM-DD') as stdt,FORMAT(enddt,'YYYY-MM-DD') as endt,FORMAT(submitdt,'YYYY-MM-DD') as submdt,curr,stts,rowid from $t";
+$cq="mpnumber,client,product,campaign,placement,po,FORMAT(startdt,'YYYY-MM-DD') as stdt,FORMAT(enddt,'YYYY-MM-DD') as endt,FORMAT(submitdt,'YYYY-MM-DD') as submdt,curr,stts";
 
-$sql="select mpnumber,client,product,campaign,po,startdt,enddt,submitdt,curr,stts,rowid from $t";
-$cq="mpnumber,client,product,campaign,po,(startdt) as stdt,(enddt) as endt,(submitdt) as submdt,curr,stts";
+$sql="select mpnumber,client,product,campaign,placement,po,startdt,enddt,submitdt,curr,stts,rowid from $t";
+$cq="mpnumber,client,product,campaign,placement,po,(startdt) as stdt,(enddt) as endt,(submitdt) as submdt,curr,stts";
 
-$c="mpnumber,client,product,campaign,po,startdt,enddt,submitdt,curr,stts";
+$c="mpnumber,client,product,campaign,placement,po,startdt,enddt,submitdt,curr";
 
 $this->load->view("_head",$data);
 $this->load->view("_navbar",$data);
@@ -61,6 +61,7 @@ $this->load->view("_sidebar",$data);
 						<th>Client</th>
 						<th>Product</th>
 						<th>Campaign</th>
+						<th>Placement</th>
 						<th>PO#</th>
 						<th>Start</th>
 						<th>End</th>
@@ -103,7 +104,7 @@ $this->load->view("_sidebar",$data);
 		  <input type="hidden" name="table" value="<?php echo base64_encode($t)?>">
 		  <input type="hidden" name="cols" value="<?php echo base64_encode($c)?>">
 		  
-			<div class="card-body">
+		  <div class="card-body">
 				<div class="row">
 				  <div class="form-group col-md-6">
 					<label for="" class="col-form-label">MP#</label>
@@ -181,18 +182,28 @@ $this->load->view("_sidebar",$data);
 				  <div class="form-group col-md-4">
 					<label for="" class="col-form-label">Currency</label>
 					<div class="input-group">
-					  <input type="text" name="curr" class="form-control form-control-sm" id="curr" placeholder="...">
+					  <select name="curr" class="form-control form-control-sm" id="curr" placeholder="...">
+						<option value=""></option>
+						<option value="IDR">IDR</option>
+						<option value="USD">USD</option>
+						<option value="SGD">SGD</option>
+					  </select>
 					</div>
 				  </div>
 				  <div class="form-group col-md-4">
-					<label for="" class="col-form-label">Status</label>
+					<label for="" class="col-form-label">Placement</label>
 					<div class="input-group">
 					  <!--input type="text" name="stts" class="form-control form-control-sm" id="stts" placeholder="..."-->
-					  <select name="stts" class="form-control form-control-sm" id="stts" placeholder="...">
+					  <select name="placement" class="form-control form-control-sm" id="placement" placeholder="...">
 						<option value=""></option>
-						<option value="Pending">Pending</option>
-						<option value="Ongoing">Ongoing</option>
-						<option value="Completed">Completed</option>
+						<option value="DIGITAL">DIGITAL</option>
+						<option value="TV">TV</option>
+						<option value="RADIO">RADIO</option>
+						<option value="NEWSPAPER">NEWSPAPER</option>
+						<option value="MAGAZINE">MAGAZINE</option>
+						<option value="KOL">KOL</option>
+						<option value="OOH">OOH</option>
+						<option value="OTHERS">OTHERS</option>
 					  </select>
 					</div>
 				  </div>
@@ -219,7 +230,7 @@ $this->load->view("_sidebar",$data);
 	<div class="modal-dialog modal-lg">
 	  <div class="modal-content">
 		<div class="modal-header">
-		  <h4 class="modal-title">Attachments</h4>
+		  <h4 class="modal-title attach-title">Attachments</h4>
 		  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 			<span aria-hidden="true">×</span>
 		  </button>
@@ -231,7 +242,7 @@ $this->load->view("_sidebar",$data);
 			  <thead>
 				  <tr>
 					<th>MP#</th>
-					<th>Version</th>
+					<th>Doc.</th>
 					<th>File</th>
 				  </tr>
 			  </thead>
@@ -257,7 +268,7 @@ $this->load->view("_sidebar",$data);
 			<i class="fas fa-2x fa-sync fa-spin"></i>
 		</div>
 		<div class="modal-header">
-		  <h4 class="modal-title">Attachment Form</h4>
+		  <h4 class="modal-title attach-title">Attachments Form</h4>
 		  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 			<span aria-hidden="true">×</span>
 		  </button>
@@ -269,8 +280,8 @@ $this->load->view("_sidebar",$data);
 		  <form id="myfa" class="form-horizontal">
 		  <input type="hidden" name="rowid" id="rowida" value="0">
 		  <input type="hidden" name="flag" id="flaga" value="SAVE">
-		  <input type="hidden" name="table" value="<?php echo base64_encode("t_mpversion")?>">
-		  <input type="hidden" name="cols" value="<?php echo base64_encode("mp,ver,attc")?>">
+		  <input type="hidden" name="table" value="<?php echo base64_encode("t_mpdoc")?>">
+		  <input type="hidden" name="cols" value="<?php echo base64_encode("mp,doc,attc")?>">
 		  
 		  <input type="hidden" name="attc"  id="attc" value="">
 		  
@@ -282,9 +293,9 @@ $this->load->view("_sidebar",$data);
 				</div>
 			  </div>
 			  <div class="form-group row">
-				<label for="" class="col-sm-4 col-form-label">Version</label>
+				<label for="" class="col-sm-4 col-form-label">Doc. Name</label>
 				<div class="col-sm-8 input-group">
-				  <input type="text" name="ver" class="form-control form-control-sm" id="ver" placeholder="...">
+				  <input type="text" name="doc" class="form-control form-control-sm" id="doc" placeholder="...">
 				</div>
 			  </div>
 			  <div class="form-group row">
@@ -310,7 +321,7 @@ $this->load->view("_sidebar",$data);
 	</div>
 	<!-- /.modal-dialog -->
   </div>
-  
+
 <?php
 $this->load->view("_foot",$data);
 $cc="clientid as v,clientname as t";
@@ -321,7 +332,7 @@ $cct="t_products";
 $pcc="ponumber as v,ponumber as t";
 $pct="t_po";
 
-$sqla="select mp,ver,attc,rowid from t_mpversion";
+$sqla="select mp,doc,attc,rowid from t_mpdoc";
 
 ?>
 <script>
@@ -370,7 +381,13 @@ $(document).ready(function(){
 		  campaign: {
 			required: true
 		  },
-		  uaccess: {
+		  curr: {
+			required: true
+		  },
+		  submitdt: {
+			required: true
+		  },
+		  placement: {
 			required: true
 		  },
 		  umail: {
@@ -381,7 +398,7 @@ $(document).ready(function(){
 	});
 	$("#myfa").validate({
 	rules: {
-		  ver: {
+		  doc: {
 			required: true
 		  },
 		  uploadedfile:{
@@ -430,14 +447,15 @@ function formLoaded(frm,modal,overlay,data=""){
 }
 
 //attachments
-function attach(mpn){
+function attach(mpn,camp){
+	$(".attach-title").html(atob(camp));
 	$("#modal-attach").modal("show");
 	mpnb=mpn;
 	mytbla.ajax.reload();
 }
 function openfa(id=0){
-	openForm('#myfa','#modal-frma','mp/get','#ovl-attach',id,'<?php echo base64_encode("t_mpversion")?>','<?php echo base64_encode("mp,ver,attc")?>');
-	$("#mp").val(mpnb);
+	openForm('#myfa','#modal-frma','mp/get','#ovl-attach',id,'<?php echo base64_encode("t_mpdoc")?>','<?php echo base64_encode("mp,doc,attc")?>');
+	$("#mp").val(atob(mpnb));
 	$("#rowida").val(id);
 	if(id==0){
 		$("#btndela").hide();

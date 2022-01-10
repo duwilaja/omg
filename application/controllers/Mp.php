@@ -26,9 +26,10 @@ class Mp extends CI_Controller {
 			for($i=0;$i<count($res);$i++){
 				$dum=array_values($res[$i]);
 				$rowid=$res[$i]['rowid'];
-				$mpn=$res[$i]['mpnumber'];
+				$mpn=base64_encode($res[$i]['mpnumber']);
+				$camp=base64_encode($res[$i]['campaign']);
 				$dum[0]='<a href="#" onclick="openf('.$rowid.')">'.$dum[0].' </a>';
-				$dum[count($dum)-1]='<button type="button" class="btn btn-info" onclick="attach(\''.$mpn.'\');"><i class="fas fa-paperclip"></i></button>';
+				$dum[count($dum)-1]='<button type="button" class="btn btn-info" onclick="attach(\''.$mpn.'\',\''.$camp.'\');"><i class="fas fa-paperclip"></i></button>';
 				$data[]=$dum;
 			}
 		}
@@ -41,7 +42,7 @@ class Mp extends CI_Controller {
 		$data=array();
 		if(isset($usr)){
 			$sql=base64_decode($this->input->post("s"));
-			$w=($this->input->post("w"));
+			$w=base64_decode($this->input->post("w"));
 			$sql.=" where mp='$w'";
 			$res=$this->db->query($sql)->result_array();
 			for($i=0;$i<count($res);$i++){
@@ -71,6 +72,15 @@ class Mp extends CI_Controller {
 		echo json_encode($ret);
 	}
 	
+	private function getNR(){
+		$data=$this->db->query("select max(nr) as mnr from t_mediaplans")->result_array();
+		$nr=1;
+		if(count($data)>0){
+			$mnr=$data[0]['mnr'];
+			$nr=is_numeric($mnr)?$mnr+1:$nr;
+		}
+		return  $nr;
+	}
 	public function sv()
 	{
 		$usr=$this->session->userdata('user_data');
@@ -88,7 +98,12 @@ class Mp extends CI_Controller {
 			$data["lastupd"]=date('Y-m-d H:i:s');
 						
 			if($rowid==0){
-				$data['mpnumber']=time();
+				$data['stts']='Pending';
+				$subm=$data['submitdt'];
+				$camp=str_ireplace(" ","_",$data['campaign']);
+				$nr=$this->getNR();
+				$data['nr']=$nr;
+				$data['mpnumber']=$nr.'/'.substr($subm,5,3).substr($subm,2,2).'/AON'.$camp.'/'.$data['placement'];
 				$sql=$this->mydb->insert_string($t, $data);
 			}else{
 				$sql=$this->mydb->update_string($t, $data, $where);
