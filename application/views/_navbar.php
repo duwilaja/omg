@@ -132,7 +132,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
       </li>
       <li class="nav-item">
         <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button">
-          <i class="fas fa-user"></i>
+          <i class="fas fa-user"></i>&nbsp;&nbsp;<?php echo $session['uname']?>
         </a>
       </li>
     </ul>

@@ -57,6 +57,20 @@ $this->load->view("_sidebar",$data);
                 <table id="example1" class="table table-sm table-bordered table-striped">
                   <thead>
 					  <tr>
+						<th></th>
+						<th></th>
+						<th></th>
+						<th></th>
+						<th></th>
+						<th></th>
+						<th></th>
+						<th></th>
+						<th></th>
+						<th></th>
+						<th></th>
+						<th></th>
+					  </tr>
+					  <tr>
 						<th>MP#</th>
 						<th>Client</th>
 						<th>Product</th>
@@ -349,6 +363,30 @@ $(document).ready(function(){
 			data: function (d) {
 				d.s= '<?php echo base64_encode($sql); ?>';
 			}
+		},
+		initComplete: function () {
+            this.api().columns().every( function () {
+				var column = this;
+				var coln=column[0][0];
+				if(coln==1||coln==2||coln==4||coln==9||coln==10){
+					var select = $('<select class="form-control form-control-sm"><option value=""></option></select>')
+						//.appendTo( $(column.footer()).empty() )
+						.appendTo( $("#example1 thead tr:eq(0) th")[coln] )
+						.on( 'change', function () {
+							var val = $.fn.dataTable.util.escapeRegex(
+								$(this).val()
+							);
+	 
+							column
+								.search( val ? '^'+val+'$' : '', true, false )
+								.draw();
+						} );
+	 
+					column.data().unique().sort().each( function ( d, j ) {
+						select.append( '<option value="'+d+'">'+d+'</option>' )
+					} );
+				}
+            } );
 		}
 	});
 	mytbla = $("#example2").DataTable({

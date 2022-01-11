@@ -141,7 +141,7 @@ class Mp extends CI_Controller {
 			$data["lastupd"]=date('Y-m-d H:i:s');
 			
 			$config['upload_path'] = $this->path;
-			$config['allowed_types'] = 'gif|jpg|png|pdf';
+			$config['allowed_types'] = '*';
 			$config['file_ext_tolower'] = true;
 			$config['overwrite'] = true;
 			$this->load->library('upload',$config);
