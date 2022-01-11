@@ -21,10 +21,11 @@ $bu=base_url()."adminlte310";
 </head>
 <body class="hold-transition login-page">
 <div class="login-box">
-  <div class="login-logo" style="font-size:1.9rem;">
+  <div class="login-logox" style="text-align:center;">
 	<p><img src="<?php echo $bu;?>/my/img/logo.png" /></p>
     
-    <b>OMNICOM DATA SYSTEM (ODS)</b>
+    <b style="font-size:4rem; line-height:40px;">ODS</b><br />
+	<span style="font-size:90%;">OMNICOM DATA SYSTEM</span>
   </div>
   <!-- /.login-logo -->
   <div class="card">
