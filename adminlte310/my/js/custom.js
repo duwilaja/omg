@@ -112,6 +112,27 @@ function sendDataFile(f,url,o){
 	});
 	
 }
+function sendData(f,url,d,o=''){	
+	
+	var frmdata=d;
+	
+	//alert(frmdata);
+	
+	$.ajax({
+		type: 'POST',
+		url: url,
+		data: frmdata,
+		success: function(data){
+			afterSend(f,o,data);
+		},
+		error: function(xhr){
+			//log(xhr);
+			afterSend(f,o,xhr.statusText);
+		}
+	});
+	
+}
+
 function afterSend(frm,overlay='',data=''){
 	if(typeof(sendDataCallback)=='function') {
 		sendDataCallback(frm,overlay,data);

@@ -10,11 +10,11 @@ $data["session"]=$session;
 $data["bu"]=$bu;
 
 $t="t_mediaplans";
-$sql="select mpnumber,client,product,campaign,placement,po,FORMAT(startdt,'YYYY-MM-DD') as stdt,FORMAT(enddt,'YYYY-MM-DD') as endt,FORMAT(submitdt,'YYYY-MM-DD') as submdt,curr,stts,rowid from $t";
-$cq="mpnumber,client,product,campaign,placement,po,FORMAT(startdt,'YYYY-MM-DD') as stdt,FORMAT(enddt,'YYYY-MM-DD') as endt,FORMAT(submitdt,'YYYY-MM-DD') as submdt,curr,stts";
+$sql="select mpnumber,client,product,campaign,placement,po,FORMAT(startdt,'YYYY-MM-DD') as stdt,FORMAT(enddt,'YYYY-MM-DD') as endt,FORMAT(submitdt,'YYYY-MM-DD') as submdt,curr,rowid from $t";
+$cq="mpnumber,client,product,campaign,placement,po,FORMAT(startdt,'YYYY-MM-DD') as stdt,FORMAT(enddt,'YYYY-MM-DD') as endt,FORMAT(submitdt,'YYYY-MM-DD') as submdt,curr";
 
-$sql="select mpnumber,client,product,campaign,placement,po,startdt,enddt,submitdt,curr,stts,rowid from $t";
-$cq="mpnumber,client,product,campaign,placement,po,(startdt) as stdt,(enddt) as endt,(submitdt) as submdt,curr,stts";
+$sql="select mpnumber,client,product,campaign,placement,po,startdt,enddt,submitdt,curr,rowid from $t";
+$cq="mpnumber,client,product,campaign,placement,po,(startdt) as stdt,(enddt) as endt,(submitdt) as submdt,curr";
 
 $c="mpnumber,client,product,campaign,placement,po,startdt,enddt,submitdt,curr";
 
@@ -58,16 +58,16 @@ $this->load->view("_sidebar",$data);
                   <thead>
 					  <tr>
 						<th></th>
+						<th style="padding-right: 4px;"></th>
+						<th style="padding-right: 4px;"></th>
+						<th></th>
+						<th style="padding-right: 4px;"></th>
 						<th></th>
 						<th></th>
 						<th></th>
 						<th></th>
-						<th></th>
-						<th></th>
-						<th></th>
-						<th></th>
-						<th></th>
-						<th></th>
+						<th style="padding-right: 4px;"></th>
+						<!--th style="padding-right: 4px;"></th-->
 						<th></th>
 					  </tr>
 					  <tr>
@@ -81,7 +81,7 @@ $this->load->view("_sidebar",$data);
 						<th>End</th>
 						<th>Submission</th>
 						<th>Currency</th>
-						<th>Status</th>
+						<!--th>Status</th-->
 						<th>Attachments</th>
 					  </tr>
                   </thead>
@@ -368,7 +368,7 @@ $(document).ready(function(){
             this.api().columns().every( function () {
 				var column = this;
 				var coln=column[0][0];
-				if(coln==1||coln==2||coln==4||coln==9||coln==10){
+				if(coln==1||coln==2||coln==4||coln==9){
 					var select = $('<select class="form-control form-control-sm"><option value=""></option></select>')
 						//.appendTo( $(column.footer()).empty() )
 						.appendTo( $("#example1 thead tr:eq(0) th")[coln] )
