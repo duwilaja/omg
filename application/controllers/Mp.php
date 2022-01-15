@@ -98,9 +98,8 @@ class Mp extends CI_Controller {
 			$data["lastupd"]=date('Y-m-d H:i:s');
 						
 			if($rowid==0){
-				$data['stts']='Pending';
 				$subm=$data['submitdt'];
-				$camp=str_ireplace(" ","_",$data['campaign']);
+				$camp=str_ireplace(" ","_",strtoupper($data['campaign']));
 				$nr=$this->getNR();
 				$data['nr']=$nr;
 				$data['mpnumber']=$nr.'/'.substr($subm,5,3).substr($subm,2,2).'/AON'.$camp.'/'.$data['placement'];
@@ -113,6 +112,7 @@ class Mp extends CI_Controller {
 			$this->db->query($sql);
 			if($this->db->affected_rows()>0) {
 				$msgs='Success'; $typ="success";
+				if($rowid==0)	$msgs.=$this->mydb->ctask("create_mp",$data);
 			}else{
 				$msgs=$this->mydb->error($this->db->error());
 			}
