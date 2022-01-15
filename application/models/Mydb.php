@@ -104,7 +104,7 @@ class Mydb extends CI_Model {
 		$config = array(
 			'protocol' => 'smtp',
 			'smtp_host' => 'ssl://smtp.googlemail.com',
-			'smtp_port' => 465,
+			'smtp_port' => 587, //465,
 			'smtp_user' => 'smart.mgmt.mmt@gmail.com',
 			'smtp_pass' => 'Smart@solo2k21',
 			'smtp_timeout' => 15,
