@@ -96,7 +96,11 @@ class Mp extends CI_Controller {
 			$data=$this->input->post(explode(",",$c));
 			$data["updby"]=$usr["uid"];
 			$data["lastupd"]=date('Y-m-d H:i:s');
-						
+			
+			if($flag=='SNDA') {$data["approver"]=$this->input->post("approver"); $data["stts"]="Pending Approval";}
+			if($flag=='REJE') {$data["stts"]="Rejected";}
+			if($flag=='APPR') {$data["stts"]="Approved"; $data["approved"]=date('Y-m-d H:i:s');}
+			
 			if($rowid==0){
 				$subm=$data['submitdt'];
 				$camp=str_ireplace(" ","_",strtoupper($data['campaign']));
@@ -112,7 +116,8 @@ class Mp extends CI_Controller {
 			$this->db->query($sql);
 			if($this->db->affected_rows()>0) {
 				$msgs='Success'; $typ="success";
-				if($rowid==0)	$msgs.=$this->mydb->ctask("create_mp",$data);
+				//if($rowid==0)	$msgs.=$this->mydb->ctask("create_mp",$data);
+				if($flag=='SNDA') $msgs=$this->mydb->notify(array("assignedto"=>$data["approver"],"taskname"=>"Mediaplan Approval"));
 			}else{
 				$msgs=$this->mydb->error($this->db->error());
 			}

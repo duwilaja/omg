@@ -58,14 +58,14 @@ $bux=base_url();
               </p>
             </a>
           </li>
-		  <li class="nav-item">
+		  <!--li class="nav-item">
             <a href="<?php echo $bux;?>task" class="nav-link task">
               <i class="nav-icon fas fa-tasks"></i>
               <p>
                 My Task
               </p>
             </a>
-          </li>
+          </li-->
 		  <li class="nav-item docs">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-copy"></i>
@@ -76,13 +76,13 @@ $bux=base_url();
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="#" class="nav-link ">
+                <a href="<?php echo $bux?>po" class="nav-link po">
                   <i class="fas fa-angle-right nav-icon"></i>
                   <p>Client's PO</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="#" class="nav-link ">
+                <a href="<?php echo $bux?>mo" class="nav-link mo">
                   <i class="fas fa-angle-right nav-icon"></i>
                   <p>Media Order</p>
                 </a>

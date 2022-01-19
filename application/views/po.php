@@ -3,15 +3,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 $bu=base_url()."adminlte310";
 
-$data["title"]="Products";
-$data["menu"]="products";
-$data["pmenu"]="master";
+$data["title"]="Client's PO";
+$data["menu"]="po";
+$data["pmenu"]="docs";
 $data["session"]=$session;
 $data["bu"]=$bu;
 
-$sql="select prodid,prodname,client,rowid from t_products";
-$c="prodid,prodname,client";
-$t="t_products";
+$sql="select ponumber,client,podt as pdt,curr,amt,attc,rowid from t_po";
+$cq="ponumber,client,podt as pdt,curr,amt,attc";
+$c="ponumber,client,podt,curr,amt,attc";
+$t="t_po";
 
 $this->load->view("_head",$data);
 $this->load->view("_navbar",$data);
@@ -29,8 +30,8 @@ $this->load->view("_sidebar",$data);
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item">Master Data</li>
-              <li class="breadcrumb-item active">Products</li>
+              <li class="breadcrumb-item">Supporting Docs</li>
+              <li class="breadcrumb-item active">Client's PO</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -52,9 +53,20 @@ $this->load->view("_sidebar",$data);
                 <table id="example1" class="table table-sm table-bordered table-striped">
                   <thead>
 					  <tr>
-						<th>ID</th>
-						<th>Name</th>
+						<th style="padding-right: 4px;"></th>
+						<th style="padding-right: 4px;"></th>
+						<th style="padding-right: 4px;"></th>
+						<th style="padding-right: 4px;"></th>
+						<th style="padding-right: 4px;"></th>
+						<th style="padding-right: 4px;"></th>
+					  </tr>
+					  <tr>
+						<th>PO#</th>
 						<th>Client</th>
+						<th>Date</th>
+						<th>Currency</th>
+						<th>Amount</th>
+						<th>Attachment</th>
 					  </tr>
                   </thead>
                   <tbody>
@@ -90,25 +102,52 @@ $this->load->view("_sidebar",$data);
 		  <input type="hidden" name="table" value="<?php echo base64_encode($t)?>">
 		  <input type="hidden" name="cols" value="<?php echo base64_encode($c)?>">
 		  
+		  <input type="hidden" name="attc" id="attc" value="">
+		  
 			<div class="card-body">
 			  <div class="form-group row">
-				<label for="" class="col-sm-4 col-form-label">ID</label>
+				<label for="" class="col-sm-4 col-form-label">PO#</label>
 				<div class="col-sm-8 input-group">
-				  <input type="text" name="prodid" class="form-control form-control-sm" id="prodid" placeholder="...">
-				</div>
-			  </div>
-			  <div class="form-group row">
-				<label for="" class="col-sm-4 col-form-label">Name</label>
-				<div class="col-sm-8 input-group">
-				  <input type="text" name="prodname" class="form-control form-control-sm" id="prodname" placeholder="...">
+				  <input type="text" name="ponumber" class="form-control form-control-sm" id="ponumber" placeholder="...">
 				</div>
 			  </div>
 			  <div class="form-group row">
 				<label for="" class="col-sm-4 col-form-label">Client</label>
 				<div class="col-sm-8 input-group">
-				  <!--input type="text" name="ugrp" class="form-control form-control-sm" id="ugrp" placeholder="..."-->
-				  <select name="client" class="form-control form-control-sm" id="client" placeholder="...">
+				  <select name="client" class="form-control form-control-sm" id="client" placeholder="..." onchange="">
 				  </select>
+				</div>
+			  </div>
+			  <div class="form-group row">
+				<label for="" class="col-sm-4 col-form-label">PO Date</label>
+				<div class="col-sm-8 input-group date" id="podate"  data-target-input="nearest">
+					    <input type="text" name="podt" id="pdt" class="form-control datetimepicker-input form-control-sm" data-target="#podate">
+                        <div class="input-group-append" data-target="#podate" data-toggle="datetimepicker">
+                            <div class="input-group-text"><i class="fas fa-calendar-alt"></i></div>
+                        </div>
+				</div>
+			  </div>
+			  <div class="form-group row">
+				<label for="" class="col-sm-4 col-form-label">Currency#</label>
+				<div class="col-sm-8 input-group">
+				  <select name="curr" class="form-control form-control-sm" id="curr" placeholder="...">
+					<option value=""></option>
+					<option value="IDR">IDR</option>
+					<option value="USD">USD</option>
+					<option value="SGD">SGD</option>
+				  </select>
+				</div>
+			  </div>
+			  <div class="form-group row">
+				<label for="" class="col-sm-4 col-form-label">Amount</label>
+				<div class="col-sm-8 input-group">
+				  <input type="text" name="amt" class="form-control form-control-sm" id="amt" placeholder="...">
+				</div>
+			  </div>
+			  <div class="form-group row">
+				<label for="" class="col-sm-4 col-form-label">Attachment</label>
+				<div class="col-sm-8 input-group">
+				  <input type="file" name="uploadedfile" class="form-control form-control-sm" id="uploadedfile" placeholder="...">
 				</div>
 			  </div>
 			</div>
@@ -145,15 +184,19 @@ $(document).ready(function(){
 		processing: true,
 		ajax: {
 			type: 'POST',
-			url: bu+'md/datatable',
+			url: bu+'po/datatable',
 			data: function (d) {
 				d.s= '<?php echo base64_encode($sql); ?>';
 			}
+		},
+		initComplete: function(){
+			filterDatatable(mytbl,[1,3]);
 		}
 	});
+	
 	$("#myf").validate({
 		rules: {
-		  prodid: {
+		  client: {
 			required: true
 		  },
 		  upwd: {
@@ -163,13 +206,13 @@ $(document).ready(function(){
 					return false;
 				}
 		  },
-		  prodname: {
+		  ponumber: {
 			required: true
 		  },
-		  client: {
+		  curr: {
 			required: true
 		  },
-		  uaccess: {
+		  amt: {
 			required: true
 		  },
 		  umail: {
@@ -178,22 +221,22 @@ $(document).ready(function(){
 		  }
 		}
 	});
-	
-	getCombo("md/gets",'<?php echo base64_encode($ct)?>','<?php echo base64_encode($cc)?>','<?php echo base64_encode($cw)?>','#client');
+	getCombo("po/gets",'<?php echo base64_encode($ct)?>','<?php echo base64_encode($cc)?>','<?php echo base64_encode($cw)?>','#client');
+	initDatePicker(["#podate"]);
 });
 
-function reloadTable(frm){
-	mytbl.ajax.reload();
+function reloadTable(frm=''){
+	mytbl.ajax.reload(function(){filterDatatable(mytbl,[1,3])},false);
 }
 
 function openf(id=0){
 	$("#rowid").val(id);
-	openForm('#myf','#modal-frm','md/get','#ovl',id,'<?php echo base64_encode($t)?>','<?php echo base64_encode($c)?>')
+	openForm('#myf','#modal-frm','po/get','#ovl',id,'<?php echo base64_encode($t)?>','<?php echo base64_encode($cq)?>')
 }
 function savef(del=false){
 	$("#flag").val('SAVE');
 	if(del) $("#flag").val('DEL');
-	saveForm('#myf','md/sv','#ovl',del,'#modal-frm');
+	saveForm('#myf','po/sv','#ovl',del,'#modal-frm');
 }
 </script>
 </body>

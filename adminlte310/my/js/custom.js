@@ -238,3 +238,30 @@ function initDatePicker(arr){
 		});
 	}
 }
+
+function filterDatatable(table,cols){
+	//log("run filter");
+	$("#example1 thead tr:eq(0) th").html("");
+	
+	table.columns(cols).every( function () {
+		var column = this;
+		var coln=column[0][0];
+		var select = $('<select class="form-control form-control-sm"><option value=""></option></select>')
+			//.appendTo( $(column.footer()).empty() )
+			.appendTo( $("#example1 thead tr:eq(0) th")[coln] )
+			.on( 'change', function () {
+				var val = $.fn.dataTable.util.escapeRegex(
+					$(this).val()
+				);
+
+				column
+					.search( val ? '^'+val+'$' : '', true, false )
+					.draw();
+			} );
+
+		column.data().unique().sort().each( function ( d, j ) {
+			select.append( '<option value="'+d+'">'+d+'</option>' )
+		} );
+		//log(column.data().unique());
+	});
+}
