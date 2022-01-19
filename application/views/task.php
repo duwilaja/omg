@@ -53,7 +53,7 @@ $this->load->view("_sidebar",$data);
 		<div class="card">
 			<div class="card-header">
 				<div class="card-tools">
-					<button class="btn btn-success" onclick="reloadTable()"><i class="fas fa-sync"></i></button>
+					<button class="btn btn-success btn-sm" onclick="reloadTable()"><i class="fas fa-sync"></i></button>
 					<!--button class="btn btn-primary" onclick="openf()"><i class="fas fa-plus"></i></button-->
 				</div>
 			</div>

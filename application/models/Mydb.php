@@ -85,7 +85,7 @@ class Mydb extends CI_Model {
 				$br="<br />";
 				$sub= "[ODS Notification] : ".$dt["taskname"];
 				$msg= "Dear ".$rs[0]["uname"]."$br $br";
-				$msg.="A task '".$dt["taskname"]."' has been created and assigned to your account. $br Kindly need your response as soon as possible. $br $br";
+				$msg.="A task '".$dt["taskname"]."' has been assigned to your account. $br Kindly need your response as soon as possible. $br $br";
 				$msg.="Regards, $br ODS Admin";
 				$sent=$this->sendmail($to,$sub,$msg);
 				if($sent){
@@ -103,10 +103,10 @@ class Mydb extends CI_Model {
 	public function sendmail($to,$sub,$msg){
 		$config = array(
 			'protocol' => 'smtp',
-			'smtp_host' => 'ssl://smtp.googlemail.com',
-			'smtp_port' => 587, //465,
-			'smtp_user' => 'smart.mgmt.mmt@gmail.com',
-			'smtp_pass' => 'Smart@solo2k21',
+			'smtp_host' => 'smtp.omgdemo.website',
+			'smtp_port' => 587,
+			'smtp_user' => 'omg@omgdemo.website',
+			'smtp_pass' => 'omgbanget',
 			'smtp_timeout' => 15,
 			'mailtype'  => 'html', 
 			'charset'   => 'utf-8'

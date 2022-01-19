@@ -10,11 +10,11 @@ $data["session"]=$session;
 $data["bu"]=$bu;
 
 $t="t_mediaplans";
-$sql="select mpnumber,client,product,campaign,placement,po,FORMAT(startdt,'YYYY-MM-DD') as stdt,FORMAT(enddt,'YYYY-MM-DD') as endt,FORMAT(submitdt,'YYYY-MM-DD') as submdt,curr,rowid from $t";
+$sql="select mpnumber,client,product,campaign,placement,po,FORMAT(startdt,'YYYY-MM-DD') as stdt,FORMAT(enddt,'YYYY-MM-DD') as endt,FORMAT(submitdt,'YYYY-MM-DD') as submdt,curr,stts,rowid from $t";
 $cq="mpnumber,client,product,campaign,placement,po,FORMAT(startdt,'YYYY-MM-DD') as stdt,FORMAT(enddt,'YYYY-MM-DD') as endt,FORMAT(submitdt,'YYYY-MM-DD') as submdt,curr";
 
-$sql="select mpnumber,client,product,campaign,placement,po,startdt,enddt,submitdt,curr,rowid from $t";
-$cq="mpnumber,client,product,campaign,placement,po,(startdt) as stdt,(enddt) as endt,(submitdt) as submdt,curr";
+$sql="select mpnumber,client,product,campaign,placement,po,startdt,enddt,submitdt,curr,stts,approver,rowid from $t";
+$cq="mpnumber,client,product,campaign,placement,po,(startdt) as stdt,(enddt) as endt,(submitdt) as submdt,curr,stts,approver,approved";
 
 $c="mpnumber,client,product,campaign,placement,po,startdt,enddt,submitdt,curr";
 
@@ -49,8 +49,8 @@ $this->load->view("_sidebar",$data);
 		<div class="card">
 			<div class="card-header">
 				<div class="card-tools">
-					<button class="btn btn-success" onclick="reloadTable()"><i class="fas fa-sync"></i></button>
-					<button class="btn btn-primary" onclick="openf()"><i class="fas fa-plus"></i></button>
+					<button class="btn btn-success btn-sm" onclick="reloadTable()"><i class="fas fa-sync"></i></button>
+					<button class="btn btn-primary btn-sm" onclick="openf()"><i class="fas fa-plus"></i></button>
 				</div>
 			</div>
 			<div class="card-body">
@@ -67,7 +67,8 @@ $this->load->view("_sidebar",$data);
 						<th></th>
 						<th></th>
 						<th style="padding-right: 4px;"></th>
-						<!--th style="padding-right: 4px;"></th-->
+						<th style="padding-right: 4px;"></th>
+						<th style="padding-right: 4px;"></th>
 						<th></th>
 					  </tr>
 					  <tr>
@@ -81,7 +82,8 @@ $this->load->view("_sidebar",$data);
 						<th>End</th>
 						<th>Submission</th>
 						<th>Currency</th>
-						<!--th>Status</th-->
+						<th>Status</th>
+						<th>Approver</th>
 						<th>Attachments</th>
 					  </tr>
                   </thead>
@@ -222,6 +224,27 @@ $this->load->view("_sidebar",$data);
 					</div>
 				  </div>
 				</div>
+				<div class="row">
+				  <div class="form-group col-md-4">
+					<label for="" class="col-form-label">Status</label>
+					<div class="input-group">
+					  <input readonly type="text" name="stts" class="form-control form-control-sm" id="stts" placeholder="[auto]">
+					</div>
+				  </div>
+				  <div class="form-group col-md-4 hidden appruper">
+					<label for="" class="col-form-label">Approver</label>
+					<div class="input-group">
+					  <select name="approver" class="form-control form-control-sm" id="approver" placeholder="...">
+					  </select>
+					</div>
+				  </div>
+				  <div class="form-group col-md-4 hidden appruper">
+					<label for="" class="col-form-label">On</label>
+					<div class="input-group">
+					  <input readonly type="text" name="approved" class="form-control form-control-sm" id="approved" placeholder="[auto]">
+					</div>
+				  </div>
+				</div>
 			</div>
 			<!-- /.card-body -->
 		  </form>
@@ -230,6 +253,7 @@ $this->load->view("_sidebar",$data);
 		  
 		</div>
 		<div class="modal-footer pull-right">
+		  <button type="button" id="btnapp" class="btn btn-success" onclick="apprup();">Approve</button>
 		  <button type="button" id="btndel" class="btn btn-danger" onclick="savef(true)">Delete</button>
 		  <button type="button" class="btn btn-primary" onclick="savef();">Save</button>
 		  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -352,6 +376,7 @@ $sqla="select mp,doc,attc,rowid from t_mpdoc";
 <script>
 var  mytbl, mytbla;
 var mpnb='';
+var thisid='<?php echo $session["uid"]?>';
 $(document).ready(function(){
 	document_ready();
 	mytbl = $("#example1").DataTable({
@@ -364,29 +389,8 @@ $(document).ready(function(){
 				d.s= '<?php echo base64_encode($sql); ?>';
 			}
 		},
-		initComplete: function () {
-            this.api().columns().every( function () {
-				var column = this;
-				var coln=column[0][0];
-				if(coln==1||coln==2||coln==4||coln==9){
-					var select = $('<select class="form-control form-control-sm"><option value=""></option></select>')
-						//.appendTo( $(column.footer()).empty() )
-						.appendTo( $("#example1 thead tr:eq(0) th")[coln] )
-						.on( 'change', function () {
-							var val = $.fn.dataTable.util.escapeRegex(
-								$(this).val()
-							);
-	 
-							column
-								.search( val ? '^'+val+'$' : '', true, false )
-								.draw();
-						} );
-	 
-					column.data().unique().sort().each( function ( d, j ) {
-						select.append( '<option value="'+d+'">'+d+'</option>' )
-					} );
-				}
-            } );
+		initComplete: function(){
+			filterDatatable(mytbl,[1,2,4,9,10,11]);
 		}
 	});
 	mytbla = $("#example2").DataTable({
@@ -428,6 +432,12 @@ $(document).ready(function(){
 		  placement: {
 			required: true
 		  },
+		  startdt: {
+			required: true
+		  },
+		  enddt: {
+			required: true
+		  },
 		  umail: {
 			  required: true,
 			  email: true
@@ -450,19 +460,23 @@ $(document).ready(function(){
 	});
 	
 	getCombo("md/gets",'<?php echo base64_encode($ct)?>','<?php echo base64_encode($cc)?>','<?php echo base64_encode($cw)?>','#client');
+	getCombo("md/gets",'<?php echo base64_encode("t_users")?>','<?php echo base64_encode("uid as v,uname as t")?>','<?php echo base64_encode($cw)?>','#approver');
 	initDatePicker(["#periodend","#periodstart","#subdt"]);
 });
 
 function reloadTable(frm=''){
-	if(frm=='#myf'||frm=='') mytbl.ajax.reload();
+	if(frm=='#myf'||frm=='') mytbl.ajax.reload(function(){filterDatatable(mytbl,[1,2,4,9,10,11])},false);
 	if(frm=='#myfa') mytbla.ajax.reload();
 }
 function openf(id=0){
 	$("#rowid").val(id);
+	$("#approver").attr("disabled",true);
+	$(".appruper").hide();
+	$("#btnapp").hide();
 	openForm('#myf','#modal-frm','mp/get','#ovl',id,'<?php echo base64_encode($t)?>','<?php echo base64_encode($cq)?>')
 }
-function savef(del=false){
-	$("#flag").val('SAVE');
+function savef(del=false,flg='SAVE'){
+	$("#flag").val(flg);
 	if(del) $("#flag").val('DEL');
 	saveForm('#myf','mp/sv','#ovl',del,'#modal-frm');
 }
@@ -481,6 +495,39 @@ function formLoaded(frm,modal,overlay,data=""){
 		}
 		//log('dv='+dv);
 		clientChange($('#client').val(),dv,dv2);
+		switch($("#stts").val()){
+			case "Approved": $(".appruper").show(); break;
+			case "New": $(".appruper").show(); $("#approver").attr("disabled",false); $("#btnapp").show(); $("#btnapp").text("Send for approval"); break;
+			case "Rejected": $(".appruper").show(); $("#approver").attr("disabled",false); $("#btnapp").show(); $("#btnapp").text("Send for approval"); break;
+			case "Pending Approval": $(".appruper").show(); if(thisid==$("#approver").val()){$("#btnapp").show();} $("#btnapp").text("Approve/Reject"); break;
+		}
+	}
+}
+function apprup(){
+	if($("#approver").val()==""){
+		alrt("Please select approver","error");
+	}else{
+		if($("#btnapp").text()=="Approve/Reject"){
+			Swal.fire({
+			  text: 'Approve this MP?',
+			  icon: 'question',
+			  showDenyButton: true,
+			  showCancelButton: true,
+			  confirmButtonText: 'Approve',
+			  denyButtonText: 'Reject',
+			}).then((result) => {
+			  /* Read more about isConfirmed, isDenied below */
+			  if (result.isConfirmed) {
+				//Swal.fire('Saved!', '', 'success')
+				savef(false,'APPR');
+			  } else if (result.isDenied) {
+				//Swal.fire('Changes are not saved', '', 'info')
+				savef(false,'REJE');
+			  }
+			});
+		}else{
+			savef(false,'SNDA');
+		}
 	}
 }
 
