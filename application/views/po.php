@@ -212,6 +212,9 @@ $(document).ready(function(){
 		  curr: {
 			required: true
 		  },
+		  podt: {
+			required: true
+		  },
 		  amt: {
 			required: true
 		  },
