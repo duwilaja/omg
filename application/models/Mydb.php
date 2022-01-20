@@ -77,7 +77,7 @@ class Mydb extends CI_Model {
 		}
 		return $msg;
 	}
-	private function notify($dt){
+	public function notify($dt){
 		$rs=$this->db->query("select umail,uname from t_users where uid='".$dt["assignedto"]."'")->result_array();
 		if(count($rs)>0){
 			$to = trim($rs[0]['umail']);
@@ -103,8 +103,8 @@ class Mydb extends CI_Model {
 	public function sendmail($to,$sub,$msg){
 		$config = array(
 			'protocol' => 'smtp',
-			'smtp_host' => 'smtp.omgdemo.website',
-			'smtp_port' => 587,
+			'smtp_host' => 'ssl://mail.omgdemo.website',
+			'smtp_port' => 465,
 			'smtp_user' => 'omg@omgdemo.website',
 			'smtp_pass' => 'omgbanget',
 			'smtp_timeout' => 15,

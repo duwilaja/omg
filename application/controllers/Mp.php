@@ -97,7 +97,7 @@ class Mp extends CI_Controller {
 			$data["updby"]=$usr["uid"];
 			$data["lastupd"]=date('Y-m-d H:i:s');
 			
-			if($flag=='SNDA') {$data["approver"]=$this->input->post("approver"); $data["stts"]="Pending Approval";}
+			if($flag=='SNDA'||$rowid==0) {$data["stts"]="Pending Approval"; $data["approver"]=$this->input->post("approver");}
 			if($flag=='REJE') {$data["stts"]="Rejected";}
 			if($flag=='APPR') {$data["stts"]="Approved"; $data["approved"]=date('Y-m-d H:i:s');}
 			
@@ -117,7 +117,8 @@ class Mp extends CI_Controller {
 			if($this->db->affected_rows()>0) {
 				$msgs='Success'; $typ="success";
 				//if($rowid==0)	$msgs.=$this->mydb->ctask("create_mp",$data);
-				if($flag=='SNDA') $msgs=$this->mydb->notify(array("assignedto"=>$data["approver"],"taskname"=>"Mediaplan Approval"));
+				//if($flag=='SNDA') $msgs=$this->mydb->notify(array("assignedto"=>$data["approver"],"taskname"=>"Mediaplan Approval"));
+				if($rowid==0||$flag=='SNDA') $msgs=$this->mydb->notify(array("assignedto"=>$data["approver"],"taskname"=>"Mediaplan Approval"));
 			}else{
 				$msgs=$this->mydb->error($this->db->error());
 			}
