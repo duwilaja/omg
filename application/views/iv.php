@@ -3,16 +3,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 $bu=base_url()."adminlte310";
 
-$data["title"]="Media Order";
-$data["menu"]="mo";
+$data["title"]="Supplier's Invoice";
+$data["menu"]="iv";
 $data["pmenu"]="docs";
 $data["session"]=$session;
 $data["bu"]=$bu;
 
-$sql="select ordernumber,client,mp,orderdt as odt,supplier,attc,rowid from t_mediaorders";
-$cq="ordernumber,client,mp,orderdt as odt,supplier,attc";
-$c="ordernumber,client,mp,orderdt,supplier,attc";
-$t="t_mediaorders";
+$sql="select invno,client,mp,invdt as idt,supplier,amt,attc,rowid from t_invoices";
+$cq="invno,client,mp,invdt as idt,supplier,amt,attc";
+$c="invno,client,mp,invdt,supplier,amt,attc";
+$t="t_invoices";
 
 $this->load->view("_head",$data);
 $this->load->view("_navbar",$data);
@@ -31,7 +31,7 @@ $this->load->view("_sidebar",$data);
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item">Supporting Docs</li>
-              <li class="breadcrumb-item active">Media Order</li>
+              <li class="breadcrumb-item active">Supplier's Invoice</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -61,11 +61,12 @@ $this->load->view("_sidebar",$data);
 						<th style="padding-right: 4px;"></th>
 					  </tr>
 					  <tr>
-						<th>Order#</th>
+						<th>Invoice#</th>
 						<th>Client</th>
 						<th>MP#</th>
 						<th>Date</th>
 						<th>Supplier</th>
+						<th>Amount</th>
 						<th>Attachment</th>
 					  </tr>
                   </thead>
@@ -106,9 +107,9 @@ $this->load->view("_sidebar",$data);
 		  
 			<div class="card-body">
 			  <div class="form-group row">
-				<label for="" class="col-sm-4 col-form-label">Order#</label>
+				<label for="" class="col-sm-4 col-form-label">Invoice#</label>
 				<div class="col-sm-8 input-group">
-				  <input type="text" name="ordernumber" class="form-control form-control-sm" id="ordernumber" placeholder="...">
+				  <input type="text" name="invno" class="form-control form-control-sm" id="invno" placeholder="...">
 				</div>
 			  </div>
 			  <div class="form-group row">
@@ -126,10 +127,10 @@ $this->load->view("_sidebar",$data);
 				</div>
 			  </div>
 			  <div class="form-group row">
-				<label for="" class="col-sm-4 col-form-label">Order Date</label>
-				<div class="col-sm-8 input-group date" id="odate"  data-target-input="nearest">
-					    <input type="text" name="orderdt" id="odt" class="form-control datetimepicker-input form-control-sm" data-target="#odate">
-                        <div class="input-group-append" data-target="#odate" data-toggle="datetimepicker">
+				<label for="" class="col-sm-4 col-form-label">Invoice Date</label>
+				<div class="col-sm-8 input-group date" id="idate"  data-target-input="nearest">
+					    <input type="text" name="invdt" id="idt" class="form-control datetimepicker-input form-control-sm" data-target="#idate">
+                        <div class="input-group-append" data-target="#idate" data-toggle="datetimepicker">
                             <div class="input-group-text"><i class="fas fa-calendar-alt"></i></div>
                         </div>
 				</div>
@@ -139,6 +140,12 @@ $this->load->view("_sidebar",$data);
 				<div class="col-sm-8 input-group">
 				  <select name="supplier" class="form-control form-control-sm" id="supplier" placeholder="...">
 				  </select>
+				</div>
+			  </div>
+			  <div class="form-group row">
+				<label for="" class="col-sm-4 col-form-label">Amount</label>
+				<div class="col-sm-8 input-group">
+				  <input type="text" name="amt" class="form-control form-control-sm" id="amt" placeholder="...">
 				</div>
 			  </div>
 			  <div class="form-group row">
@@ -184,7 +191,7 @@ $(document).ready(function(){
 		processing: true,
 		ajax: {
 			type: 'POST',
-			url: bu+'mo/datatable',
+			url: bu+'iv/datatable',
 			data: function (d) {
 				d.s= '<?php echo base64_encode($sql); ?>';
 			}
@@ -205,16 +212,19 @@ $(document).ready(function(){
 					return false;
 				}
 		  },
-		  ordernumber: {
+		  invdt: {
 			required: true
 		  },
-		  supplier: {
-			required: true
-		  },
-		  orderdt: {
+		  invno: {
 			required: true
 		  },
 		  mp: {
+			required: true
+		  },
+		  amt: {
+			required: true
+		  },
+		  supplier: {
 			required: true
 		  },
 		  umail: {
@@ -223,9 +233,9 @@ $(document).ready(function(){
 		  }
 		}
 	});
-	getCombo("mo/gets",'<?php echo base64_encode($ct)?>','<?php echo base64_encode($cc)?>','<?php echo base64_encode($cw)?>','#client');
-	getCombo("mo/gets",'<?php echo base64_encode($st)?>','<?php echo base64_encode($sc)?>','<?php echo base64_encode($sw)?>','#supplier');
-	initDatePicker(["#odate"]);
+	getCombo("iv/gets",'<?php echo base64_encode($ct)?>','<?php echo base64_encode($cc)?>','<?php echo base64_encode($cw)?>','#client');
+	getCombo("iv/gets",'<?php echo base64_encode($st)?>','<?php echo base64_encode($sc)?>','<?php echo base64_encode($sw)?>','#supplier');
+	initDatePicker(["#idate"]);
 });
 
 function reloadTable(frm){
@@ -234,18 +244,18 @@ function reloadTable(frm){
 
 function openf(id=0){
 	$("#rowid").val(id);
-	openForm('#myf','#modal-frm','mo/get','#ovl',id,'<?php echo base64_encode($t)?>','<?php echo base64_encode($cq)?>')
+	openForm('#myf','#modal-frm','iv/get','#ovl',id,'<?php echo base64_encode($t)?>','<?php echo base64_encode($cq)?>')
 }
 function savef(del=false){
 	$("#flag").val('SAVE');
 	if(del) $("#flag").val('DEL');
-	saveForm('#myf','mo/sv','#ovl',del,'#modal-frm');
+	saveForm('#myf','iv/sv','#ovl',del,'#modal-frm');
 }
 
 
 function clientChange(tv,dv='',dv2=''){
 	var ccw=btoa("client='"+tv+"'");
-	getCombo("mo/gets",'<?php echo base64_encode("t_mediaplans")?>','<?php echo base64_encode("mpnumber as v,mpnumber as t")?>',ccw,'#mp',dv);
+	getCombo("iv/gets",'<?php echo base64_encode("t_mediaplans")?>','<?php echo base64_encode("mpnumber as v,mpnumber as t")?>',ccw,'#mp',dv);
 	//getCombo("md/gets",'<?php echo base64_encode("")?>','<?php echo base64_encode("")?>',ccw,'#po',dv2);
 }
 function formLoaded(frm,modal,overlay,data=""){

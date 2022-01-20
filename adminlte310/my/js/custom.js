@@ -74,8 +74,8 @@ function saveForm(frmid,url,overlay='',del=false,modal=''){
 		  /* Read more about isConfirmed, isDenied below */
 		  if (result.isConfirmed) {
 			//Swal.fire('Saved!', '', 'success')
-			sendDataFile(frmid,bu+url,overlay);
-			if(modal!='') $(modal).modal('hide');
+			sendDataFile(frmid,bu+url,overlay,modal);
+			
 		  } else if (result.isDenied) {
 			//Swal.fire('Changes are not saved', '', 'info')
 		  }
@@ -85,11 +85,11 @@ function saveForm(frmid,url,overlay='',del=false,modal=''){
 			//log("valid");
 			if(overlay!='') $(overlay).show();
 			
-			sendDataFile(frmid,bu+url,overlay);
+			sendDataFile(frmid,bu+url,overlay,modal);
 		}
 	}
 }
-function sendDataFile(f,url,o){	
+function sendDataFile(f,url,o,modal){	
 	
 	var frmdata=new FormData($(f)[0]);
 	
@@ -104,6 +104,7 @@ function sendDataFile(f,url,o){
 		processData: false,
 		success: function(data){
 			afterSend(f,o,data);
+			if(modal!='') $(modal).modal('hide');
 		},
 		error: function(xhr){
 			//log(xhr);
@@ -132,7 +133,6 @@ function sendData(f,url,d,o=''){
 	});
 	
 }
-
 function afterSend(frm,overlay='',data=''){
 	if(typeof(sendDataCallback)=='function') {
 		sendDataCallback(frm,overlay,data);
@@ -148,7 +148,6 @@ function afterSend(frm,overlay='',data=''){
 		if(typeof(reloadTable)=='function') reloadTable(frm);
 	}
 }
-
 function openForm(frmid,modal,url,overlay='',id=0,t='',c=''){
 	resetForm(frmid);
 	$(modal).modal('show');
