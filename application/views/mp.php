@@ -231,14 +231,14 @@ $this->load->view("_sidebar",$data);
 					  <input readonly type="text" name="stts" class="form-control form-control-sm" id="stts" placeholder="[auto]">
 					</div>
 				  </div>
-				  <div class="form-group col-md-4 hidden appruper">
+				  <div class="form-group col-md-4">
 					<label for="" class="col-form-label">Approver</label>
 					<div class="input-group">
 					  <select name="approver" class="form-control form-control-sm" id="approver" placeholder="...">
 					  </select>
 					</div>
 				  </div>
-				  <div class="form-group col-md-4 hidden appruper">
+				  <div class="form-group col-md-4">
 					<label for="" class="col-form-label">On</label>
 					<div class="input-group">
 					  <input readonly type="text" name="approved" class="form-control form-control-sm" id="approved" placeholder="[auto]">
@@ -438,6 +438,9 @@ $(document).ready(function(){
 		  enddt: {
 			required: true
 		  },
+		  approver: {
+			required: true
+		  },
 		  umail: {
 			  required: true,
 			  email: true
@@ -496,8 +499,9 @@ function formLoaded(frm,modal,overlay,data=""){
 		//log('dv='+dv);
 		clientChange($('#client').val(),dv,dv2);
 		switch($("#stts").val()){
+			case "": $("#approver").attr("disabled",false); break;
 			case "Approved": $(".appruper").show(); break;
-			case "New": $(".appruper").show(); $("#approver").attr("disabled",false); $("#btnapp").show(); $("#btnapp").text("Send for approval"); break;
+			//case "New": $(".appruper").show(); $("#approver").attr("disabled",false); $("#btnapp").show(); $("#btnapp").text("Send for approval"); break;
 			case "Rejected": $(".appruper").show(); $("#approver").attr("disabled",false); $("#btnapp").show(); $("#btnapp").text("Send for approval"); break;
 			case "Pending Approval": $(".appruper").show(); if(thisid==$("#approver").val()){$("#btnapp").show();} $("#btnapp").text("Approve/Reject"); break;
 		}
