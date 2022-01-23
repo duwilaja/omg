@@ -3,16 +3,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 $bu=base_url()."adminlte310";
 
-$data["title"]="Media Order";
-$data["menu"]="mo";
+$data["title"]="Screenshot";
+$data["menu"]="ss";
 $data["pmenu"]="docs";
 $data["session"]=$session;
 $data["bu"]=$bu;
 
-$sql="select ordernumber,client,mp,orderdt as odt,supplier,attc,rowid from t_mediaorders";
-$cq="ordernumber,client,mp,orderdt as odt,supplier,attc";
-$c="ordernumber,client,mp,orderdt,supplier,attc";
-$t="t_mediaorders";
+$sql="select client,supplier,invoice,dsc,attc,rowid from t_screenshots";
+$cq="client,supplier,invoice,dsc,attc";
+$c="client,supplier,invoice,dsc,attc";
+$t="t_screenshots";
 
 $this->load->view("_head",$data);
 $this->load->view("_navbar",$data);
@@ -31,7 +31,7 @@ $this->load->view("_sidebar",$data);
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item">Supporting Docs</li>
-              <li class="breadcrumb-item active">Media Order</li>
+              <li class="breadcrumb-item active">Screenshot</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -58,14 +58,12 @@ $this->load->view("_sidebar",$data);
 						<th style="padding-right: 4px;"></th>
 						<th style="padding-right: 4px;"></th>
 						<th style="padding-right: 4px;"></th>
-						<th style="padding-right: 4px;"></th>
 					  </tr>
 					  <tr>
-						<th>Order#</th>
 						<th>Client</th>
-						<th>MP#</th>
-						<th>Date</th>
 						<th>Supplier</th>
+						<th>Invoice#</th>
+						<th>Description</th>
 						<th>Attachment</th>
 					  </tr>
                   </thead>
@@ -106,39 +104,30 @@ $this->load->view("_sidebar",$data);
 		  
 			<div class="card-body">
 			  <div class="form-group row">
-				<label for="" class="col-sm-4 col-form-label">Order#</label>
-				<div class="col-sm-8 input-group">
-				  <input type="text" name="ordernumber" class="form-control form-control-sm" id="ordernumber" placeholder="...">
-				</div>
-			  </div>
-			  <div class="form-group row">
 				<label for="" class="col-sm-4 col-form-label">Client</label>
 				<div class="col-sm-8 input-group">
-				  <select name="client" class="form-control form-control-sm" id="client" placeholder="..." onchange="clientChange(this.value);">
+				  <select name="client" class="form-control form-control-sm" id="client" placeholder="..." onchange="csChange();">
 				  </select>
-				</div>
-			  </div>
-			  <div class="form-group row">
-				<label for="" class="col-sm-4 col-form-label">Media Plan</label>
-				<div class="col-sm-8 input-group">
-				  <select name="mp" class="form-control form-control-sm" id="mp" placeholder="...">
-				  </select>
-				</div>
-			  </div>
-			  <div class="form-group row">
-				<label for="" class="col-sm-4 col-form-label">Order Date</label>
-				<div class="col-sm-8 input-group date" id="odate"  data-target-input="nearest">
-					    <input type="text" name="orderdt" id="odt" class="form-control datetimepicker-input form-control-sm" data-target="#odate">
-                        <div class="input-group-append" data-target="#odate" data-toggle="datetimepicker">
-                            <div class="input-group-text"><i class="fas fa-calendar-alt"></i></div>
-                        </div>
 				</div>
 			  </div>
 			  <div class="form-group row">
 				<label for="" class="col-sm-4 col-form-label">Supplier</label>
 				<div class="col-sm-8 input-group">
-				  <select name="supplier" class="form-control form-control-sm" id="supplier" placeholder="...">
+				  <select name="supplier" class="form-control form-control-sm" id="supplier" placeholder="..." onchange="csChange();">
 				  </select>
+				</div>
+			  </div>
+			  <div class="form-group row">
+				<label for="" class="col-sm-4 col-form-label">Invoice#</label>
+				<div class="col-sm-8 input-group">
+				  <select name="invoice" class="form-control form-control-sm" id="invoice" placeholder="...">
+				  </select>
+				</div>
+			  </div>
+			  <div class="form-group row">
+				<label for="" class="col-sm-4 col-form-label">Description</label>
+				<div class="col-sm-8 input-group">
+				  <input type="text" name="dsc" class="form-control form-control-sm" id="dsc" placeholder="...">
 				</div>
 			  </div>
 			  <div class="form-group row">
@@ -184,13 +173,13 @@ $(document).ready(function(){
 		processing: true,
 		ajax: {
 			type: 'POST',
-			url: bu+'mo/datatable',
+			url: bu+'ss/datatable',
 			data: function (d) {
 				d.s= '<?php echo base64_encode($sql); ?>';
 			}
 		},
 		initComplete: function () {
-            filterDatatable(mytbl,[1,4]);
+            filterDatatable(mytbl,[0,1]);
 		}
 	});
 	$("#myf").validate({
@@ -205,16 +194,19 @@ $(document).ready(function(){
 					return false;
 				}
 		  },
-		  ordernumber: {
+		  invoice: {
 			required: true
 		  },
-		  supplier: {
-			required: true
-		  },
-		  orderdt: {
+		  invno: {
 			required: true
 		  },
 		  mp: {
+			required: true
+		  },
+		  dsc: {
+			required: true
+		  },
+		  supplier: {
 			required: true
 		  },
 		  umail: {
@@ -223,39 +215,42 @@ $(document).ready(function(){
 		  }
 		}
 	});
-	getCombo("mo/gets",'<?php echo base64_encode($ct)?>','<?php echo base64_encode($cc)?>','<?php echo base64_encode($cw)?>','#client');
-	getCombo("mo/gets",'<?php echo base64_encode($st)?>','<?php echo base64_encode($sc)?>','<?php echo base64_encode($sw)?>','#supplier');
-	initDatePicker(["#odate"]);
+	getCombo("ss/gets",'<?php echo base64_encode($ct)?>','<?php echo base64_encode($cc)?>','<?php echo base64_encode($cw)?>','#client');
+	getCombo("ss/gets",'<?php echo base64_encode($st)?>','<?php echo base64_encode($sc)?>','<?php echo base64_encode($sw)?>','#supplier');
+	initDatePicker(["#idate"]);
 });
 
 function reloadTable(frm){
-	mytbl.ajax.reload(function(){filterDatatable(mytbl,[1,4])},false);
+	mytbl.ajax.reload(function(){filterDatatable(mytbl,[0,1])},false);
 }
 
 function openf(id=0){
 	$("#rowid").val(id);
-	openForm('#myf','#modal-frm','mo/get','#ovl',id,'<?php echo base64_encode($t)?>','<?php echo base64_encode($cq)?>')
+	openForm('#myf','#modal-frm','ss/get','#ovl',id,'<?php echo base64_encode($t)?>','<?php echo base64_encode($cq)?>')
 }
 function savef(del=false){
 	$("#flag").val('SAVE');
 	if(del) $("#flag").val('DEL');
-	saveForm('#myf','mo/sv','#ovl',del,'#modal-frm');
+	saveForm('#myf','ss/sv','#ovl',del,'#modal-frm');
 }
 
 
-function clientChange(tv,dv='',dv2=''){
-	var ccw=btoa("client='"+tv+"' order by mpnumber");
-	getCombo("mo/gets",'<?php echo base64_encode("t_mediaplans")?>','<?php echo base64_encode("mpnumber as v,mpnumber as t")?>',ccw,'#mp',dv);
-	//getCombo("md/gets",'<?php echo base64_encode("")?>','<?php echo base64_encode("")?>',ccw,'#po',dv2);
+function csChange(dv=''){
+	var c=$("#client").val();
+	var s=$("#supplier").val();
+	if(c!="" && s!=""){
+	var ccw=btoa("client='"+c+"' and supplier='"+s+"' order by invno");
+		getCombo("ss/gets",'<?php echo base64_encode("t_invoices")?>','<?php echo base64_encode("invno as v,invno as t")?>',ccw,'#invoice',dv);
+	}
 }
 function formLoaded(frm,modal,overlay,data=""){
 	if(frm=='#myf'){
 		var dv='';
 		if(data!="") {
-			dv=data['mp'];
+			dv=data['invoice'];
 		}
 		//log('dv='+dv);
-		clientChange($('#client').val(),dv);
+		csChange(dv);
 	}
 }
 </script>

@@ -94,13 +94,13 @@ $bux=base_url();
                 </a>
               </li>
 			  <li class="nav-item">
-                <a href="#" class="nav-link ">
+                <a href="<?php echo $bux?>ss" class="nav-link ss">
                   <i class="fas fa-angle-right nav-icon"></i>
                   <p>Screenshot</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="#" class="nav-link ">
+                <a href="<?php echo $bux?>bp" class="nav-link bp">
                   <i class="fas fa-angle-right nav-icon"></i>
                   <p>Billing</p>
                 </a>
@@ -155,20 +155,20 @@ $bux=base_url();
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="<?php echo $bux;?>r/?v=rmp" class="nav-link rmp">
                   <i class="fas fa-angle-right nav-icon"></i>
                   <p>Media Plan</p>
                 </a>
               </li>
-              <li class="nav-item">
+              <!--li class="nav-item">
                 <a href="#" class="nav-link">
                   <i class="fas fa-angle-right nav-icon"></i>
                   <p>Statistic</p>
                 </a>
-              </li>
+              </li-->
             </ul>
           </li>
-		  <li class="nav-item setting">
+		  <!--li class="nav-item setting">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-cogs"></i>
               <p>
@@ -196,7 +196,7 @@ $bux=base_url();
                 </a>
               </li>
             </ul>
-          </li>
+          </li-->
 		
 		</ul>
       </nav>

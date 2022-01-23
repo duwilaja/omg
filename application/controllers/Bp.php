@@ -1,16 +1,16 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Mp extends CI_Controller {
-
-	private $path='./files/mp/';
+class Bp extends CI_Controller {
 	
+	private $path="./files/bp/";
+
 	public function index()
 	{
 		$usr=$this->session->userdata('user_data');
 		if(isset($usr)){
 			$data["session"]=$usr;
-			$this->load->view("mp",$data);
+			$this->load->view("bp",$data);
 		}else{
 			redirect(base_url()."sign/out/1");
 		}
@@ -24,16 +24,12 @@ class Mp extends CI_Controller {
 			$sql=base64_decode($this->input->post("s"));
 			$res=$this->db->query($sql)->result_array();
 			for($i=0;$i<count($res);$i++){
+				//$res[$i]["attc"]=$res[$i]["attc"]==""?"":'<a href="javascript:;" data-fancybox data-type="iframe" data-src="'.$this->path.$res[$i]["attc"].'">'.$res[$i]["attc"].'</a>';
 				$dum=array_values($res[$i]);
 				$rowid=$res[$i]['rowid'];
-				$mpn=base64_encode($res[$i]['mpnumber']);
-				$camp=base64_encode($res[$i]['campaign']);
-				$approver=$res[$i]['approver'];
-				$stts=$res[$i]['stts'];
+				$bill=base64_encode($res[$i]['billno']);
+				$dum[count($dum)-1]='<button type="button" class="btn btn-info" onclick="attach(\''.$bill.'\');"><i class="fas fa-paperclip"></i></button>';
 				$dum[0]='<a href="#" onclick="openf('.$rowid.')">'.$dum[0].' </a>';
-				$dum[count($dum)-2]='<button type="button" class="btn btn-info" onclick="attach(\''.$mpn.'\',\''.$camp.'\');"><i class="fas fa-paperclip"></i></button>';
-				$dum[count($dum)-1]='';
-				if($usr["uid"]==$approver && $stts=="Pending Approval") $dum[count($dum)-1]='<button type="button" class="btn btn-success" onclick="apprup('.$rowid.');">Approve/Reject</button>';
 				$data[]=$dum;
 			}
 		}
@@ -47,7 +43,7 @@ class Mp extends CI_Controller {
 		if(isset($usr)){
 			$sql=base64_decode($this->input->post("s"));
 			$w=base64_decode($this->input->post("w"));
-			$sql.=" where mp='$w'";
+			$sql.=" where billing='$w'";
 			$res=$this->db->query($sql)->result_array();
 			for($i=0;$i<count($res);$i++){
 				$dum=array_values($res[$i]);
@@ -76,15 +72,43 @@ class Mp extends CI_Controller {
 		echo json_encode($ret);
 	}
 	
-	private function getNR(){
-		$data=$this->db->query("select max(nr) as mnr from t_mediaplans")->result_array();
-		$nr=1;
-		if(count($data)>0){
-			$mnr=$data[0]['mnr'];
-			$nr=is_numeric($mnr)?$mnr+1:$nr;
+	public function gets()
+	{
+		$usr=$this->session->userdata('user_data');
+		$data=array();
+		if(isset($usr)){
+			$c=base64_decode($this->input->post("c"));
+			$w=base64_decode($this->input->post("w"));
+			$t=base64_decode($this->input->post("t"));
+			$c=$c==''?'*':$c;
+			$sql="select $c from $t where $w";
+			$data=$this->db->query($sql)->result_array();
 		}
-		return  $nr;
+		$ret=array('data'=>$data);
+		echo json_encode($ret);
 	}
+	
+	public function lov()
+	{
+		$usr=$this->session->userdata('user_data');
+		$data=array();
+		if(isset($usr)){
+			$c=base64_decode($this->input->post("c"));
+			$w=base64_decode($this->input->post("w"));
+			$t=base64_decode($this->input->post("t"));
+			$onclick=base64_decode($this->input->post("o"));
+			$sql="select $c from $t where $w";
+			$data=$this->db->query($sql)->result_array();
+			for($i=0;$i<count($res);$i++){
+				$dum=array_values($res[$i]);
+				$dum[0]='<input type="radio" name="pilih" onclick="'.$onclick.'" value="'.$dum[0].'"> '.$dum[0];
+				$data[]=$dum;
+			}
+		}
+		$ret=array('data'=>$data);
+		echo json_encode($ret);
+	}
+	
 	public function sv()
 	{
 		$usr=$this->session->userdata('user_data');
@@ -101,16 +125,7 @@ class Mp extends CI_Controller {
 			$data["updby"]=$usr["uid"];
 			$data["lastupd"]=date('Y-m-d H:i:s');
 			
-			if($flag=='SNDA'||$rowid==0) {$data["stts"]="Pending Approval"; $data["approver"]=$this->input->post("approver");}
-			if($flag=='REJE') {$data["stts"]="Rejected";}
-			if($flag=='APPR') {$data["stts"]="Approved"; $data["approved"]=date('Y-m-d H:i:s');}
-			
 			if($rowid==0){
-				$subm=$data['submitdt'];
-				$camp=str_ireplace(" ","_",strtoupper($data['campaign']));
-				$nr=$this->getNR();
-				$data['nr']=$nr;
-				$data['mpnumber']=$nr.'/'.substr($subm,5,3).substr($subm,2,2).'/AON'.$camp.'/'.$data['placement'];
 				$sql=$this->mydb->insert_string($t, $data);
 			}else{
 				$sql=$this->mydb->update_string($t, $data, $where);
@@ -120,11 +135,6 @@ class Mp extends CI_Controller {
 			$this->db->query($sql);
 			if($this->db->affected_rows()>0) {
 				$msgs='Success'; $typ="success";
-				//if($rowid==0)	$msgs.=$this->mydb->ctask("create_mp",$data);
-				//if($flag=='SNDA') $msgs=$this->mydb->notify(array("assignedto"=>$data["approver"],"taskname"=>"Mediaplan Approval"));
-				$m="This is a reminder that there are outstanding tasks in ODS that require your attention.<br />Please log into ODS to review and approve the outstanding.<br />";
-				$m.="Mediaplan#: ".$data['mpnumber']."<br />Campaign: ".$data['campaign']."<br />Client: ".$data['client'];
-				if($rowid==0||$flag=='SNDA') $msgs=$this->mydb->notify(array("assignedto"=>$data["approver"],"taskname"=>"Mediaplan Approval","msgs"=>$m));
 			}else{
 				$msgs=$this->mydb->error($this->db->error());
 			}
