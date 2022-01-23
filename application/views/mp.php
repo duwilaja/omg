@@ -13,7 +13,7 @@ $t="t_mediaplans";
 $sql="select mpnumber,client,product,campaign,placement,po,FORMAT(startdt,'YYYY-MM-DD') as stdt,FORMAT(enddt,'YYYY-MM-DD') as endt,FORMAT(submitdt,'YYYY-MM-DD') as submdt,curr,stts,rowid from $t";
 $cq="mpnumber,client,product,campaign,placement,po,FORMAT(startdt,'YYYY-MM-DD') as stdt,FORMAT(enddt,'YYYY-MM-DD') as endt,FORMAT(submitdt,'YYYY-MM-DD') as submdt,curr";
 
-$sql="select mpnumber,client,product,campaign,placement,po,startdt,enddt,submitdt,curr,stts,approver,rowid from $t";
+$sql="select mpnumber,client,product,campaign,placement,po,startdt,enddt,submitdt,curr,stts,approver,approved,rowid from $t";
 $cq="mpnumber,client,product,campaign,placement,po,(startdt) as stdt,(enddt) as endt,(submitdt) as submdt,curr,stts,approver,approved";
 
 $c="mpnumber,client,product,campaign,placement,po,startdt,enddt,submitdt,curr";
@@ -53,7 +53,7 @@ $this->load->view("_sidebar",$data);
 					<button class="btn btn-primary btn-sm" onclick="openf()"><i class="fas fa-plus"></i></button>
 				</div>
 			</div>
-			<div class="card-body">
+			<div class="card-body table-responsive">
                 <table id="example1" class="table table-sm table-bordered table-striped">
                   <thead>
 					  <tr>
@@ -70,6 +70,7 @@ $this->load->view("_sidebar",$data);
 						<th style="padding-right: 4px;"></th>
 						<th style="padding-right: 4px;"></th>
 						<th></th>
+						<th></th>
 					  </tr>
 					  <tr>
 						<th>MP#</th>
@@ -85,6 +86,7 @@ $this->load->view("_sidebar",$data);
 						<th>Status</th>
 						<th>Approver</th>
 						<th>Attachments</th>
+						<th>Action</th>
 					  </tr>
                   </thead>
                   <tbody>
@@ -364,7 +366,7 @@ $this->load->view("_sidebar",$data);
 $this->load->view("_foot",$data);
 $cc="clientid as v,clientname as t";
 $ct="t_clients";
-$cw="1=1";
+$cw="1=1 order by clientname";
 $ccc="prodid as v,prodname as t";
 $cct="t_products";
 $pcc="ponumber as v,ponumber as t";
@@ -463,7 +465,7 @@ $(document).ready(function(){
 	});
 	
 	getCombo("md/gets",'<?php echo base64_encode($ct)?>','<?php echo base64_encode($cc)?>','<?php echo base64_encode($cw)?>','#client');
-	getCombo("md/gets",'<?php echo base64_encode("t_users")?>','<?php echo base64_encode("uid as v,uname as t")?>','<?php echo base64_encode($cw)?>','#approver');
+	getCombo("md/gets",'<?php echo base64_encode("t_users")?>','<?php echo base64_encode("uid as v,uname as t")?>','<?php echo base64_encode(" 1=1 order by uname")?>','#approver');
 	initDatePicker(["#periodend","#periodstart","#subdt"]);
 });
 
@@ -484,7 +486,7 @@ function savef(del=false,flg='SAVE'){
 	saveForm('#myf','mp/sv','#ovl',del,'#modal-frm');
 }
 function clientChange(tv,dv='',dv2=''){
-	var ccw=btoa("client='"+tv+"'");
+	var ccw=btoa("client='"+tv+"' order by prodname");
 	getCombo("md/gets",'<?php echo base64_encode($cct)?>','<?php echo base64_encode($ccc)?>',ccw,'#product',dv);
 	//getCombo("md/gets",'<?php echo base64_encode($pct)?>','<?php echo base64_encode($pcc)?>',ccw,'#po',dv2);
 }
@@ -507,11 +509,11 @@ function formLoaded(frm,modal,overlay,data=""){
 		}
 	}
 }
-function apprup(){
-	if($("#approver").val()==""){
+function apprup(id=0){
+	if($("#approver").val()==""&&id==0){
 		alrt("Please select approver","error");
 	}else{
-		if($("#btnapp").text()=="Approve/Reject"){
+		if($("#btnapp").text()=="Approve/Reject"||id!=0){
 			Swal.fire({
 			  text: 'Approve this MP?',
 			  icon: 'question',
@@ -523,10 +525,20 @@ function apprup(){
 			  /* Read more about isConfirmed, isDenied below */
 			  if (result.isConfirmed) {
 				//Swal.fire('Saved!', '', 'success')
-				savef(false,'APPR');
+				if(id==0) {
+					savef(false,'APPR');
+				}else{
+					var dat={rowid:id,approver:thisid,flag:'APPR',cols:'<?php echo base64_encode('approver')?>',table:'<?php echo base64_encode($t)?>'};
+					sendData('#myf','mp/sv',dat);
+				}
 			  } else if (result.isDenied) {
 				//Swal.fire('Changes are not saved', '', 'info')
-				savef(false,'REJE');
+				if(id==0){
+					savef(false,'REJE');
+				}else{
+					var dat={rowid:id,approver:thisid,flag:'REJE',cols:'<?php echo base64_encode('approver')?>',table:'<?php echo base64_encode($t)?>'};
+					sendData('#myf','mp/sv',dat);
+				}
 			  }
 			});
 		}else{

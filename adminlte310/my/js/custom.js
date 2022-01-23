@@ -181,11 +181,16 @@ function afterOpenForm(frm,modal,overlay='',data=''){
 		if(overlay!='') $(overlay).hide();
 		try{
 			var json = JSON.parse(data);
-			$.each(json['data'][0],function (key,val){
-				$('#'+key).val(val);
-			});
-			if(typeof(formLoaded)=='function'){
-				formLoaded(frm,modal,overlay,json['data'][0]);
+			if(json["code"]=="200"){
+				$.each(json['data'][0],function (key,val){
+					$('#'+key).val(val);
+				});
+				if(typeof(formLoaded)=='function'){
+					formLoaded(frm,modal,overlay,json['data'][0]);
+				}
+			}else{
+				$(modal).modal('hide');
+				alrt("Please try reload the page.",'error');
 			}
 		}catch(e){
 			alrt(data,'error');

@@ -85,8 +85,8 @@ class Mydb extends CI_Model {
 				$br="<br />";
 				$sub= "[ODS Notification] : ".$dt["taskname"];
 				$msg= "Dear ".$rs[0]["uname"]."$br $br";
-				$msg.="A task '".$dt["taskname"]."' has been assigned to your account. $br Kindly need your response as soon as possible. $br $br";
-				$msg.="Regards, $br ODS Admin";
+				$msg.=$dt["msgs"];
+				$msg.=" $br $br Regards, $br ODS Admin";
 				$sent=$this->sendmail($to,$sub,$msg);
 				if($sent){
 					return "Notification sent to $to";

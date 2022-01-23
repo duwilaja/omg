@@ -173,7 +173,7 @@ $this->load->view("_sidebar",$data);
 $this->load->view("_foot",$data);
 $cc="clientid as v,clientname as t";
 $ct="t_clients";
-$cw="1=1";
+$cw="1=1 order by clientname";
 ?>
 <script>
 var  mytbl;
