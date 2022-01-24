@@ -46,9 +46,7 @@ $this->load->view("_sidebar",$data);
 
               <div class="info-box-content">
                 <span class="info-box-text">Pending Tasks</span>
-                <span class="info-box-number">
-                  10
-                </span>
+                <span class="info-box-number" id="pending_approval">0</span>
               </div>
               <!-- /.info-box-content -->
             </div>
@@ -61,7 +59,7 @@ $this->load->view("_sidebar",$data);
 
               <div class="info-box-content">
                 <span class="info-box-text">Ongoing Tasks</span>
-                <span class="info-box-number">41,410</span>
+                <span class="info-box-number" id="rejected">0</span>
               </div>
               <!-- /.info-box-content -->
             </div>
@@ -78,7 +76,7 @@ $this->load->view("_sidebar",$data);
 
               <div class="info-box-content">
                 <span class="info-box-text">Completed Tasks</span>
-                <span class="info-box-number">760</span>
+                <span class="info-box-number" id="approved">0</span>
               </div>
               <!-- /.info-box-content -->
             </div>
@@ -93,15 +91,15 @@ $this->load->view("_sidebar",$data);
             <!-- PIE CHART -->
             <div class="card card-danger">
               <div class="card-header">
-                <h3 class="card-title">By Client</h3>
+                <h3 class="card-title">Mediaplan By Client</h3>
 
                 <div class="card-tools">
                   <button type="button" class="btn btn-tool" data-card-widget="collapse">
                     <i class="fas fa-minus"></i>
                   </button>
-                  <button type="button" class="btn btn-tool" data-card-widget="remove">
+                  <!--button type="button" class="btn btn-tool" data-card-widget="remove">
                     <i class="fas fa-times"></i>
-                  </button>
+                  </button-->
                 </div>
               </div>
               <div class="card-body">
@@ -117,15 +115,15 @@ $this->load->view("_sidebar",$data);
             <!-- LINE CHART -->
             <div class="card card-info">
               <div class="card-header">
-                <h3 class="card-title">Monthly Bill</h3>
+                <h3 class="card-title">Monthly Invoice vs Bill</h3>
 
                 <div class="card-tools">
                   <button type="button" class="btn btn-tool" data-card-widget="collapse">
                     <i class="fas fa-minus"></i>
                   </button>
-                  <button type="button" class="btn btn-tool" data-card-widget="remove">
+                  <!--button type="button" class="btn btn-tool" data-card-widget="remove">
                     <i class="fas fa-times"></i>
-                  </button>
+                  </button-->
                 </div>
               </div>
               <div class="card-body">
@@ -152,12 +150,20 @@ $this->load->view("_sidebar",$data);
 $this->load->view("_foot",$data);
 ?>
 <script>
+var total=<?php echo json_encode($tot)?>;
 $(document).ready(function(){
 	document_ready();
 	line();
 	pie();
+	tot();
 });
-
+function tot(){
+	for(var i=0;i<total.length;i++){
+		var x=total[i]["stts"].replace(" ","_").toLowerCase();
+		//log(x);
+		$("#"+x).html(total[i]["cnt"]);
+	}
+}
 var areaChartData = {
       labels  : ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
       datasets: [
@@ -207,18 +213,18 @@ var areaChartOptions = {
     }
 
 var donutData        = {
-      labels: [
+      labels: <?php echo json_encode($pie1[0])?>,/*[
           'ISAT',
           'TSEL',
           'XL',
           '3',
           'TELK',
           'AXIS',
-      ],
+      ],*/
       datasets: [
         {
-          data: [700,500,400,600,300,100],
-          backgroundColor : ['#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', '#d2d6de'],
+          data: <?php echo json_encode($pie1[1])?>,//[700,500,400,600,300,100],
+          backgroundColor : getColors(<?php echo count($pie1[1])?>),//['#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', '#d2d6de'],
         }
       ]
     }

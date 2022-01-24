@@ -269,3 +269,14 @@ function filterDatatable(table,cols){
 		//log(column.data().unique());
 	});
 }
+
+function randomColor(){
+	return "#"+(Math.random().toString(16)+"000000").slice(2, 8).toUpperCase();
+}
+function getColors(c){
+	var r=[];
+	for(var i=0;i<c;i++){
+		r.push(randomColor());
+	}
+	return r;
+}
