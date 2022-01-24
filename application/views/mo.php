@@ -49,7 +49,7 @@ $this->load->view("_sidebar",$data);
 					<button class="btn btn-primary btn-sm" onclick="openf()"><i class="fas fa-plus"></i></button>
 				</div>
 			</div>
-			<div class="card-body">
+			<div class="card-body table-responsive">
                 <table id="example1" class="table table-sm table-bordered table-striped">
                   <thead>
 					  <tr>
