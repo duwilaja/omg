@@ -49,7 +49,7 @@ $this->load->view("_sidebar",$data);
 					<button class="btn btn-primary btn-sm" onclick="openf()"><i class="fas fa-plus"></i></button>
 				</div>
 			</div>
-			<div class="card-body">
+			<div class="card-body table-responsive">
                 <table id="example1" class="table table-sm table-bordered table-striped">
                   <thead>
 					  <tr>
@@ -180,7 +180,7 @@ $this->load->view("_sidebar",$data);
 			<span aria-hidden="true">×</span>
 		  </button>
 		</div>
-		<div class="modal-body">
+		<div class="modal-body table-responsive">
 			
 			
 			<table id="example2" class="table table-sm table-bordered table-striped" style="width:100%;">
@@ -194,6 +194,7 @@ $this->load->view("_sidebar",$data);
 			  <tbody>
 			  </tbody>
 			</table>
+			
 		</div>
 		<div class="modal-footer">
 			<button class="btn btn-success" onclick="mytbla.ajax.reload();"><i class="fas fa-sync"></i></button>

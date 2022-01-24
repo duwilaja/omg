@@ -275,7 +275,7 @@ $this->load->view("_sidebar",$data);
 			<span aria-hidden="true">×</span>
 		  </button>
 		</div>
-		<div class="modal-body">
+		<div class="modal-body table-responsive">
 			
 			
 			<table id="example2" class="table table-sm table-bordered table-striped" style="width:100%;">
