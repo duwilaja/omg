@@ -120,4 +120,35 @@ class Mydb extends CI_Model {
 		
 		return $this->email->send();
 	}
+	
+	private function one_dimension($arr,$idx){
+		$ret=array();
+		for($i=0;$i<count($arr);$i++){
+			$ret[]=$arr[$i][$idx];
+		}
+		return $ret;
+	}
+	private function getMY($start,$end){
+		$origin = date_create($start);
+		$target = date_create($end);
+		$origin = date_create($origin->format('Y').'-'.$origin->format('m').'-1');
+		$interval = date_diff($origin, $target);
+		$mon=$interval->m + ($interval->y*12);
+		$mon=$interval->d > 0 ?$mon+1:$mon;
+		$mon=$origin->format("m") != $target->format("m") ?$mon+1:$mon;
+		$labels=array(); $bln=$origin->format('Y-m-d');
+		for($i=0;$i<$mon;$i++){
+			if($bln<=$end) $labels[]=date('M Y',strtotime("$bln"));
+			$bln=date('Y-m-d',strtotime("$bln 1 month"));
+		}
+		return $labels;
+	}
+	public function gettot(){
+		$rs=$this->db->query("select stts,count(*) as cnt from t_mediaplans group by stts")->result_array();
+		return $rs;
+	}
+	public function getpie1(){
+		$rs=$this->db->query("select client,count(*) as cnt from t_mediaplans group by client")->result_array();
+		return array($this->one_dimension($rs,"client"),$this->one_dimension($rs,"cnt"));
+	}
 }

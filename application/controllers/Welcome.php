@@ -30,6 +30,9 @@ class Welcome extends CI_Controller {
 		$usr=$this->session->userdata('user_data');
 		if(isset($usr)){
 			$data["session"]=$usr;
+			$this->load->model("mydb");
+			$data["tot"]=$this->mydb->gettot();
+			$data["pie1"]=$this->mydb->getpie1();
 			$this->load->view('home',$data);
 		}else{
 			redirect(base_url()."sign/out/1");
