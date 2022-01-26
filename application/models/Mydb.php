@@ -128,7 +128,9 @@ class Mydb extends CI_Model {
 		}
 		return $ret;
 	}
-	private function getMY($start,$end){
+	private function getMY($s="",$e=""){
+		$start=$s==""?date('Y-m-d',strtotime('-1 year')):$s;
+		$end=$e==""?date('Y-m-d'):$e;
 		$origin = date_create($start);
 		$target = date_create($end);
 		$origin = date_create($origin->format('Y').'-'.$origin->format('m').'-1');
@@ -143,6 +145,39 @@ class Mydb extends CI_Model {
 		}
 		return $labels;
 	}
+	private function formatMY($dt){
+		return date('M Y',strtotime("$dt"));
+	}
+	private function toMY($rows){
+		$rets=array(); $my=""; $cnt=0;
+		for($i=0;$i<count($rows);$i++){
+			$row=$rows[$i];
+			$myx=$this->formatMY($row["my"]);
+			if($my!=$myx){ 
+				if($my!=""){ array_push($rets,array($my=>$cnt)); }
+				$my=$myx; $cnt=0; 
+			}
+			$cnt+=$row["cnt"];
+		}
+		if($my!=""){ array_push($rets,array($my=>$cnt)); }
+		return array_slice(array_reverse($rets),0,12);
+	}
+	private function getData($ll,$dt){
+		$r=0;
+		for($x=0;$x<count($dt);$x++){
+			foreach($dt[$x] as $key => $val){
+				if($key==$ll) {$r=$val;}
+			}
+		}
+		return $r;
+	}
+	private function parse($l,$d){
+		$data=array();
+		for($i=0;$i<count($l);$i++){
+			$data[]=$this->getData($l[$i],$d);
+		}
+		return $data;
+	}
 	public function gettot(){
 		$rs=$this->db->query("select stts,count(*) as cnt from t_mediaplans group by stts")->result_array();
 		return $rs;
@@ -150,5 +185,11 @@ class Mydb extends CI_Model {
 	public function getpie1(){
 		$rs=$this->db->query("select client,count(*) as cnt from t_mediaplans group by client")->result_array();
 		return array($this->one_dimension($rs,"client"),$this->one_dimension($rs,"cnt"));
+	}
+	public function getline1(){
+		$inv=$this->toMY($this->db->query("select invdt as my,count(*) as cnt from t_invoices group by invdt order by invdt desc")->result_array());
+		$bil=$this->toMY($this->db->query("select billdt as my,count(*) as cnt from t_billings group by billdt order by billdt desc")->result_array());
+		$lbl=$this->getMY();
+		return array($lbl,$this->parse($lbl,$inv),$this->parse($lbl,$bil));
 	}
 }
