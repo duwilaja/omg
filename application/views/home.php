@@ -42,7 +42,7 @@ $this->load->view("_sidebar",$data);
         <div class="row">
           <div class="col-12 col-sm-6 col-md-4">
             <div class="info-box">
-              <span class="info-box-icon bg-info elevation-1"><i class="fas fa-tasks"></i></span>
+              <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-tasks"></i></span>
 
               <div class="info-box-content">
                 <span class="info-box-text">Pending Tasks</span>
@@ -55,7 +55,7 @@ $this->load->view("_sidebar",$data);
           <!-- /.col -->
           <div class="col-12 col-sm-6 col-md-4">
             <div class="info-box mb-3">
-              <span class="info-box-icon bg-success elevation-1"><i class="fas fa-people-carry"></i></span>
+              <span class="info-box-icon bg-info elevation-1"><i class="fas fa-people-carry"></i></span>
 
               <div class="info-box-content">
                 <span class="info-box-text">Ongoing Tasks</span>
@@ -89,7 +89,7 @@ $this->load->view("_sidebar",$data);
         <div class="row">
           <div class="col-md-6">
             <!-- PIE CHART -->
-            <div class="card card-danger">
+            <div class="card card-success">
               <div class="card-header">
                 <h3 class="card-title">Mediaplan By Client</h3>
 
@@ -151,6 +151,7 @@ $this->load->view("_foot",$data);
 ?>
 <script>
 var total=<?php echo json_encode($tot)?>;
+//var line1="";
 $(document).ready(function(){
 	document_ready();
 	line();
@@ -165,10 +166,10 @@ function tot(){
 	}
 }
 var areaChartData = {
-      labels  : ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+      labels  : <?php echo json_encode($line1[0])?>,//['January', 'February', 'March', 'April', 'May', 'June', 'July'],
       datasets: [
         {
-          label               : 'Digital Goods',
+          label               : 'Invoice',
           backgroundColor     : 'rgba(60,141,188,0.9)',
           borderColor         : 'rgba(60,141,188,0.8)',
           pointRadius          : false,
@@ -176,10 +177,11 @@ var areaChartData = {
           pointStrokeColor    : 'rgba(60,141,188,1)',
           pointHighlightFill  : '#fff',
           pointHighlightStroke: 'rgba(60,141,188,1)',
-          data                : [28, 48, 40, 19, 86, 27, 90]
+		  lineTension		  : 0,
+          data                : <?php echo json_encode($line1[1])?>//[28, 48, 40, 19, 86, 27, 90]
         },
         {
-          label               : 'Electronics',
+          label               : 'Billing',
           backgroundColor     : 'rgba(210, 214, 222, 1)',
           borderColor         : 'rgba(210, 214, 222, 1)',
           pointRadius         : false,
@@ -187,7 +189,8 @@ var areaChartData = {
           pointStrokeColor    : '#c1c7d1',
           pointHighlightFill  : '#fff',
           pointHighlightStroke: 'rgba(220,220,220,1)',
-          data                : [65, 59, 80, 81, 56, 55, 40]
+		  lineTension		  : 0,
+          data                : <?php echo json_encode($line1[2])?>//[65, 59, 80, 81, 56, 55, 40]
         },
       ]
     }

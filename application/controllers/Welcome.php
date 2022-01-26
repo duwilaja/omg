@@ -33,6 +33,7 @@ class Welcome extends CI_Controller {
 			$this->load->model("mydb");
 			$data["tot"]=$this->mydb->gettot();
 			$data["pie1"]=$this->mydb->getpie1();
+			$data["line1"]=$this->mydb->getline1();
 			$this->load->view('home',$data);
 		}else{
 			redirect(base_url()."sign/out/1");
