@@ -89,9 +89,9 @@ $this->load->view("_sidebar",$data);
         <div class="row">
           <div class="col-md-6">
             <!-- PIE CHART -->
-            <div class="card card-warning">
+            <div class="card card-success">
               <div class="card-header">
-                <h3 class="card-title">Pending Tasks</h3>
+                <h3 class="card-title">Mediaplan By Client</h3>
 
                 <div class="card-tools">
                   <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -100,35 +100,10 @@ $this->load->view("_sidebar",$data);
                   <!--button type="button" class="btn btn-tool" data-card-widget="remove">
                     <i class="fas fa-times"></i>
                   </button-->
-				  <a class="btn btn-tool" title="More..." href="<?php echo base_url()?>mp">
-                    <i class="fas fa-ellipsis-h"></i>
-                  </a>
                 </div>
               </div>
               <div class="card-body">
-                <table class="table table-sm table-bordered table-striped">
-				  <thead>
-				  <tr>
-					<th>MP#</th>
-					<th>Client</th>
-					<th>Product</th>
-					<th>Approver</th>
-				  </tr>
-				  </thead>
-				  <tbody>
-				  <?php for($i=0;$i<count($pending);$i++){?>
-				  <tr>
-					<td><?php echo $pending[$i]["mpnumber"]?></td>
-					<td><?php echo $pending[$i]["client"]?></td>
-					<td><?php echo $pending[$i]["product"]?></td>
-					<td><?php echo $pending[$i]["approver"]?></td>
-				  </tr>
-				  <?php }
-				  if($i==0){
-					  echo '<tr><td colspan="4" align="center">No data found</td></tr>';
-				  }?>
-				  </tbody>
-				</table>
+                <canvas id="pieChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
               </div>
               <!-- /.card-body -->
             </div>
@@ -140,7 +115,7 @@ $this->load->view("_sidebar",$data);
             <!-- LINE CHART -->
             <div class="card card-info">
               <div class="card-header">
-                <h3 class="card-title">Ongoing Tasks</h3>
+                <h3 class="card-title">Monthly Invoice vs Bill</h3>
 
                 <div class="card-tools">
                   <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -149,36 +124,12 @@ $this->load->view("_sidebar",$data);
                   <!--button type="button" class="btn btn-tool" data-card-widget="remove">
                     <i class="fas fa-times"></i>
                   </button-->
-				  <a class="btn btn-tool" title="More..." href="<?php echo base_url()?>mp">
-                    <i class="fas fa-ellipsis-h"></i>
-                  </a>
                 </div>
               </div>
               <div class="card-body">
-                <table class="table table-sm table-bordered table-striped">
-				  <thead>
-				  <tr>
-					<th>MP#</th>
-					<th>Client</th>
-					<th>Product</th>
-					<th>Approver</th>
-				  </tr>
-				  </thead>
-				  <tbody>
-				  <?php for($i=0;$i<count($ongoing);$i++){?>
-				  <tr>
-					<td><?php echo $ongoing[$i]["mpnumber"]?></td>
-					<td><?php echo $ongoing[$i]["client"]?></td>
-					<td><?php echo $ongoing[$i]["product"]?></td>
-					<td><?php echo $ongoing[$i]["approver"]?></td>
-				  </tr>
-				  <?php }
-				  if($i==0){
-					  echo '<tr><td colspan="4" align="center">No data found</td></tr>';
-				  }
-				  ?>
-				  </tbody>
-				</table>
+                <div class="chart">
+                  <canvas id="lineChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                </div>
               </div>
               <!-- /.card-body -->
             </div>
@@ -203,8 +154,8 @@ var total=<?php echo json_encode($tot)?>;
 //var line1="";
 $(document).ready(function(){
 	document_ready();
-//	line();
-//	pie();
+	line();
+	pie();
 	tot();
 });
 function tot(){
@@ -213,6 +164,109 @@ function tot(){
 		//log(x);
 		$("#"+x).html(total[i]["cnt"]);
 	}
+}
+var areaChartData = {
+      labels  : <?php echo json_encode($line1[0])?>,//['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+      datasets: [
+        {
+          label               : 'Invoice',
+          backgroundColor     : 'rgba(60,141,188,0.9)',
+          borderColor         : 'rgba(60,141,188,0.8)',
+          pointRadius          : false,
+          pointColor          : '#3b8bba',
+          pointStrokeColor    : 'rgba(60,141,188,1)',
+          pointHighlightFill  : '#fff',
+          pointHighlightStroke: 'rgba(60,141,188,1)',
+		  lineTension		  : 0,
+          data                : <?php echo json_encode($line1[1])?>//[28, 48, 40, 19, 86, 27, 90]
+        },
+        {
+          label               : 'Billing',
+          backgroundColor     : 'rgba(210, 214, 222, 1)',
+          borderColor         : 'rgba(210, 214, 222, 1)',
+          pointRadius         : false,
+          pointColor          : 'rgba(210, 214, 222, 1)',
+          pointStrokeColor    : '#c1c7d1',
+          pointHighlightFill  : '#fff',
+          pointHighlightStroke: 'rgba(220,220,220,1)',
+		  lineTension		  : 0,
+          data                : <?php echo json_encode($line1[2])?>//[65, 59, 80, 81, 56, 55, 40]
+        },
+      ]
+    }
+
+var areaChartOptions = {
+      maintainAspectRatio : false,
+      responsive : true,
+      legend: {
+        display: false
+      },
+      scales: {
+        xAxes: [{
+          gridLines : {
+            display : false,
+          }
+        }],
+        yAxes: [{
+          gridLines : {
+            display : false,
+          }
+        }]
+      }
+    }
+
+var donutData        = {
+      labels: <?php echo json_encode($pie1[0])?>,/*[
+          'ISAT',
+          'TSEL',
+          'XL',
+          '3',
+          'TELK',
+          'AXIS',
+      ],*/
+      datasets: [
+        {
+          data: <?php echo json_encode($pie1[1])?>,//[700,500,400,600,300,100],
+          backgroundColor : getColors(<?php echo count($pie1[1])?>),//['#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', '#d2d6de'],
+        }
+      ]
+    }
+	
+function line(){
+	//-------------
+    //- LINE CHART -
+    //--------------
+    var lineChartCanvas = $('#lineChart').get(0).getContext('2d')
+    var lineChartOptions = $.extend(true, {}, areaChartOptions)
+    var lineChartData = $.extend(true, {}, areaChartData)
+    lineChartData.datasets[0].fill = false;
+    lineChartData.datasets[1].fill = false;
+    lineChartOptions.datasetFill = false
+
+    var lineChart = new Chart(lineChartCanvas, {
+      type: 'line',
+      data: lineChartData,
+      options: lineChartOptions
+    })
+}
+function pie(){
+	//-------------
+    //- PIE CHART -
+    //-------------
+    // Get context with jQuery - using jQuery's .get() method.
+    var pieChartCanvas = $('#pieChart').get(0).getContext('2d')
+    var pieData        = donutData;
+    var pieOptions     = {
+      maintainAspectRatio : false,
+      responsive : true,
+    }
+    //Create pie or douhnut chart
+    // You can switch between pie and douhnut using the method below.
+    new Chart(pieChartCanvas, {
+      type: 'pie',
+      data: pieData,
+      options: pieOptions
+    })
 }
 </script>
 </body>

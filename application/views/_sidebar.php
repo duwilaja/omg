@@ -10,7 +10,7 @@ $bux=base_url();
       <span class="brand-text font-weight-light">MP Workflow</span>
     </a-->
 	<a href="" class="brand-link navbar-light">
-		<img src="<?php echo $bu;?>/my/img/logo.png" alt="Omnicon Media Global" class="brand-image" />
+		<img src="<?php echo $bu;?>/my/img/logos.png" alt="Media Data System" class="brand-image" />
 	</a>
 
     <!-- Sidebar -->

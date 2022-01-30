@@ -9,9 +9,9 @@ $data["pmenu"]="docs";
 $data["session"]=$session;
 $data["bu"]=$bu;
 
-$sql="select billno,billdt,client,mp,curr,amt,rowid from t_billings";
-$cq="billno,billdt as bdt,client,mp,curr,amt";
-$c="billno,billdt,client,mp,curr,amt";
+$sql="select billno,billdt,client,mp,curr,amt,attc,rowid from t_billings";
+$cq="billno,billdt as bdt,client,mp,curr,amt,attc";
+$c="billno,billdt,client,mp,curr,amt,attc";
 $t="t_billings";
 
 $this->load->view("_head",$data);
@@ -62,7 +62,7 @@ $this->load->view("_sidebar",$data);
 						<th style="padding-right: 4px;"></th>
 					  </tr>
 					  <tr>
-						<th>Billing#</th>
+						<th>Client Invoice#</th>
 						<th>Date</th>
 						<th>Client</th>
 						<th>MP#</th>
@@ -89,7 +89,7 @@ $this->load->view("_sidebar",$data);
 			<i class="fas fa-2x fa-sync fa-spin"></i>
 		</div>
 		<div class="modal-header">
-		  <h4 class="modal-title"><?php echo $data['title']?> Form</h4>
+		  <h4 class="modal-title"><?php echo $data['title']?> Details</h4>
 		  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 			<span aria-hidden="true">×</span>
 		  </button>
@@ -108,7 +108,7 @@ $this->load->view("_sidebar",$data);
 		  
 			<div class="card-body">
 			  <div class="form-group row">
-				<label for="" class="col-sm-4 col-form-label">Billing#</label>
+				<label for="" class="col-sm-4 col-form-label">Client Invoice#</label>
 				<div class="col-sm-8 input-group">
 				  <input type="text" name="billno" class="form-control form-control-sm" id="billno" placeholder="...">
 				</div>
@@ -153,6 +153,12 @@ $this->load->view("_sidebar",$data);
 				  <input type="text" name="amt" class="form-control form-control-sm" id="amt" placeholder="...">
 				</div>
 			  </div>
+			  <div class="form-group row">
+				<label for="" class="col-sm-4 col-form-label">Attachment</label>
+				<div class="col-sm-8 input-group">
+				  <input type="file" name="uploadedfile" class="form-control form-control-sm" id="uploadedfile" placeholder="...">
+				</div>
+			  </div>
 			</div>
 			<!-- /.card-body -->
 		  </form>
@@ -186,7 +192,7 @@ $this->load->view("_sidebar",$data);
 			<table id="example2" class="table table-sm table-bordered table-striped" style="width:100%;">
 			  <thead>
 				  <tr>
-					<th>Billing#</th>
+					<th>Client Invoice#</th>
 					<th>Doc.</th>
 					<th>File</th>
 				  </tr>
@@ -233,7 +239,7 @@ $this->load->view("_sidebar",$data);
 		  
 			<div class="card-body">
 			  <div class="form-group row">
-				<label for="" class="col-sm-4 col-form-label">Billing#</label>
+				<label for="" class="col-sm-4 col-form-label">Client Invoice#</label>
 				<div class="col-sm-8 input-group">
 				  <input type="text" name="billing" readonly class="form-control form-control-sm" id="billing" placeholder="...">
 				</div>
@@ -298,7 +304,7 @@ $(document).ready(function(){
             filterDatatable(mytbl,[2,4]);
 		}
 	});
-	mytbla = $("#example2").DataTable({
+	/*mytbla = $("#example2").DataTable({
 		serverSide: false,
 		processing: true,
 		ajax: {
@@ -310,7 +316,7 @@ $(document).ready(function(){
 			}
 		}
 	});
-	
+	*/
 	$("#myf").validate({
 		rules: {
 		  client: {
@@ -364,7 +370,7 @@ $(document).ready(function(){
 
 function reloadTable(frm=''){
 	if(frm=='#myf'||frm=='') mytbl.ajax.reload(function(){filterDatatable(mytbl,[2,4])},false);
-	if(frm=='#myfa') mytbla.ajax.reload();
+//	if(frm=='#myfa') mytbla.ajax.reload();
 }
 
 function openf(id=0){

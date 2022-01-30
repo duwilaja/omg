@@ -10,13 +10,13 @@ $data["session"]=$session;
 $data["bu"]=$bu;
 
 $t="t_mediaplans";
-$sql="select mpnumber,client,product,campaign,placement,po,FORMAT(startdt,'YYYY-MM-DD') as stdt,FORMAT(enddt,'YYYY-MM-DD') as endt,FORMAT(submitdt,'YYYY-MM-DD') as submdt,curr,stts,rowid from $t";
-$cq="mpnumber,client,product,campaign,placement,po,FORMAT(startdt,'YYYY-MM-DD') as stdt,FORMAT(enddt,'YYYY-MM-DD') as endt,FORMAT(submitdt,'YYYY-MM-DD') as submdt,curr";
+$sql="select mpnumber,client,product,campaign,placement,FORMAT(startdt,'YYYY-MM-DD') as stdt,FORMAT(enddt,'YYYY-MM-DD') as endt,FORMAT(submitdt,'YYYY-MM-DD') as submdt,curr,stts,rowid from $t";
+$cq="mpnumber,client,product,campaign,placement,FORMAT(startdt,'YYYY-MM-DD') as stdt,FORMAT(enddt,'YYYY-MM-DD') as endt,FORMAT(submitdt,'YYYY-MM-DD') as submdt,curr";
 
-$sql="select mpnumber,client,product,campaign,placement,po,startdt,enddt,submitdt,curr,stts,approver,approved,rowid from $t";
-$cq="mpnumber,client,product,campaign,placement,po,(startdt) as stdt,(enddt) as endt,(submitdt) as submdt,curr,stts,approver,approved";
+$sql="select mpnumber,client,product,campaign,placement,startdt,enddt,submitdt,curr,amt,stts,approver,approved,rowid from $t";
+$cq="mpnumber,client,product,campaign,placement,(startdt) as stdt,(enddt) as endt,(submitdt) as submdt,curr,stts,approver,approved,amt";
 
-$c="mpnumber,client,product,campaign,placement,po,startdt,enddt,submitdt,curr";
+$c="mpnumber,client,product,campaign,placement,startdt,enddt,submitdt,curr,amt";
 
 $this->load->view("_head",$data);
 $this->load->view("_navbar",$data);
@@ -78,11 +78,11 @@ $this->load->view("_sidebar",$data);
 						<th>Product</th>
 						<th>Campaign</th>
 						<th>Placement</th>
-						<th>PO#</th>
 						<th>Start</th>
 						<th>End</th>
 						<th>Submission</th>
 						<th>Currency</th>
+						<th>Budget</th>
 						<th>Status</th>
 						<th>Approver</th>
 						<th>Attachments</th>
@@ -154,16 +154,16 @@ $this->load->view("_sidebar",$data);
 				  </div>
 				</div>
 				<div class="row">
-				  <div class="form-group col-md-6">
+				  <!--div class="form-group col-md-6">
 					<label for="" class="col-form-label">PO#</label>
 					<div class="input-group">
 					  <input type="text" name="po" class="form-control form-control-sm" id="po" placeholder="...">
 					  <!--div class="input-group-append">
 						<button class="input-group-text"><i class="fas fa-table"></i></button>
-					  </div-->
+					  </div--
 					</div>
-				  </div>
-				  <div class="form-group col-md-6">
+				  </div-->
+				  <div class="form-group col-md-12">
 					<label for="" class="col-form-label">Period</label>
 					<div class="row">
 					<div id="periodstart" class="col-md-6 input-group date" data-target-input="nearest">
@@ -186,7 +186,7 @@ $this->load->view("_sidebar",$data);
 				  </div>
 				</div>
 				<div class="row">
-				  <div class="form-group col-md-4">
+				  <div class="form-group col-md-6">
 					<label for="" class="col-form-label">Submission Date</label>
 					<div id="subdt" class="input-group date" data-target-input="nearest">
 					  
@@ -197,18 +197,7 @@ $this->load->view("_sidebar",$data);
                     
 					</div>
 				  </div>
-				  <div class="form-group col-md-4">
-					<label for="" class="col-form-label">Currency</label>
-					<div class="input-group">
-					  <select name="curr" class="form-control form-control-sm" id="curr" placeholder="...">
-						<option value=""></option>
-						<option value="IDR">IDR</option>
-						<option value="USD">USD</option>
-						<option value="SGD">SGD</option>
-					  </select>
-					</div>
-				  </div>
-				  <div class="form-group col-md-4">
+				  <div class="form-group col-md-6">
 					<label for="" class="col-form-label">Placement</label>
 					<div class="input-group">
 					  <!--input type="text" name="stts" class="form-control form-control-sm" id="stts" placeholder="..."-->
@@ -223,6 +212,25 @@ $this->load->view("_sidebar",$data);
 						<option value="OOH">OOH</option>
 						<option value="OTHERS">OTHERS</option>
 					  </select>
+					</div>
+				  </div>
+				</div>
+				<div class="row">
+				  <div class="form-group col-md-6">
+					<label for="" class="col-form-label">Currency</label>
+					<div class="input-group">
+					  <select name="curr" class="form-control form-control-sm" id="curr" placeholder="...">
+						<option value=""></option>
+						<option value="IDR">IDR</option>
+						<option value="USD">USD</option>
+						<option value="SGD">SGD</option>
+					  </select>
+					</div>
+				  </div>
+				  <div class="form-group col-md-6">
+					<label for="" class="col-form-label">Budget</label>
+					<div class="input-group">
+					  <input type="text" name="amt" class="form-control form-control-sm" id="amt" placeholder="...">
 					</div>
 				  </div>
 				</div>
@@ -392,7 +400,7 @@ $(document).ready(function(){
 			}
 		},
 		initComplete: function(){
-			filterDatatable(mytbl,[1,2,4,9,10,11]);
+			filterDatatable(mytbl,[1,2,4,8,10,11]);
 		}
 	});
 	mytbla = $("#example2").DataTable({
@@ -443,6 +451,9 @@ $(document).ready(function(){
 		  approver: {
 			required: true
 		  },
+		  amt:{
+			required: true
+		  },
 		  umail: {
 			  required: true,
 			  email: true
@@ -470,13 +481,13 @@ $(document).ready(function(){
 });
 
 function reloadTable(frm=''){
-	if(frm=='#myf'||frm=='') mytbl.ajax.reload(function(){filterDatatable(mytbl,[1,2,4,9,10,11])},false);
+	if(frm=='#myf'||frm=='') mytbl.ajax.reload(function(){filterDatatable(mytbl,[1,2,4,8,10,11])},false);
 	if(frm=='#myfa') mytbla.ajax.reload();
 }
 function openf(id=0){
 	$("#rowid").val(id);
 	$("#approver").attr("disabled",true);
-	$(".appruper").hide();
+	//$(".appruper").hide();
 	$("#btnapp").hide();
 	openForm('#myf','#modal-frm','mp/get','#ovl',id,'<?php echo base64_encode($t)?>','<?php echo base64_encode($cq)?>')
 }
@@ -502,10 +513,15 @@ function formLoaded(frm,modal,overlay,data=""){
 		clientChange($('#client').val(),dv,dv2);
 		switch($("#stts").val()){
 			case "": $("#approver").attr("disabled",false); break;
-			case "Approved": $(".appruper").show(); break;
-			//case "New": $(".appruper").show(); $("#approver").attr("disabled",false); $("#btnapp").show(); $("#btnapp").text("Send for approval"); break;
-			case "Rejected": $(".appruper").show(); $("#approver").attr("disabled",false); $("#btnapp").show(); $("#btnapp").text("Send for approval"); break;
-			case "Pending Approval": $(".appruper").show(); if(thisid==$("#approver").val()){$("#btnapp").show();} $("#btnapp").text("Approve/Reject"); break;
+			case "Approved": if($("#approver").val()!=thisid){$("#btndel").hide();} break;
+			case "Rejected": $("#approver").attr("disabled",false); $("#btnapp").show(); $("#btnapp").text("Send for approval"); break;
+			case "Pending Approval": $("#btnapp").show(); 
+					if(thisid==$("#approver").val()){
+						$("#btnapp").text("Approve/Reject");
+					}else{
+						$("#btnapp").text("Resend Notification");
+					}
+					break;
 		}
 	}
 }

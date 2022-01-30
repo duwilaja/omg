@@ -9,9 +9,9 @@ $data["pmenu"]="docs";
 $data["session"]=$session;
 $data["bu"]=$bu;
 
-$sql="select ponumber,client,podt as pdt,curr,amt,attc,rowid from t_po";
-$cq="ponumber,client,podt as pdt,curr,amt,attc";
-$c="ponumber,client,podt,curr,amt,attc";
+$sql="select ponumber,client,mp,podt as pdt,curr,amt,attc,rowid from t_po";
+$cq="ponumber,client,mp,podt as pdt,curr,amt,attc";
+$c="ponumber,client,mp,podt,curr,amt,attc";
 $t="t_po";
 
 $this->load->view("_head",$data);
@@ -63,6 +63,7 @@ $this->load->view("_sidebar",$data);
 					  <tr>
 						<th>PO#</th>
 						<th>Client</th>
+						<th>MP#</th>
 						<th>Date</th>
 						<th>Currency</th>
 						<th>Amount</th>
@@ -114,7 +115,14 @@ $this->load->view("_sidebar",$data);
 			  <div class="form-group row">
 				<label for="" class="col-sm-4 col-form-label">Client</label>
 				<div class="col-sm-8 input-group">
-				  <select name="client" class="form-control form-control-sm" id="client" placeholder="..." onchange="">
+				  <select name="client" class="form-control form-control-sm" id="client" placeholder="..." onchange="clientChange(this.value);">
+				  </select>
+				</div>
+			  </div>
+			  <div class="form-group row">
+				<label for="" class="col-sm-4 col-form-label">Media Plan</label>
+				<div class="col-sm-8 input-group">
+				  <select name="mp" class="form-control form-control-sm" id="mp" placeholder="...">
 				  </select>
 				</div>
 			  </div>
@@ -190,7 +198,7 @@ $(document).ready(function(){
 			}
 		},
 		initComplete: function(){
-			filterDatatable(mytbl,[1,3]);
+			filterDatatable(mytbl,[1,4]);
 		}
 	});
 	
@@ -207,6 +215,9 @@ $(document).ready(function(){
 				}
 		  },
 		  ponumber: {
+			required: true
+		  },
+		  mp: {
 			required: true
 		  },
 		  curr: {
@@ -229,7 +240,7 @@ $(document).ready(function(){
 });
 
 function reloadTable(frm=''){
-	mytbl.ajax.reload(function(){filterDatatable(mytbl,[1,3])},false);
+	mytbl.ajax.reload(function(){filterDatatable(mytbl,[1,4])},false);
 }
 
 function openf(id=0){
@@ -240,6 +251,21 @@ function savef(del=false){
 	$("#flag").val('SAVE');
 	if(del) $("#flag").val('DEL');
 	saveForm('#myf','po/sv','#ovl',del,'#modal-frm');
+}
+
+function clientChange(tv,dv=''){
+	var ccw=btoa("client='"+tv+"' order by mpnumber");
+	getCombo("mo/gets",'<?php echo base64_encode("t_mediaplans")?>','<?php echo base64_encode("mpnumber as v,mpnumber as t")?>',ccw,'#mp',dv);
+}
+function formLoaded(frm,modal,overlay,data=""){
+	if(frm=='#myf'){
+		var dv='';
+		if(data!="") {
+			dv=data['mp'];
+		}
+		//log('dv='+dv);
+		clientChange($('#client').val(),dv);
+	}
 }
 </script>
 </body>
