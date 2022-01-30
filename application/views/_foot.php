@@ -59,7 +59,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
   <footer class="main-footer">
     <!-- To the right -->
     <div class="float-right d-none d-sm-inline">
-      OMNICOM DATA SYSTEM ( ODS )
+      Media Data System ( MdS )
     </div>
     <!-- Default to the left -->
     <strong>Copyright &copy; 2021-2022.</strong> All rights reserved.

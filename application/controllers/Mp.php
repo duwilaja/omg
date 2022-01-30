@@ -110,7 +110,8 @@ class Mp extends CI_Controller {
 				$camp=str_ireplace(" ","_",strtoupper($data['campaign']));
 				$nr=$this->getNR();
 				$data['nr']=$nr;
-				$data['mpnumber']=$nr.'/'.substr($subm,5,3).substr($subm,2,2).'/AON'.$camp.'/'.$data['placement'];
+				$data['mpnumber']=$nr.'/'.substr($subm,5,3).substr($subm,2,2).'/'.$camp.'/'.$data['placement'];
+				$data['creator']=$usr["uid"];
 				$sql=$this->mydb->insert_string($t, $data);
 			}else{
 				$sql=$this->mydb->update_string($t, $data, $where);

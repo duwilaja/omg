@@ -24,10 +24,32 @@ class Bp extends CI_Controller {
 			$sql=base64_decode($this->input->post("s"));
 			$res=$this->db->query($sql)->result_array();
 			for($i=0;$i<count($res);$i++){
-				$res[$i]["attc"]=$res[$i]["attc"]==""?"":'<a href="javascript:;" data-fancybox data-type="iframe" data-src="'.$this->path.$res[$i]["attc"].'">'.$res[$i]["attc"].'</a>';
+				//$res[$i]["attc"]=$res[$i]["attc"]==""?"":'<a href="javascript:;" data-fancybox data-type="iframe" data-src="'.$this->path.$res[$i]["attc"].'">'.$res[$i]["attc"].'</a>';
 				$dum=array_values($res[$i]);
 				$rowid=$res[$i]['rowid'];
+				$bill=base64_encode($res[$i]['billno']);
+				$dum[count($dum)-1]='<button type="button" class="btn btn-info" onclick="attach(\''.$bill.'\');"><i class="fas fa-paperclip"></i></button>';
 				$dum[0]='<a href="#" onclick="openf('.$rowid.')">'.$dum[0].' </a>';
+				$data[]=$dum;
+			}
+		}
+		$out=array('data'=>$data);
+		echo json_encode($out);
+	}
+	public function attachments()
+	{
+		$usr=$this->session->userdata('user_data');
+		$data=array();
+		if(isset($usr)){
+			$sql=base64_decode($this->input->post("s"));
+			$w=base64_decode($this->input->post("w"));
+			$sql.=" where billing='$w'";
+			$res=$this->db->query($sql)->result_array();
+			for($i=0;$i<count($res);$i++){
+				$dum=array_values($res[$i]);
+				$rowid=$res[$i]['rowid'];
+				$dum[0]='<a href="#" onclick="openfa('.$rowid.')">'.$dum[0].' </a>';
+				$dum[2]='<a href="javascript:;" data-fancybox data-type="iframe" data-src="'.$this->path.$dum[2].'">'.$dum[2].' </a>';
 				$data[]=$dum;
 			}
 		}
@@ -88,6 +110,43 @@ class Bp extends CI_Controller {
 	}
 	
 	public function sv()
+	{
+		$usr=$this->session->userdata('user_data');
+		$data=array();$msgs='Failed'; $typ="error";
+		if(isset($usr)){
+			$this->load->model("mydb");
+			$c=base64_decode($this->input->post("cols"));
+			$t=base64_decode($this->input->post("table"));
+			$rowid=$this->input->post("rowid");
+			$flag=$this->input->post("flag");
+			$where="rowid=$rowid";
+			
+			$data=$this->input->post(explode(",",$c));
+			$data["updby"]=$usr["uid"];
+			$data["lastupd"]=date('Y-m-d H:i:s');
+			
+			if($rowid==0){
+				$sql=$this->mydb->insert_string($t, $data);
+			}else{
+				$sql=$this->mydb->update_string($t, $data, $where);
+				if($flag=='DEL') $sql="delete from $t where $where";
+			}
+			
+			$this->db->query($sql);
+			if($this->db->affected_rows()>0) {
+				$msgs='Success'; $typ="success";
+			}else{
+				$msgs=$this->mydb->error($this->db->error());
+			}
+			
+		}else{
+			$msgs="Session closed, please login";
+		}
+		$ret=array('msgs'=>$msgs,'type'=>$typ);
+		echo json_encode($ret);
+	}
+	
+	public function sva()
 	{
 		$usr=$this->session->userdata('user_data');
 		$data=array();$msgs='Failed'; $typ="error";

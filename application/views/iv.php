@@ -9,9 +9,9 @@ $data["pmenu"]="docs";
 $data["session"]=$session;
 $data["bu"]=$bu;
 
-$sql="select invno,client,mp,invdt as idt,supplier,curr,amt,attc,rowid from t_invoices";
-$cq="invno,client,mp,invdt as idt,supplier,curr,amt,attc";
-$c="invno,client,mp,invdt,supplier,curr,amt,attc";
+$sql="select invno,client,mp,mo,invdt as idt,supplier,curr,amt,attc,rowid from t_invoices";
+$cq="invno,client,mp,mo,invdt as idt,supplier,curr,amt,attc";
+$c="invno,client,mp,mo,invdt,supplier,curr,amt,attc";
 $t="t_invoices";
 
 $this->load->view("_head",$data);
@@ -60,11 +60,13 @@ $this->load->view("_sidebar",$data);
 						<th style="padding-right: 4px;"></th>
 						<th style="padding-right: 4px;"></th>
 						<th style="padding-right: 4px;"></th>
+						<th style="padding-right: 4px;"></th>
 					  </tr>
 					  <tr>
 						<th>Invoice#</th>
 						<th>Client</th>
 						<th>MP#</th>
+						<th>MO#</th>
 						<th>Date</th>
 						<th>Supplier</th>
 						<th>Currency</th>
@@ -90,7 +92,7 @@ $this->load->view("_sidebar",$data);
 			<i class="fas fa-2x fa-sync fa-spin"></i>
 		</div>
 		<div class="modal-header">
-		  <h4 class="modal-title"><?php echo $data['title']?> Form</h4>
+		  <h4 class="modal-title"><?php echo $data['title']?> Details</h4>
 		  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 			<span aria-hidden="true">×</span>
 		  </button>
@@ -135,6 +137,12 @@ $this->load->view("_sidebar",$data);
 				<div class="col-sm-8 input-group">
 				  <select name="mp" class="form-control form-control-sm" id="mp" placeholder="...">
 				  </select>
+				</div>
+			  </div>
+			  <div class="form-group row">
+				<label for="" class="col-sm-4 col-form-label">MO#</label>
+				<div class="col-sm-8 input-group">
+				  <input type="text" name="mo" class="form-control form-control-sm" id="mo" placeholder="...">
 				</div>
 			  </div>
 			  <div class="form-group row">
@@ -232,6 +240,9 @@ $(document).ready(function(){
 			required: true
 		  },
 		  mp: {
+			required: true
+		  },
+		  mo:{
 			required: true
 		  },
 		  curr: {
