@@ -9,6 +9,7 @@ class Md extends CI_Controller {
 		if(isset($usr)){
 			$view=$this->input->get("p");
 			$data["session"]=$usr;
+			if($view=='users' && $usr["uaccess"]!='ADM') $view='unauthorize';
 			$this->load->view($view,$data);
 		}else{
 			redirect(base_url()."sign/out/1");

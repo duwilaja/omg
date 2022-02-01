@@ -14,7 +14,7 @@ $sql="select mpnumber,client,product,campaign,placement,FORMAT(startdt,'YYYY-MM-
 $cq="mpnumber,client,product,campaign,placement,FORMAT(startdt,'YYYY-MM-DD') as stdt,FORMAT(enddt,'YYYY-MM-DD') as endt,FORMAT(submitdt,'YYYY-MM-DD') as submdt,curr";
 
 $sql="select mpnumber,client,product,campaign,placement,startdt,enddt,submitdt,curr,amt,stts,approver,approved,rowid from $t";
-$cq="mpnumber,client,product,campaign,placement,(startdt) as stdt,(enddt) as endt,(submitdt) as submdt,curr,stts,approver,approved,amt";
+$cq="mpnumber,client,product,campaign,placement,(startdt) as stdt,(enddt) as endt,(submitdt) as submdt,curr,stts,approver,approved,amt,creator";
 
 $c="mpnumber,client,product,campaign,placement,startdt,enddt,submitdt,curr,amt";
 
@@ -30,7 +30,7 @@ $this->load->view("_sidebar",$data);
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0"><?php echo $data["title"]?></h1>
+            <h1 class="m-0 titel"><?php echo $data["title"]?></h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -265,7 +265,7 @@ $this->load->view("_sidebar",$data);
 		<div class="modal-footer pull-right">
 		  <button type="button" id="btnapp" class="btn btn-success" onclick="apprup();">Approve</button>
 		  <button type="button" id="btndel" class="btn btn-danger" onclick="savef(true)">Delete</button>
-		  <button type="button" class="btn btn-primary" onclick="savef();">Save</button>
+		  <button type="button" class="btn btn-primary btnsave" onclick="savef();">Save</button>
 		  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 		</div>
 	  </div>
@@ -361,7 +361,7 @@ $this->load->view("_sidebar",$data);
 		</div>
 		<div class="modal-footer pull-right">
 		  <button type="button" id="btndela" class="btn btn-danger" onclick="savefa(true)">Delete</button>
-		  <button type="button" class="btn btn-primary" onclick="savefa();">Save</button>
+		  <button type="button" class="btn btn-primary btnsave" onclick="savefa();">Save</button>
 		  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 		</div>
 	  </div>
@@ -382,13 +382,26 @@ $pct="t_po";
 
 $sqla="select mp,doc,attc,rowid from t_mpdoc";
 
+$where=" where 1=1";
+if($session["uaccess"]!="ADM"){
+	$where=" where (creator='".$session["uid"]."' or approver='".$session["uid"]."')";
+}
+$ttl="";
+switch($which){
+	case "": $where.=" or stts='Approved'"; break;
+	case "c": $where.=" and stts='Approved'"; $ttl="(Completed)"; break;
+	case "o": $where.=" and stts='Rejected'"; $ttl="(Ongoing)"; break;
+	case "p": $where.=" and stts='Pending Approval'"; $ttl="(Pending)"; break;
+}
 ?>
 <script>
 var  mytbl, mytbla;
 var mpnb='';
 var thisid='<?php echo $session["uid"]?>';
+
 $(document).ready(function(){
 	document_ready();
+	$(".titel").html($(".titel").html()+' <?php echo $ttl?>');
 	mytbl = $("#example1").DataTable({
 		serverSide: false,
 		processing: true,
@@ -396,7 +409,8 @@ $(document).ready(function(){
 			type: 'POST',
 			url: bu+'mp/datatable',
 			data: function (d) {
-				d.s= '<?php echo base64_encode($sql); ?>';
+				d.s= '<?php echo base64_encode($sql); ?>',
+				d.w= '<?php echo base64_encode($where); ?>';
 			}
 		},
 		initComplete: function(){
@@ -505,15 +519,19 @@ function formLoaded(frm,modal,overlay,data=""){
 	if(frm=='#myf'){
 		var dv='';
 		var dv2='';
+		var iscreator=false;
+		var isapprover=false;
 		if(data!="") {
 			dv=data['product'];
 			dv2=data['po'];
+			isapprover=data['approver']==thisid;
+			iscreator=data['creator']==thisid;
 		}
 		//log('dv='+dv);
 		clientChange($('#client').val(),dv,dv2);
 		switch($("#stts").val()){
 			case "": $("#approver").attr("disabled",false); break;
-			case "Approved": if($("#approver").val()!=thisid){$("#btndel").hide();} break;
+			case "Approved": $(".btnsave").hide(); if(!isapprover){$("#btndel").hide();} break;
 			case "Rejected": $("#approver").attr("disabled",false); $("#btnapp").show(); $("#btnapp").text("Send for approval"); break;
 			case "Pending Approval": $("#btnapp").show(); 
 					if(thisid==$("#approver").val()){
@@ -558,6 +576,7 @@ function apprup(id=0){
 			  }
 			});
 		}else{
+			$("#approver").attr("disabled",false);
 			savef(false,'SNDA');
 		}
 	}

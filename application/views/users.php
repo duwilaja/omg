@@ -9,7 +9,7 @@ $data["pmenu"]="";
 $data["session"]=$session;
 $data["bu"]=$bu;
 
-$sql="select uid,uname,ugrp,umail,uaccess,rowid from t_users";
+$sql="select uid,uname,umail,uaccess,rowid from t_users";
 $c="uid,uname,ugrp,umail,uaccess";
 $t="t_users";
 
@@ -54,7 +54,6 @@ $this->load->view("_sidebar",$data);
 					  <tr>
 						<th>ID</th>
 						<th>Name</th>
-						<th>Group</th>
 						<th>Email</th>
 						<th>Access</th>
 					  </tr>
@@ -105,7 +104,7 @@ $this->load->view("_sidebar",$data);
 				  <input type="text" name="uname" class="form-control form-control-sm" id="uname" placeholder="...">
 				</div>
 			  </div>
-			  <div class="form-group row">
+			  <div class="form-group row hidden">
 				<label for="" class="col-sm-4 col-form-label">Group</label>
 				<div class="col-sm-8 input-group">
 				  <!--input type="text" name="ugrp" class="form-control form-control-sm" id="ugrp" placeholder="..."-->

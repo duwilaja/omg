@@ -31,11 +31,11 @@ class Welcome extends CI_Controller {
 		if(isset($usr)){
 			$data["session"]=$usr;
 			$this->load->model("mydb");
-			$data["tot"]=$this->mydb->gettot();
+			$data["tot"]=$this->mydb->gettot($usr);
 			//$data["pie1"]=$this->mydb->getpie1();
 			//$data["line1"]=$this->mydb->getline1();
-			$data['pending']=$this->mydb->getlist('Pending Approval');
-			$data['ongoing']=$this->mydb->getlist('Rejected');
+			$data['pending']=$this->mydb->getlist($usr,'Pending Approval');
+			$data['ongoing']=$this->mydb->getlist($usr,'Rejected');
 			$this->load->view('home',$data);
 		}else{
 			redirect(base_url()."sign/out/1");

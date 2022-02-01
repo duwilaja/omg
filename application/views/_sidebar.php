@@ -210,10 +210,11 @@ $bux=base_url();
     <!-- Control sidebar content goes here -->
     <div class="p-3">
       <h5><?php echo $session["uname"]?></h5>
-      <p><?php echo $session["ugrp"]?></p>
+      <p><?php echo $session["uaccess"]?></p>
     </div>
 	<nav class="mt-2">
 		<ul class="nav nav-sidebar flex-column">
+		<?php if($session["uaccess"]=='ADM'){?>
 		  <li class="nav-item">
 			<a href="<?php echo $bux?>md/?p=users" class="nav-link users">
 			  <i class="nav-icon fas fa-users"></i>
@@ -222,6 +223,7 @@ $bux=base_url();
 			  </p>
 			</a>
 		  </li>
+		<?php }?>
 		  <li class="nav-item">
 			<a href="#" onclick="resetForm('#fpwd')" data-toggle="modal" data-target="#modal-pwd" class="nav-link">
 			  <i class="nav-icon fas fa-user-lock"></i>

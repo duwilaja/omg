@@ -75,7 +75,7 @@ class Mydb extends CI_Model {
 			'smtp_host' => 'ssl://mail.omgdemo.website',
 			'smtp_port' => 465,
 			'smtp_user' => 'omg@omgdemo.website',
-			'smtp_pass' => 'omgbanget',
+			'smtp_pass' => '0mGbanget',
 			'smtp_timeout' => 15,
 			'mailtype'  => 'html', 
 			'charset'   => 'utf-8'
@@ -90,12 +90,16 @@ class Mydb extends CI_Model {
 		return $this->email->send();
 	}
 	
-	public function gettot(){
-		$rs=$this->db->query("select stts,count(*) as cnt from t_mediaplans group by stts")->result_array();
+	public function gettot($usr){
+		$where=$usr["uaccess"]=="ADM"?"":" where creator='".$usr["uid"]."' or approver='".$usr["uid"]."'";
+		$sql="select stts,count(*) as cnt from t_mediaplans $where group by stts";
+		$rs=$this->db->query($sql)->result_array();
 		return $rs;
 	}
-	public function getlist($stts=""){
-		$rs=$this->db->query("select mpnumber,client,product,stts,approver from t_mediaplans where stts='$stts' order by lastupd")->result_array();
+	public function getlist($usr,$stts=""){
+		$where=$usr["uaccess"]=="ADM"?"":" and (creator='".$usr["uid"]."' or approver='".$usr["uid"]."')";
+		$sql="select mpnumber,client,product,stts,approver from t_mediaplans where stts='$stts' $where order by lastupd";
+		$rs=$this->db->query($sql)->result_array();
 		return array_slice($rs,0,5);
 	}
 }

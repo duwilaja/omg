@@ -40,7 +40,7 @@ $this->load->view("_sidebar",$data);
 	  
         <!-- Info boxes -->
         <div class="row">
-          <div class="col-12 col-sm-6 col-md-4">
+          <div class="col-12 col-sm-6 col-md-4"><a href="<?php echo base_url()?>mp?w=p">
             <div class="info-box">
               <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-tasks"></i></span>
 
@@ -51,9 +51,9 @@ $this->load->view("_sidebar",$data);
               <!-- /.info-box-content -->
             </div>
             <!-- /.info-box -->
-          </div>
+          </a></div>
           <!-- /.col -->
-          <div class="col-12 col-sm-6 col-md-4">
+          <div class="col-12 col-sm-6 col-md-4"><a href="<?php echo base_url()?>mp?w=o">
             <div class="info-box mb-3">
               <span class="info-box-icon bg-info elevation-1"><i class="fas fa-people-carry"></i></span>
 
@@ -64,13 +64,13 @@ $this->load->view("_sidebar",$data);
               <!-- /.info-box-content -->
             </div>
             <!-- /.info-box -->
-          </div>
+          </a></div>
           <!-- /.col -->
 
           <!-- fix for small devices only -->
           <div class="clearfix hidden-md-up"></div>
 
-          <div class="col-12 col-sm-6 col-md-4">
+          <div class="col-12 col-sm-6 col-md-4"><a href="<?php echo base_url()?>mp?w=c">
             <div class="info-box mb-3">
               <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-money-check-alt"></i></span>
 
@@ -81,7 +81,7 @@ $this->load->view("_sidebar",$data);
               <!-- /.info-box-content -->
             </div>
             <!-- /.info-box -->
-          </div>
+          </a></div>
           <!-- /.col -->
         </div>
         <!-- /.row -->
@@ -100,7 +100,7 @@ $this->load->view("_sidebar",$data);
                   <!--button type="button" class="btn btn-tool" data-card-widget="remove">
                     <i class="fas fa-times"></i>
                   </button-->
-				  <a class="btn btn-tool" title="More..." href="<?php echo base_url()?>mp">
+				  <a class="btn btn-tool" title="More..." href="<?php echo base_url()?>mp?w=p">
                     <i class="fas fa-ellipsis-h"></i>
                   </a>
                 </div>
@@ -149,7 +149,7 @@ $this->load->view("_sidebar",$data);
                   <!--button type="button" class="btn btn-tool" data-card-widget="remove">
                     <i class="fas fa-times"></i>
                   </button-->
-				  <a class="btn btn-tool" title="More..." href="<?php echo base_url()?>mp">
+				  <a class="btn btn-tool" title="More..." href="<?php echo base_url()?>mp?w=o">
                     <i class="fas fa-ellipsis-h"></i>
                   </a>
                 </div>
