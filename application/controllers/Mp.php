@@ -10,6 +10,7 @@ class Mp extends CI_Controller {
 		$usr=$this->session->userdata('user_data');
 		if(isset($usr)){
 			$data["session"]=$usr;
+			$data["which"]=$this->input->get("w");
 			$this->load->view("mp",$data);
 		}else{
 			redirect(base_url()."sign/out/1");
@@ -21,7 +22,7 @@ class Mp extends CI_Controller {
 		$usr=$this->session->userdata('user_data');
 		$data=array();
 		if(isset($usr)){
-			$sql=base64_decode($this->input->post("s"));
+			$sql=base64_decode($this->input->post("s")).base64_decode($this->input->post("w"));
 			$res=$this->db->query($sql)->result_array();
 			for($i=0;$i<count($res);$i++){
 				$dum=array_values($res[$i]);
@@ -123,9 +124,11 @@ class Mp extends CI_Controller {
 				$msgs='Success'; $typ="success";
 				//if($rowid==0)	$msgs.=$this->mydb->ctask("create_mp",$data);
 				//if($flag=='SNDA') $msgs=$this->mydb->notify(array("assignedto"=>$data["approver"],"taskname"=>"Mediaplan Approval"));
-				$m="This is a reminder that there are outstanding tasks in ODS that require your attention.<br />Please log into ODS to review and approve the outstanding.<br />";
-				$m.="Mediaplan#: ".$data['mpnumber']."<br />Campaign: ".$data['campaign']."<br />Client: ".$data['client'];
-				if($rowid==0||$flag=='SNDA') $msgs=$this->mydb->notify(array("assignedto"=>$data["approver"],"taskname"=>"Mediaplan Approval","msgs"=>$m));
+				if($rowid==0||$flag=='SNDA') {
+					$m="This is a reminder that there are outstanding tasks in ODS that require your attention.<br />Please log into ODS to review and approve the outstanding.<br />";
+					$m.="Mediaplan#: ".$data['mpnumber']."<br />Campaign: ".$data['campaign']."<br />Client: ".$data['client'];
+					$msgs=$this->mydb->notify(array("assignedto"=>$data["approver"],"taskname"=>"Mediaplan Approval","msgs"=>$m));
+				}
 			}else{
 				$msgs=$this->mydb->error($this->db->error());
 			}
