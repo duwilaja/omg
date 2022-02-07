@@ -125,6 +125,13 @@ class Iv extends CI_Controller {
 			$this->db->query($sql);
 			if($this->db->affected_rows()>0) {
 				$msgs='Success'; $typ="success";
+				if($rowid==0||$flag=='SNDN') {
+					$msgs="Data Saved. ";
+					$br="<br />";
+					$m="This is a reminder that there are outstanding tasks in ODS that require your attention.$br Please log into ODS to complete the outstanding.$br";
+					$m.="Invoi##: ".$data['invno'].$br."Supplier: ".$data['supplier'].$br."Client: ".$data['client'];
+					$msgs.=$this->mydb->notify(array("assignedto"=>$data["ss"],"taskname"=>"Screenshot Upload","msgs"=>$m));
+				}
 			}else{
 				$msgs=$this->mydb->error($this->db->error());
 			}

@@ -89,6 +89,29 @@ class Mydb extends CI_Model {
 		
 		return $this->email->send();
 	}
+	public function debugmail($to,$sub,$msg){
+		$debug = '';
+		require_once(APPPATH."third_party/phpmailer/PHPMailerAutoload.php");
+        $mail = new PHPMailer;
+		$mail->SMTPDebug = 2;
+		$mail->Debugoutput = function($str, $level) {
+								$GLOBALS['debug'] .= "$level: $str <br />";
+							};
+		$mail->isSMTP();
+		$mail->SMTPAuth = true;
+		$mail->Host = 'smtp.yandex.com';
+		$mail->Port = 465;
+		$mail->SMTPSecure = 'ssl';
+		$mail->Username = 'omg.demo.app@yandex.com';
+		$mail->Password = 'dknhlkohqftrcbki';
+		$mail->setFrom('omg.demo.app@yandex.com', 'ODS Admin');
+		$mail->addAddress($to);
+		$mail->Subject = $sub;
+		$mail->Body = $msg;
+		$mail->send();
+		
+		return $debug;
+	}
 	
 	public function gettot($usr){
 		$where=$usr["uaccess"]=="ADM"?"":" where creator='".$usr["uid"]."' or approver='".$usr["uid"]."'";
