@@ -129,7 +129,7 @@ class Iv extends CI_Controller {
 					$msgs="Data Saved. ";
 					$br="<br />";
 					$m="This is a reminder that there are outstanding tasks in ODS that require your attention.$br Please log into ODS to complete the outstanding.$br";
-					$m.="Invoi##: ".$data['invno'].$br."Supplier: ".$data['supplier'].$br."Client: ".$data['client'];
+					$m.="Invoice#: ".$data['invno'].$br."Supplier: ".$data['supplier'].$br."Client: ".$data['client'];
 					$msgs.=$this->mydb->notify(array("assignedto"=>$data["ss"],"taskname"=>"Screenshot Upload","msgs"=>$m));
 				}
 			}else{
