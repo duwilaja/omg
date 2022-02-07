@@ -122,12 +122,12 @@ class Mp extends CI_Controller {
 			$this->db->query($sql);
 			if($this->db->affected_rows()>0) {
 				$msgs='Success'; $typ="success";
-				//if($rowid==0)	$msgs.=$this->mydb->ctask("create_mp",$data);
-				//if($flag=='SNDA') $msgs=$this->mydb->notify(array("assignedto"=>$data["approver"],"taskname"=>"Mediaplan Approval"));
 				if($rowid==0||$flag=='SNDA') {
-					$m="This is a reminder that there are outstanding tasks in ODS that require your attention.<br />Please log into ODS to review and approve the outstanding.<br />";
-					$m.="Mediaplan#: ".$data['mpnumber']."<br />Campaign: ".$data['campaign']."<br />Client: ".$data['client'];
-					$msgs=$this->mydb->notify(array("assignedto"=>$data["approver"],"taskname"=>"Mediaplan Approval","msgs"=>$m));
+					$msgs="Data Saved. ";
+					$br="<br />";
+					$m="This is a reminder that there are outstanding tasks in ODS that require your attention.$br Please log into ODS to review and approve the outstanding.$br";
+					$m.="Mediaplan#: ".$data['mpnumber'].$br."Campaign: ".$data['campaign'].$br."Client: ".$data['client'];
+					$msgs.=$this->mydb->notify(array("assignedto"=>$data["approver"],"taskname"=>"Mediaplan Approval","msgs"=>$m));
 				}
 			}else{
 				$msgs=$this->mydb->error($this->db->error());

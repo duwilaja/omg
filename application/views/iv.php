@@ -10,8 +10,8 @@ $data["session"]=$session;
 $data["bu"]=$bu;
 
 $sql="select invno,client,mp,mo,invdt as idt,supplier,curr,amt,attc,rowid from t_invoices";
-$cq="invno,client,mp,mo,invdt as idt,supplier,curr,amt,attc";
-$c="invno,client,mp,mo,invdt,supplier,curr,amt,attc";
+$cq="invno,client,mp,mo,invdt as idt,supplier,curr,amt,attc,ss";
+$c="invno,client,mp,mo,invdt,supplier,curr,amt,attc,ss";
 $t="t_invoices";
 
 $this->load->view("_head",$data);
@@ -86,7 +86,7 @@ $this->load->view("_sidebar",$data);
   <!-- /.content-wrapper -->
 
   <div class="modal fade" id="modal-frm">
-	<div class="modal-dialog">
+	<div class="modal-dialog modal-lg">
 	  <div class="modal-content">
 		<div id="ovl" class="overlay" style="display:none;">
 			<i class="fas fa-2x fa-sync fa-spin"></i>
@@ -110,51 +110,58 @@ $this->load->view("_sidebar",$data);
 		  <input type="hidden" name="attc" id="attc" value="">
 		  
 			<div class="card-body">
-			  <div class="form-group row">
-				<label for="" class="col-sm-4 col-form-label">Invoice#</label>
-				<div class="col-sm-8 input-group">
+			<div class="row">
+			  <div class="form-group col-md-6">
+				<label for="" class="col-form-label">Invoice#</label>
+				<div class="input-group">
 				  <input type="text" name="invno" class="form-control form-control-sm" id="invno" placeholder="...">
 				</div>
 			  </div>
-			  <div class="form-group row">
-				<label for="" class="col-sm-4 col-form-label">Invoice Date</label>
-				<div class="col-sm-8 input-group date" id="idate"  data-target-input="nearest">
+			  <div class="form-group col-md-6">
+				<label for="" class="col-form-label">Invoice Date</label>
+				<div class="input-group date" id="idate"  data-target-input="nearest">
 					    <input type="text" name="invdt" id="idt" class="form-control datetimepicker-input form-control-sm" data-target="#idate">
                         <div class="input-group-append" data-target="#idate" data-toggle="datetimepicker">
                             <div class="input-group-text"><i class="fas fa-calendar-alt"></i></div>
                         </div>
 				</div>
 			  </div>
-			  <div class="form-group row">
-				<label for="" class="col-sm-4 col-form-label">Client</label>
-				<div class="col-sm-8 input-group">
+			</div>
+			<div class="row">
+			  <div class="form-group col-md-6">
+				<label for="" class="col-form-label">Client</label>
+				<div class="input-group">
 				  <select name="client" class="form-control form-control-sm" id="client" placeholder="..." onchange="clientChange(this.value);">
 				  </select>
 				</div>
 			  </div>
-			  <div class="form-group row">
-				<label for="" class="col-sm-4 col-form-label">Media Plan</label>
-				<div class="col-sm-8 input-group">
+			  <div class="form-group col-md-6">
+				<label for="" class="col-form-label">Media Plan</label>
+				<div class="input-group">
 				  <select name="mp" class="form-control form-control-sm" id="mp" placeholder="...">
 				  </select>
 				</div>
 			  </div>
-			  <div class="form-group row">
-				<label for="" class="col-sm-4 col-form-label">MO#</label>
-				<div class="col-sm-8 input-group">
-				  <input type="text" name="mo" class="form-control form-control-sm" id="mo" placeholder="...">
-				</div>
-			  </div>
-			  <div class="form-group row">
-				<label for="" class="col-sm-4 col-form-label">Supplier</label>
-				<div class="col-sm-8 input-group">
+			</div>
+			<div class="row">
+			  <div class="form-group col-md-6">
+				<label for="" class="col-form-label">Supplier</label>
+				<div class="input-group">
 				  <select name="supplier" class="form-control form-control-sm" id="supplier" placeholder="...">
 				  </select>
 				</div>
 			  </div>
-			  <div class="form-group row">
-				<label for="" class="col-sm-4 col-form-label">Currency</label>
-				<div class="col-sm-8 input-group">
+			  <div class="form-group col-md-6">
+				<label for="" class="col-form-label">MO#</label>
+				<div class="input-group">
+				  <input type="text" name="mo" class="form-control form-control-sm" id="mo" placeholder="...">
+				</div>
+			  </div>
+			</div>
+			<div class="row">
+			  <div class="form-group col-md-6">
+				<label for="" class="col-form-label">Currency</label>
+				<div class="input-group">
 				  <select name="curr" class="form-control form-control-sm" id="curr" placeholder="...">
 					<option value=""></option>
 					<option value="IDR">IDR</option>
@@ -163,18 +170,28 @@ $this->load->view("_sidebar",$data);
 				  </select>
 				</div>
 			  </div>
-			  <div class="form-group row">
-				<label for="" class="col-sm-4 col-form-label">Amount</label>
-				<div class="col-sm-8 input-group">
+			  <div class="form-group col-md-6">
+				<label for="" class="col-form-label">Amount</label>
+				<div class="input-group">
 				  <input type="text" name="amt" class="form-control form-control-sm" id="amt" placeholder="...">
 				</div>
 			  </div>
-			  <div class="form-group row">
-				<label for="" class="col-sm-4 col-form-label">Attachment</label>
-				<div class="col-sm-8 input-group">
+			</div>
+			<div class="row">
+			  <div class="form-group col-md-6">
+				<label for="" class="col-form-label">Attachment</label>
+				<div class="input-group">
 				  <input type="file" name="uploadedfile" class="form-control form-control-sm" id="uploadedfile" placeholder="...">
 				</div>
 			  </div>
+			  <div class="form-group col-md-6">
+				<label for="" class="col-form-label">Screenshot User</label>
+				<div class="input-group">
+				  <select name="ss" class="form-control form-control-sm" id="ss" placeholder="...">
+				  </select>
+				</div>
+			  </div>
+			</div>
 			</div>
 			<!-- /.card-body -->
 		  </form>
@@ -218,7 +235,7 @@ $(document).ready(function(){
 			}
 		},
 		initComplete: function () {
-            filterDatatable(mytbl,[1,4]);
+            filterDatatable(mytbl,[1,5]);
 		}
 	});
 	$("#myf").validate({
@@ -245,6 +262,9 @@ $(document).ready(function(){
 		  mo:{
 			required: true
 		  },
+		  ss:{
+			required: true
+		  },
 		  curr: {
 			required: true
 		  },
@@ -262,11 +282,12 @@ $(document).ready(function(){
 	});
 	getCombo("iv/gets",'<?php echo base64_encode($ct)?>','<?php echo base64_encode($cc)?>','<?php echo base64_encode($cw)?>','#client');
 	getCombo("iv/gets",'<?php echo base64_encode($st)?>','<?php echo base64_encode($sc)?>','<?php echo base64_encode($sw)?>','#supplier');
+	getCombo("md/gets",'<?php echo base64_encode("t_users")?>','<?php echo base64_encode("uid as v,uname as t")?>','<?php echo base64_encode(" 1=1 order by uname")?>','#ss');
 	initDatePicker(["#idate"]);
 });
 
 function reloadTable(frm){
-	mytbl.ajax.reload(function(){filterDatatable(mytbl,[1,4])},false);
+	mytbl.ajax.reload(function(){filterDatatable(mytbl,[1,5])},false);
 }
 
 function openf(id=0){
