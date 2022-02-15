@@ -52,10 +52,10 @@ class Mydb extends CI_Model {
 			$to = trim($rs[0]['umail']);
 			if($to!=""){
 				$br="<br />";
-				$sub= "[ODS Notification] : ".$dt["taskname"];
+				$sub= "[MdS Notification] : ".$dt["taskname"];
 				$msg= "Dear ".$rs[0]["uname"]."$br $br";
 				$msg.=$dt["msgs"];
-				$msg.=" $br $br Regards, $br ODS Admin";
+				$msg.=" $br $br Regards, $br MdS Admin";
 				$sent=$this->sendmail($to,$sub,$msg);
 				if($sent){
 					return "Notification sent to $to";
@@ -82,7 +82,7 @@ class Mydb extends CI_Model {
 		);
 		$this->load->library('email', $config);
 		
-		$this->email->from($config['smtp_user'], 'ODS Admin');
+		$this->email->from($config['smtp_user'], 'MdS Admin');
 		$this->email->to($to);
 		$this->email->subject($sub);
 		$this->email->message($msg);
@@ -104,7 +104,7 @@ class Mydb extends CI_Model {
 		$mail->SMTPSecure = 'ssl';
 		$mail->Username = 'omg.demo.app@yandex.com';
 		$mail->Password = 'dknhlkohqftrcbki';
-		$mail->setFrom('omg.demo.app@yandex.com', 'ODS Admin');
+		$mail->setFrom('omg.demo.app@yandex.com', 'MdS Admin');
 		$mail->addAddress($to);
 		$mail->Subject = $sub;
 		$mail->Body = $msg;
