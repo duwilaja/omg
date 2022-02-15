@@ -155,17 +155,17 @@ $bux=base_url();
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="<?php echo $bux;?>r/?v=rmp" class="nav-link rmp">
+                <a href="<?php echo $bux;?>r/?v=rmpsum" class="nav-link rmpsum">
                   <i class="fas fa-angle-right nav-icon"></i>
-                  <p>Media Plan</p>
+                  <p>Media Summary</p>
                 </a>
               </li>
-              <!--li class="nav-item">
-                <a href="#" class="nav-link">
+              <li class="nav-item">
+                <a href="<?php echo $bux;?>r/?v=rmp" class="nav-link rmp">
                   <i class="fas fa-angle-right nav-icon"></i>
-                  <p>Statistic</p>
+                  <p>Media Detail</p>
                 </a>
-              </li-->
+              </li>
             </ul>
           </li>
 		  <!--li class="nav-item setting">
