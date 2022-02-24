@@ -88,8 +88,8 @@ class Mp extends CI_Controller {
 			$mnr=$data[0]['mnr'];
 			$nr=is_numeric($mnr)?$mnr+1:$nr;
 		}
-		$nrx=$nr<10?'00'.$nr:$nr;
 		$nrx=$nr<100?'0'.$nr:$nr;
+		$nrx=$nr<10?'00'.$nr:$nr;
 		
 		return  $nrx;
 	}
