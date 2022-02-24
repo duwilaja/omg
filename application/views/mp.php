@@ -13,10 +13,11 @@ $t="t_mediaplans";
 $sql="select mpnumber,client,product,campaign,placement,FORMAT(startdt,'YYYY-MM-DD') as stdt,FORMAT(enddt,'YYYY-MM-DD') as endt,FORMAT(submitdt,'YYYY-MM-DD') as submdt,curr,stts,rowid from $t";
 $cq="mpnumber,client,product,campaign,placement,FORMAT(startdt,'YYYY-MM-DD') as stdt,FORMAT(enddt,'YYYY-MM-DD') as endt,FORMAT(submitdt,'YYYY-MM-DD') as submdt,curr";
 
-$sql="select mpnumber,client,product,campaign,placement,startdt,enddt,submitdt,curr,amt,stts,approver,approved,rowid from $t";
+$sql="select mpnumber,client,product,campaign,placement,startdt,enddt,submitdt,curr,amt,stts,approver,notes,approved,rowid from $t";
+$sql="select * from q_mp";
 $cq="mpnumber,client,product,campaign,placement,(startdt) as stdt,(enddt) as endt,(submitdt) as submdt,curr,stts,approver,approved,amt,creator";
 
-$c="mpnumber,client,product,campaign,placement,startdt,enddt,submitdt,curr,amt";
+$c="mpnumber,client,product,campaign,placement,startdt,enddt,submitdt,curr,amt,notes";
 
 $this->load->view("_head",$data);
 $this->load->view("_navbar",$data);
@@ -46,8 +47,37 @@ $this->load->view("_sidebar",$data);
     <!-- Main content -->
     <div class="content">
       <div class="container-fluid">
+		<div class="card"><div class="card-body">
+			<div class="row">
+			<div class="form-group col-md-6">
+				<label for="" class="col-form-label">From - To</label>
+				<div class="row">
+				<div id="dari" class="col-md-5 input-group date" data-target-input="nearest">
+				  
+					<input type="text" id="df" class="form-control datetimepicker-input form-control-sm" data-target="#dari">
+					<div class="input-group-append" data-target="#dari" data-toggle="datetimepicker">
+						<div class="input-group-text"><i class="fas fa-calendar-alt"></i></div>
+					</div>
+				
+				</div>
+				<div id="sampai" class="col-md-5 input-group date" data-target-input="nearest">
+				  
+					<input type="text" id="dt" class="form-control datetimepicker-input form-control-sm" data-target="#sampai">
+					<div class="input-group-append" data-target="#sampai" data-toggle="datetimepicker">
+						<div class="input-group-text"><i class="fas fa-calendar-alt"></i></div>
+					</div>
+				
+				</div>
+				<div class="col-md-1">
+					<button class="btn btn-success btn-sm" onclick="reloadTable()"><i class="fas fa-paper-plane"></i></button>
+				</div>
+				</div>
+			</div>
+			</div>
+		</div></div>
 		<div class="card">
 			<div class="card-header">
+				<span id="filterku"></span>
 				<div class="card-tools">
 					<button class="btn btn-success btn-sm" onclick="reloadTable()"><i class="fas fa-sync"></i></button>
 					<button class="btn btn-primary btn-sm" onclick="openf()"><i class="fas fa-plus"></i></button>
@@ -71,6 +101,7 @@ $this->load->view("_sidebar",$data);
 						<th style="padding-right: 4px;"></th>
 						<th></th>
 						<th></th>
+						<th></th>
 					  </tr>
 					  <tr>
 						<th>MP#</th>
@@ -85,6 +116,7 @@ $this->load->view("_sidebar",$data);
 						<th>Budget</th>
 						<th>Status</th>
 						<th>Approver</th>
+						<th>Note</th>
 						<th>Attachments</th>
 						<th>Action</th>
 					  </tr>
@@ -121,6 +153,8 @@ $this->load->view("_sidebar",$data);
 		  <input type="hidden" name="flag" id="flag" value="SAVE">
 		  <input type="hidden" name="table" value="<?php echo base64_encode($t)?>">
 		  <input type="hidden" name="cols" value="<?php echo base64_encode($c)?>">
+		  
+		  <input type="hidden" name="notes" id="notex" value="">
 		  
 		  <div class="card-body">
 				<div class="row">
@@ -361,7 +395,7 @@ $this->load->view("_sidebar",$data);
 		</div>
 		<div class="modal-footer pull-right">
 		  <button type="button" id="btndela" class="btn btn-danger" onclick="savefa(true)">Delete</button>
-		  <button type="button" class="btn btn-primary btnsave" onclick="savefa();">Save</button>
+		  <button type="button" class="btn btn-primary btnsavea" onclick="savefa();">Save</button>
 		  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 		</div>
 	  </div>
@@ -388,7 +422,7 @@ if($session["uaccess"]!="ADM"){
 }
 $ttl="";
 switch($which){
-	case "": $where.=" or stts='Approved'"; break;
+	//case "": $where.=" or stts='Approved'"; break;
 	case "c": $where.=" and stts='Approved'"; $ttl="(Completed)"; break;
 	case "o": $where.=" and stts='Rejected'"; $ttl="(Ongoing)"; break;
 	case "p": $where.=" and stts='Pending Approval'"; $ttl="(Pending)"; break;
@@ -410,12 +444,18 @@ $(document).ready(function(){
 			url: bu+'mp/datatable',
 			data: function (d) {
 				d.s= '<?php echo base64_encode($sql); ?>',
-				d.w= '<?php echo base64_encode($where); ?>';
+				d.w= '<?php echo base64_encode($where); ?>',
+				d.df=$("#df").val(),
+				d.dt=$("#dt").val();
 			}
 		},
 		initComplete: function(){
 			filterDatatable(mytbl,[1,2,4,8,10,11]);
-		}
+		},
+		columnDefs: [{
+			targets: 9,
+			render: $.fn.dataTable.render.number(',','.',0,'')
+		}]
 	});
 	mytbla = $("#example2").DataTable({
 		serverSide: false,
@@ -491,18 +531,42 @@ $(document).ready(function(){
 	
 	getCombo("md/gets",'<?php echo base64_encode($ct)?>','<?php echo base64_encode($cc)?>','<?php echo base64_encode($cw)?>','#client');
 	getCombo("md/gets",'<?php echo base64_encode("t_users")?>','<?php echo base64_encode("uid as v,uname as t")?>','<?php echo base64_encode(" 1=1 order by uname")?>','#approver');
-	initDatePicker(["#periodend","#periodstart","#subdt"]);
+	initDatePicker(["#periodend","#periodstart","#subdt","#dari","#sampai"]);
 });
 
 function reloadTable(frm=''){
 	if(frm=='#myf'||frm=='') mytbl.ajax.reload(function(){filterDatatable(mytbl,[1,2,4,8,10,11])},false);
 	if(frm=='#myfa') mytbla.ajax.reload();
 }
+function mydtfilterchanged(){
+	var filters=$(".filterku");
+	//log (filters);
+	var flds=[];
+	$.each(filters , function(i,obj){
+		//log(obj.value);
+		if(obj.value!=""){
+			switch(i){
+				case 0: flds.push("client");break;
+				case 1: flds.push("product");break;
+				case 2: flds.push("placement");break;
+				case 3: flds.push("currency");break;
+				case 4: flds.push("status");break;
+				case 5: flds.push("approver");break;
+			}
+		}
+	});
+	$("#filterku").html("");
+	if(flds.length>0){
+		$("#filterku").html("<b>Filtered by : </b>"+flds.join(", "));
+	}
+}
+
 function openf(id=0){
 	$("#rowid").val(id);
 	$("#approver").attr("disabled",true);
 	//$(".appruper").hide();
 	$("#btnapp").hide();
+	$(".btnsave").hide();
 	openForm('#myf','#modal-frm','mp/get','#ovl',id,'<?php echo base64_encode($t)?>','<?php echo base64_encode($cq)?>')
 }
 function savef(del=false,flg='SAVE'){
@@ -530,9 +594,15 @@ function formLoaded(frm,modal,overlay,data=""){
 		//log('dv='+dv);
 		clientChange($('#client').val(),dv,dv2);
 		switch($("#stts").val()){
-			case "": $("#approver").attr("disabled",false); break;
+			case "": $("#approver").attr("disabled",false); $(".btnsave").show(); break;
 			case "Approved": $(".btnsave").hide(); if(!isapprover){$("#btndel").hide();} break;
-			case "Rejected": $("#approver").attr("disabled",false); $("#btnapp").show(); $("#btnapp").text("Send for approval"); break;
+			case "Rejected": $("#approver").attr("disabled",false); 
+					if(iscreator){
+						$(".btnsave").show(); $("#btnapp").show(); $("#btnapp").text("Send for approval");
+					}else{
+						$("#btndel").hide();
+					}
+					break;
 			case "Pending Approval": $("#btnapp").show(); 
 					if(thisid==$("#approver").val()){
 						$("#btnapp").text("Approve/Reject");
@@ -543,18 +613,25 @@ function formLoaded(frm,modal,overlay,data=""){
 		}
 	}
 }
+var sual='';
 function apprup(id=0){
 	if($("#approver").val()==""&&id==0){
 		alrt("Please select approver","error");
 	}else{
 		if($("#btnapp").text()=="Approve/Reject"||id!=0){
 			Swal.fire({
-			  text: 'Approve this MP?',
+			  title: 'Approve this MP?',
 			  icon: 'question',
+			  html: `<input type="text" id="sual" class="swal2-input" placeholder="Reject Note">`,
 			  showDenyButton: true,
 			  showCancelButton: true,
 			  confirmButtonText: 'Approve',
 			  denyButtonText: 'Reject',
+			  focusConfirm: false,
+			  preDeny: () => {
+				const sualx = Swal.getPopup().querySelector('#sual').value;
+				sual=sualx;
+			  }
 			}).then((result) => {
 			  /* Read more about isConfirmed, isDenied below */
 			  if (result.isConfirmed) {
@@ -562,16 +639,21 @@ function apprup(id=0){
 				if(id==0) {
 					savef(false,'APPR');
 				}else{
-					var dat={rowid:id,approver:thisid,flag:'APPR',cols:'<?php echo base64_encode('approver')?>',table:'<?php echo base64_encode($t)?>'};
+					var dat={rowid:id,approver:thisid,notes:'',flag:'APPR',cols:'<?php echo base64_encode('approver,notes')?>',table:'<?php echo base64_encode($t)?>'};
 					sendData('#myf','mp/sv',dat);
 				}
 			  } else if (result.isDenied) {
 				//Swal.fire('Changes are not saved', '', 'info')
-				if(id==0){
-					savef(false,'REJE');
+				if (sual=='') {
+				  Swal.fire(`Please enter reject note.`);
 				}else{
-					var dat={rowid:id,approver:thisid,flag:'REJE',cols:'<?php echo base64_encode('approver')?>',table:'<?php echo base64_encode($t)?>'};
-					sendData('#myf','mp/sv',dat);
+					if(id==0){
+						$("#notex").val(sual);
+						savef(false,'REJE');
+					}else{
+						var dat={rowid:id,approver:thisid,notes:sual,flag:'REJE',cols:'<?php echo base64_encode('approver,notes')?>',table:'<?php echo base64_encode($t)?>'};
+						sendData('#myf','mp/sv',dat);
+					}
 				}
 			  }
 			});
@@ -583,10 +665,13 @@ function apprup(id=0){
 }
 
 //attachments
-function attach(mpn,camp){
+var canshow=false;
+function attach(mpn,camp,crt){
 	$(".attach-title").html(atob(camp));
 	$("#modal-attach").modal("show");
 	mpnb=mpn;
+	$('.btnsavea').hide(); $("#btndela").hide(); canshow=false;
+	if(thisid==crt){$('.btnsavea').show();canshow=true;}
 	mytbla.ajax.reload();
 }
 function openfa(id=0){
@@ -596,7 +681,7 @@ function openfa(id=0){
 	if(id==0){
 		$("#btndela").hide();
 	}else{
-		$("#btndela").show();
+		if(canshow) $("#btndela").show();
 	}
 }
 function savefa(del=false){

@@ -23,6 +23,8 @@ class Mp extends CI_Controller {
 		$data=array();
 		if(isset($usr)){
 			$sql=base64_decode($this->input->post("s")).base64_decode($this->input->post("w"));
+			$sql.=$this->input->post("df")==''?'':" and sbdt>='".$this->input->post("df")."'";
+			$sql.=$this->input->post("dt")==''?'':" and sbdt<='".$this->input->post("dt")."'";
 			$res=$this->db->query($sql)->result_array();
 			for($i=0;$i<count($res);$i++){
 				$dum=array_values($res[$i]);
@@ -31,14 +33,16 @@ class Mp extends CI_Controller {
 				$camp=base64_encode($res[$i]['campaign']);
 				$approver=$res[$i]['approver'];
 				$stts=$res[$i]['stts'];
+				$crt=($stts!='Approved')?$res[$i]['creator']:'';
+				$btn=$res[$i]['countofdoc']>0?"btn-info":"btn-secondary";
 				$dum[0]='<a href="#" onclick="openf('.$rowid.')">'.$dum[0].' </a>';
-				$dum[count($dum)-2]='<button type="button" class="btn btn-info" onclick="attach(\''.$mpn.'\',\''.$camp.'\');"><i class="fas fa-paperclip"></i></button>';
-				$dum[count($dum)-1]='';
-				if($usr["uid"]==$approver && $stts=="Pending Approval") $dum[count($dum)-1]='<button type="button" class="btn btn-success" onclick="apprup('.$rowid.');">Approve/Reject</button>';
+				$dum[count($dum)-3]='<button type="button" class="btn '.$btn.'" onclick="attach(\''.$mpn.'\',\''.$camp.'\',\''.$crt.'\');"><i class="fas fa-paperclip"></i></button>';
+				$dum[count($dum)-2]='';
+				if($usr["uid"]==$approver && $stts=="Pending Approval") $dum[count($dum)-2]='<button type="button" class="btn btn-success" onclick="apprup('.$rowid.');">Approve/Reject</button>';
 				$data[]=$dum;
 			}
 		}
-		$out=array('data'=>$data);
+		$out=array('data'=>$data,'sql'=>$sql);
 		echo json_encode($out);
 	}
 	public function attachments()
@@ -84,7 +88,10 @@ class Mp extends CI_Controller {
 			$mnr=$data[0]['mnr'];
 			$nr=is_numeric($mnr)?$mnr+1:$nr;
 		}
-		return  $nr;
+		$nrx=$nr<10?'00'.$nr:$nr;
+		$nrx=$nr<100?'0'.$nr:$nr;
+		
+		return  $nrx;
 	}
 	public function sv()
 	{

@@ -116,4 +116,5 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 var bu="<?php echo base_url()?>";
 var menuc=".<?php echo $menu?>";
 var pmenuc=".<?php echo $pmenu?>";
+$.fn.modal.Constructor.prototype._enforceFocus = function() {}; //swal input fix
 </script>
