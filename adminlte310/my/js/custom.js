@@ -250,7 +250,7 @@ function filterDatatable(table,cols){
 	table.columns(cols).every( function () {
 		var column = this;
 		var coln=column[0][0];
-		var select = $('<select class="form-control form-control-sm"><option value=""></option></select>')
+		var select = $('<select class="form-control form-control-sm filterku" onchange="mydtfilterchanged();"><option value=""></option></select>')
 			//.appendTo( $(column.footer()).empty() )
 			.appendTo( $("#example1 thead tr:eq(0) th")[coln] )
 			.on( 'change', function () {
