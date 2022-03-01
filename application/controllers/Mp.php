@@ -132,7 +132,7 @@ class Mp extends CI_Controller {
 				if($rowid==0||$flag=='SNDA') {
 					$msgs="Data Saved. ";
 					$br="<br />";
-					$m="This is a reminder that there are outstanding tasks in ODS that require your attention.$br Please log into ODS to review and approve the outstanding.$br";
+					$m="This is a reminder that there are outstanding tasks in MdS that require your attention.$br Please log into MdS to review and approve the outstanding.$br";
 					$m.="Mediaplan#: ".$data['mpnumber'].$br."Campaign: ".$data['campaign'].$br."Client: ".$data['client'];
 					$msgs.=$this->mydb->notify(array("assignedto"=>$data["approver"],"taskname"=>"Mediaplan Approval","msgs"=>$m));
 				}

@@ -84,6 +84,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <!-- jquery-fancybox -->
 <script src="<?php echo $bu;?>/plugins/jquery-fancybox/jquery.fancybox.min.js"></script>
 
+<!-- select2 -->
+<script src="<?php echo $bu;?>/plugins/select2/js/select2.full.min.js"></script>
+
 <!-- ChartJS -->
 <script src="<?php echo $bu;?>/plugins/chart.js/Chart.min.js"></script>
 
@@ -117,4 +120,5 @@ var bu="<?php echo base_url()?>";
 var menuc=".<?php echo $menu?>";
 var pmenuc=".<?php echo $pmenu?>";
 $.fn.modal.Constructor.prototype._enforceFocus = function() {}; //swal input fix
+$(".select2").select2({theme: 'bootstrap4'});
 </script>

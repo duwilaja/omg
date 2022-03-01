@@ -59,6 +59,7 @@ $this->load->view("_sidebar",$data);
 						<th style="padding-right: 4px;"></th>
 						<th style="padding-right: 4px;"></th>
 						<th style="padding-right: 4px;"></th>
+						<th style="padding-right: 4px;"></th>
 					  </tr>
 					  <tr>
 						<th>PO#</th>
@@ -115,14 +116,14 @@ $this->load->view("_sidebar",$data);
 			  <div class="form-group row">
 				<label for="" class="col-sm-4 col-form-label">Client</label>
 				<div class="col-sm-8 input-group">
-				  <select name="client" class="form-control form-control-sm" id="client" placeholder="..." onchange="clientChange(this.value);">
+				  <select name="client" class="form-control form-control-sm select2" id="client" placeholder="..." onchange="clientChange(this.value);">
 				  </select>
 				</div>
 			  </div>
 			  <div class="form-group row">
 				<label for="" class="col-sm-4 col-form-label">Media Plan</label>
 				<div class="col-sm-8 input-group">
-				  <select name="mp" class="form-control form-control-sm" id="mp" placeholder="...">
+				  <select name="mp" class="form-control form-control-sm select2" id="mp" placeholder="...">
 				  </select>
 				</div>
 			  </div>
@@ -253,18 +254,23 @@ function savef(del=false){
 	saveForm('#myf','po/sv','#ovl',del,'#modal-frm');
 }
 
+var curr_mp='';
 function clientChange(tv,dv=''){
 	var ccw=btoa("client='"+tv+"' order by mpnumber");
-	getCombo("mo/gets",'<?php echo base64_encode("t_mediaplans")?>','<?php echo base64_encode("mpnumber as v,mpnumber as t")?>',ccw,'#mp',dv);
+	var dx='';
+	dx=dv==''&&curr_mp!=''?curr_mp:dv;
+	getCombo("mo/gets",'<?php echo base64_encode("t_mediaplans")?>','<?php echo base64_encode("mpnumber as v,mpnumber as t")?>',ccw,'#mp',dx);
 }
 function formLoaded(frm,modal,overlay,data=""){
 	if(frm=='#myf'){
 		var dv='';
 		if(data!="") {
 			dv=data['mp'];
+			curr_mp=dv;
 		}
 		//log('dv='+dv);
-		clientChange($('#client').val(),dv);
+		//clientChange($('#client').val(),dv);
+		$("#client").trigger("change");
 	}
 }
 </script>

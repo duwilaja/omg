@@ -36,6 +36,9 @@ class Welcome extends CI_Controller {
 			//$data["line1"]=$this->mydb->getline1();
 			$data['pending']=$this->mydb->getlist($usr,'Pending Approval');
 			$data['ongoing']=$this->mydb->getlist($usr,'Rejected');
+			$sspending=$this->mydb->getsstot($usr,"'ss_pending'","ssattc=''");
+			$sscomplet=$this->mydb->getsstot($usr,"'ss_completed'","ssattc<>''");
+			$data['totss']=array_merge($sspending,$sscomplet);
 			$this->load->view('home',$data);
 		}else{
 			redirect(base_url()."sign/out/1");

@@ -107,7 +107,7 @@ $this->load->view("_sidebar",$data);
 				<label for="" class="col-sm-4 col-form-label">Client</label>
 				<div class="col-sm-8 input-group">
 				  <!--input type="text" name="ugrp" class="form-control form-control-sm" id="ugrp" placeholder="..."-->
-				  <select name="client" class="form-control form-control-sm" id="client" placeholder="...">
+				  <select name="client" class="form-control form-control-sm select2" id="client" placeholder="...">
 				  </select>
 				</div>
 			  </div>
@@ -194,6 +194,9 @@ function savef(del=false){
 	$("#flag").val('SAVE');
 	if(del) $("#flag").val('DEL');
 	saveForm('#myf','md/sv','#ovl',del,'#modal-frm');
+}
+function formLoaded(frm,modal,overlay,data=""){
+	$("#client").trigger("change");
 }
 </script>
 </body>

@@ -93,12 +93,12 @@ $bux=base_url();
                   <p>Supplier Invoice</p>
                 </a>
               </li>
-			  <li class="nav-item">
+			  <!--li class="nav-item">
                 <a href="<?php echo $bux?>ss" class="nav-link ss">
                   <i class="fas fa-angle-right nav-icon"></i>
                   <p>Screenshot</p>
                 </a>
-              </li>
+              </li-->
               <li class="nav-item">
                 <a href="<?php echo $bux?>bp" class="nav-link bp">
                   <i class="fas fa-angle-right nav-icon"></i>
