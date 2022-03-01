@@ -125,4 +125,11 @@ class Mydb extends CI_Model {
 		$rs=$this->db->query($sql)->result_array();
 		return array_slice($rs,0,5);
 	}
+	
+	public function getsstot($usr,$g,$w){
+		$where=$usr["uaccess"]=="ADM"?"":" and ss='".$usr["uid"]."'";
+		$sql="select $g  as stts,count(*) as cnt from t_invoices where $w $where";
+		$rs=$this->db->query($sql)->result_array();
+		return $rs;
+	}
 }

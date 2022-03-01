@@ -114,14 +114,14 @@ $this->load->view("_sidebar",$data);
 			  <div class="form-group row">
 				<label for="" class="col-sm-4 col-form-label">Client</label>
 				<div class="col-sm-8 input-group">
-				  <select name="client" class="form-control form-control-sm" id="client" placeholder="..." onchange="clientChange(this.value);">
+				  <select name="client" class="form-control form-control-sm select2" id="client" placeholder="..." onchange="clientChange(this.value);">
 				  </select>
 				</div>
 			  </div>
 			  <div class="form-group row">
 				<label for="" class="col-sm-4 col-form-label">Media Plan</label>
 				<div class="col-sm-8 input-group">
-				  <select name="mp" class="form-control form-control-sm" id="mp" placeholder="...">
+				  <select name="mp" class="form-control form-control-sm select2" id="mp" placeholder="...">
 				  </select>
 				</div>
 			  </div>
@@ -137,7 +137,7 @@ $this->load->view("_sidebar",$data);
 			  <div class="form-group row">
 				<label for="" class="col-sm-4 col-form-label">Supplier</label>
 				<div class="col-sm-8 input-group">
-				  <select name="supplier" class="form-control form-control-sm" id="supplier" placeholder="...">
+				  <select name="supplier" class="form-control form-control-sm select2" id="supplier" placeholder="...">
 				  </select>
 				</div>
 			  </div>
@@ -242,10 +242,12 @@ function savef(del=false){
 	saveForm('#myf','mo/sv','#ovl',del,'#modal-frm');
 }
 
-
+var curr_mp='';
 function clientChange(tv,dv='',dv2=''){
 	var ccw=btoa("client='"+tv+"' order by mpnumber");
-	getCombo("mo/gets",'<?php echo base64_encode("t_mediaplans")?>','<?php echo base64_encode("mpnumber as v,mpnumber as t")?>',ccw,'#mp',dv);
+	var dx='';
+	dx=dv==''&&curr_mp!=''?curr_mp:dv;
+	getCombo("mo/gets",'<?php echo base64_encode("t_mediaplans")?>','<?php echo base64_encode("mpnumber as v,mpnumber as t")?>',ccw,'#mp',dx);
 	//getCombo("md/gets",'<?php echo base64_encode("")?>','<?php echo base64_encode("")?>',ccw,'#po',dv2);
 }
 function formLoaded(frm,modal,overlay,data=""){
@@ -253,9 +255,12 @@ function formLoaded(frm,modal,overlay,data=""){
 		var dv='';
 		if(data!="") {
 			dv=data['mp'];
+			curr_mp=dv;
 		}
 		//log('dv='+dv);
-		clientChange($('#client').val(),dv);
+		//clientChange($('#client').val(),dv);
+		$("#client").trigger("change");
+		$("#supplier").trigger("change");
 	}
 }
 </script>

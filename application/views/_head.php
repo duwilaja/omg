@@ -21,7 +21,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <link rel="stylesheet" href="<?php echo $bu;?>/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
   <link rel="stylesheet" href="<?php echo $bu;?>/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
   
-  <!-- daterange picker -->
+  <!-- select2 -->
+  <link rel="stylesheet" href="<?php echo $bu;?>/plugins/select2/css/select2.min.css">
+  <link rel="stylesheet" href="<?php echo $bu;?>/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+  
+  <!-- fancybox picker -->
   <link rel="stylesheet" href="<?php echo $bu;?>/plugins/jquery-fancybox/jquery.fancybox.min.css">
   
   <!-- daterange picker -->

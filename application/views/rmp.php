@@ -64,9 +64,9 @@ $this->load->view("_sidebar",$data);
 						<th>Product</th>
 						<th>Start</th>
 						<th>End</th>
-						<th>Invoice#</th>
+						<th>Invoice</th>
 						<th>Screenshot</th>
-						<th>Billing#</th>
+						<th>Billing</th>
 					  </tr>
                   </thead>
                   <tbody>
@@ -99,7 +99,8 @@ $(document).ready(function(){
 			type: 'POST',
 			url: bu+'r/datatable',
 			data: function (d) {
-				d.s= '<?php echo base64_encode($sql); ?>';
+				d.s= '<?php echo base64_encode($sql); ?>',
+				d.r= '<?php echo base64_encode($data["menu"]); ?>';
 			}
 		},
 		initComplete: function(){

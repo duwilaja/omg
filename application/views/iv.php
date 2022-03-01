@@ -9,9 +9,9 @@ $data["pmenu"]="docs";
 $data["session"]=$session;
 $data["bu"]=$bu;
 
-$sql="select invno,client,mp,mo,invdt as idt,supplier,curr,amt,attc,rowid from t_invoices";
-$cq="invno,client,mp,mo,invdt as idt,supplier,curr,amt,attc,ss";
-$c="invno,client,mp,mo,invdt,supplier,curr,amt,attc,ss";
+$sql="select invno,client,mp,mo,invdt as idt,supplier,curr,amt,attc,ssattc,rowid from t_invoices";
+$cq="invno,client,mp,mo,invdt as idt,supplier,curr,amt,attc,ssattc,ss";
+$c="invno,client,mp,mo,invdt,supplier,curr,amt,attc,ssattc,ss";
 $t="t_invoices";
 
 $this->load->view("_head",$data);
@@ -26,7 +26,7 @@ $this->load->view("_sidebar",$data);
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0"><?php echo $data["title"]?></h1>
+            <h1 class="m-0 titel"><?php echo $data["title"]?></h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -62,6 +62,7 @@ $this->load->view("_sidebar",$data);
 						<th style="padding-right: 4px;"></th>
 						<th style="padding-right: 4px;"></th>
 						<th style="padding-right: 4px;"></th>
+						<th style="padding-right: 4px;"></th>
 					  </tr>
 					  <tr>
 						<th>Invoice#</th>
@@ -72,7 +73,8 @@ $this->load->view("_sidebar",$data);
 						<th>Supplier</th>
 						<th>Currency</th>
 						<th>Amount</th>
-						<th>Attachment</th>
+						<th>Invoice Attachment</th>
+						<th>Screenshot</th>
 					  </tr>
                   </thead>
                   <tbody>
@@ -109,6 +111,7 @@ $this->load->view("_sidebar",$data);
 		  <input type="hidden" name="cols" value="<?php echo base64_encode($c)?>">
 		  
 		  <input type="hidden" name="attc" id="attc" value="">
+		  <input type="hidden" name="ssattc" id="ssattc" value="">
 		  
 			<div class="card-body">
 			<div class="row">
@@ -132,14 +135,14 @@ $this->load->view("_sidebar",$data);
 			  <div class="form-group col-md-6">
 				<label for="" class="col-form-label">Client</label>
 				<div class="input-group">
-				  <select name="client" class="form-control form-control-sm" id="client" placeholder="..." onchange="clientChange(this.value);">
+				  <select name="client" class="form-control form-control-sm select2" id="client" placeholder="..." onchange="clientChange(this.value);">
 				  </select>
 				</div>
 			  </div>
 			  <div class="form-group col-md-6">
 				<label for="" class="col-form-label">Media Plan</label>
 				<div class="input-group">
-				  <select name="mp" class="form-control form-control-sm" id="mp" placeholder="...">
+				  <select name="mp" class="form-control form-control-sm select2" id="mp" placeholder="...">
 				  </select>
 				</div>
 			  </div>
@@ -148,7 +151,7 @@ $this->load->view("_sidebar",$data);
 			  <div class="form-group col-md-6">
 				<label for="" class="col-form-label">Supplier</label>
 				<div class="input-group">
-				  <select name="supplier" class="form-control form-control-sm" id="supplier" placeholder="...">
+				  <select name="supplier" class="form-control form-control-sm select2" id="supplier" placeholder="...">
 				  </select>
 				</div>
 			  </div>
@@ -180,16 +183,23 @@ $this->load->view("_sidebar",$data);
 			</div>
 			<div class="row">
 			  <div class="form-group col-md-6">
-				<label for="" class="col-form-label">Attachment</label>
+				<label for="" class="col-form-label">Invoice Attachment</label>
 				<div class="input-group">
 				  <input type="file" name="uploadedfile" class="form-control form-control-sm" id="uploadedfile" placeholder="...">
 				</div>
 			  </div>
 			  <div class="form-group col-md-6">
-				<label for="" class="col-form-label">Screenshot User</label>
+				<label for="" class="col-form-label">Screenshot</label>
 				<div class="input-group">
-				  <select name="ss" class="form-control form-control-sm" id="ss" placeholder="...">
+				  <select name="ss" class="form-control form-control-sm select2" id="ss" placeholder="...">
 				  </select>
+				  <button type="button" onclick="klon()" class="btn"><a class="fas fa-plus-circle text-success"></a></button>
+				  <button type="button" onclick="removeclone()" class="btn"><a class="fas fa-minus-circle text-danger"></a></button>
+				</div>
+				<div class="ssfiles">
+					<div class="row ssfile"><div class="col-md-12">
+					  <input type="file" name="ssuploadedfile[]" class="form-control form-control-sm" placeholder="...">
+					</div></div>
 				</div>
 			  </div>
 			</div>
@@ -220,11 +230,25 @@ $cw="1=1 order by clientname";
 $sc="suppid as v,suppname as t";
 $st="t_suppliers";
 $sw="1=1 order by suppname";
+
+$where=" where 1=1";
+if($session["uaccess"]!="ADM"){
+	$where=" where (creator='".$session["uid"]."' or ss='".$session["uid"]."')";
+}
+$ttl="";
+switch($which){
+	//case "": $where.=" or stts='Approved'"; break;
+	case "c": $where.=" and ssattc<>''"; $ttl="(Completed)"; break;
+	case "o": $where.=" and 0=1"; $ttl="(Ongoing)"; break; //always none
+	case "p": $where.=" and ssattc=''"; $ttl="(Pending)"; break;
+}
 ?>
 <script>
 var  mytbl;
+var whoami='<?php echo $session["uid"]?>';
 $(document).ready(function(){
 	document_ready();
+	$(".titel").html($(".titel").html()+' <?php echo $ttl?>');
 	mytbl = $("#example1").DataTable({
 		serverSide: false,
 		processing: true,
@@ -232,7 +256,7 @@ $(document).ready(function(){
 			type: 'POST',
 			url: bu+'iv/datatable',
 			data: function (d) {
-				d.s= '<?php echo base64_encode($sql); ?>';
+				d.s= '<?php echo base64_encode($sql.$where); ?>';
 			}
 		},
 		initComplete: function () {
@@ -291,8 +315,16 @@ function reloadTable(frm){
 	mytbl.ajax.reload(function(){filterDatatable(mytbl,[1,5])},false);
 }
 
+function klon(){
+	$(".ssfile").clone().removeClass("ssfile").addClass("ssclone").appendTo(".ssfiles");
+}
+function removeclone(){
+	$(".ssclone:last").remove();
+}
+
 function openf(id=0){
 	$("#rowid").val(id);
+	$(".ssclone").remove();
 	openForm('#myf','#modal-frm','iv/get','#ovl',id,'<?php echo base64_encode($t)?>','<?php echo base64_encode($cq)?>')
 }
 function savef(del=false){
@@ -302,9 +334,12 @@ function savef(del=false){
 }
 
 
+var curr_mp='';
 function clientChange(tv,dv='',dv2=''){
 	var ccw=btoa("client='"+tv+"' order by mpnumber");
-	getCombo("iv/gets",'<?php echo base64_encode("t_mediaplans")?>','<?php echo base64_encode("mpnumber as v,mpnumber as t")?>',ccw,'#mp',dv);
+	var dx='';
+	dx=dv==''&&curr_mp!=''?curr_mp:dv;
+	getCombo("iv/gets",'<?php echo base64_encode("t_mediaplans")?>','<?php echo base64_encode("mpnumber as v,mpnumber as t")?>',ccw,'#mp',dx);
 	//getCombo("md/gets",'<?php echo base64_encode("")?>','<?php echo base64_encode("")?>',ccw,'#po',dv2);
 }
 function formLoaded(frm,modal,overlay,data=""){
@@ -312,9 +347,14 @@ function formLoaded(frm,modal,overlay,data=""){
 		var dv='';
 		if(data!="") {
 			dv=data['mp'];
+			curr_mp=dv;
+			if(whoami==data['ss']) $("#btndel").hide();
 		}
 		//log('dv='+dv);
-		clientChange($('#client').val(),dv);
+		//clientChange($('#client').val(),dv);
+		$("#client").trigger("change");
+		$("#ss").trigger("change");
+		$("#supplier").trigger("change");
 	}
 }
 </script>

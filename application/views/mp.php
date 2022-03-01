@@ -15,9 +15,9 @@ $cq="mpnumber,client,product,campaign,placement,FORMAT(startdt,'YYYY-MM-DD') as 
 
 $sql="select mpnumber,client,product,campaign,placement,startdt,enddt,submitdt,curr,amt,stts,approver,notes,approved,rowid from $t";
 $sql="select * from q_mp";
-$cq="mpnumber,client,product,campaign,placement,(startdt) as stdt,(enddt) as endt,(submitdt) as submdt,curr,stts,approver,approved,amt,creator";
+$cq="mpnumber,legal,brand,client,product,campaign,placement,(startdt) as stdt,(enddt) as endt,(submitdt) as submdt,curr,stts,approver,approved,amt,creator";
 
-$c="mpnumber,client,product,campaign,placement,startdt,enddt,submitdt,curr,amt,notes";
+$c="mpnumber,client,product,campaign,placement,startdt,enddt,submitdt,curr,amt,notes,legal,brand";
 
 $this->load->view("_head",$data);
 $this->load->view("_navbar",$data);
@@ -90,13 +90,15 @@ $this->load->view("_sidebar",$data);
 						<th></th>
 						<th style="padding-right: 4px;"></th>
 						<th style="padding-right: 4px;"></th>
+						<th style="padding-right: 4px;"></th>
+						<th style="padding-right: 4px;"></th>
 						<th></th>
 						<th style="padding-right: 4px;"></th>
 						<th></th>
 						<th></th>
 						<th></th>
-						<th></th>
 						<th style="padding-right: 4px;"></th>
+						<th></th>
 						<th style="padding-right: 4px;"></th>
 						<th style="padding-right: 4px;"></th>
 						<th></th>
@@ -105,6 +107,8 @@ $this->load->view("_sidebar",$data);
 					  </tr>
 					  <tr>
 						<th>MP#</th>
+						<th>Legal</th>
+						<th>Brand</th>
 						<th>Client</th>
 						<th>Product</th>
 						<th>Campaign</th>
@@ -165,9 +169,33 @@ $this->load->view("_sidebar",$data);
 					</div>
 				  </div>
 				  <div class="form-group col-md-6">
+					<label for="" class="col-form-label">Legal Entity</label>
+					<div class="input-group">
+					  <select name="legal" class="form-control form-control-sm" id="legal" placeholder="...">
+						<option value=""></option>
+						<option value="OMGI">OMGI</option>
+						<option value="OMI">OMI</option>
+						<option value="KCI">SGD</option>
+					  </select>
+					</div>
+				  </div>
+				</div>
+				<div class="row">
+				  <div class="form-group col-md-6">
+					<label for="" class="col-form-label">Brand</label>
+					<div class="input-group">
+					  <select name="brand" class="form-control form-control-sm" id="brand" placeholder="...">
+						<option value=""></option>
+						<option value="OMD">OMD</option>
+						<option value="PHD">PHD</option>
+						<option value="HS">HS</option>
+					  </select>
+					</div>
+				  </div>
+				  <div class="form-group col-md-6">
 					<label for="" class="col-form-label">Client</label>
 					<div class="input-group">
-					  <select name="client" class="form-control form-control-sm" id="client" placeholder="..." onchange="clientChange(this.value);">
+					  <select name="client" class="form-control form-control-sm select2" id="client" placeholder="..." onchange="clientChange(this.value);">
 					  </select>
 					</div>
 				  </div>
@@ -176,7 +204,7 @@ $this->load->view("_sidebar",$data);
 				  <div class="form-group col-md-6">
 					<label for="" class="col-form-label">Product</label>
 					<div class="input-group">
-					  <select name="product" class="form-control form-control-sm" id="product" placeholder="...">
+					  <select name="product" class="form-control form-control-sm select2" id="product" placeholder="...">
 					  </select>
 					</div>
 				  </div>
@@ -278,7 +306,7 @@ $this->load->view("_sidebar",$data);
 				  <div class="form-group col-md-4">
 					<label for="" class="col-form-label">Approver</label>
 					<div class="input-group">
-					  <select name="approver" class="form-control form-control-sm" id="approver" placeholder="...">
+					  <select name="approver" class="form-control form-control-sm select2" id="approver" placeholder="...">
 					  </select>
 					</div>
 				  </div>
@@ -432,6 +460,7 @@ switch($which){
 var  mytbl, mytbla;
 var mpnb='';
 var thisid='<?php echo $session["uid"]?>';
+var filteredcols=[1,2,3,4,6,10,12,13];
 
 $(document).ready(function(){
 	document_ready();
@@ -450,10 +479,10 @@ $(document).ready(function(){
 			}
 		},
 		initComplete: function(){
-			filterDatatable(mytbl,[1,2,4,8,10,11]);
+			filterDatatable(mytbl,filteredcols);
 		},
 		columnDefs: [{
-			targets: 9,
+			targets: 11,
 			render: $.fn.dataTable.render.number(',','.',0,'')
 		}]
 	});
@@ -535,7 +564,7 @@ $(document).ready(function(){
 });
 
 function reloadTable(frm=''){
-	if(frm=='#myf'||frm=='') mytbl.ajax.reload(function(){filterDatatable(mytbl,[1,2,4,8,10,11])},false);
+	if(frm=='#myf'||frm=='') mytbl.ajax.reload(function(){filterDatatable(mytbl,filteredcols)},false);
 	if(frm=='#myfa') mytbla.ajax.reload();
 }
 function mydtfilterchanged(){
@@ -546,12 +575,14 @@ function mydtfilterchanged(){
 		//log(obj.value);
 		if(obj.value!=""){
 			switch(i){
-				case 0: flds.push("client");break;
-				case 1: flds.push("product");break;
-				case 2: flds.push("placement");break;
-				case 3: flds.push("currency");break;
-				case 4: flds.push("status");break;
-				case 5: flds.push("approver");break;
+				case 0: flds.push("legal entity");break;
+				case 1: flds.push("brand");break;
+				case 2: flds.push("client");break;
+				case 3: flds.push("product");break;
+				case 4: flds.push("placement");break;
+				case 5: flds.push("currency");break;
+				case 6: flds.push("status");break;
+				case 7: flds.push("approver");break;
 			}
 		}
 	});
@@ -574,25 +605,33 @@ function savef(del=false,flg='SAVE'){
 	if(del) $("#flag").val('DEL');
 	saveForm('#myf','mp/sv','#ovl',del,'#modal-frm');
 }
+var curr_prod='';
 function clientChange(tv,dv='',dv2=''){
 	var ccw=btoa("client='"+tv+"' order by prodname");
-	getCombo("md/gets",'<?php echo base64_encode($cct)?>','<?php echo base64_encode($ccc)?>',ccw,'#product',dv);
+	var dx='';
+	dx=dv==''&&curr_prod!=''?curr_prod:dv;
+	getCombo("md/gets",'<?php echo base64_encode($cct)?>','<?php echo base64_encode($ccc)?>',ccw,'#product',dx);
 	//getCombo("md/gets",'<?php echo base64_encode($pct)?>','<?php echo base64_encode($pcc)?>',ccw,'#po',dv2);
 }
 function formLoaded(frm,modal,overlay,data=""){
 	if(frm=='#myf'){
+		curr_prod='';
 		var dv='';
 		var dv2='';
 		var iscreator=false;
 		var isapprover=false;
 		if(data!="") {
 			dv=data['product'];
+			curr_prod=dv;
 			dv2=data['po'];
 			isapprover=data['approver']==thisid;
 			iscreator=data['creator']==thisid;
 		}
 		//log('dv='+dv);
-		clientChange($('#client').val(),dv,dv2);
+		//clientChange($('#client').val(),dv,dv2);
+		$('#client').trigger("change");
+		$('#approver').trigger("change");
+		
 		switch($("#stts").val()){
 			case "": $("#approver").attr("disabled",false); $(".btnsave").show(); break;
 			case "Approved": $(".btnsave").hide(); if(!isapprover){$("#btndel").hide();} break;
@@ -613,25 +652,49 @@ function formLoaded(frm,modal,overlay,data=""){
 		}
 	}
 }
-var sual='';
+//var sual='';
+function rijek(id){
+	Swal.fire({
+	  title: 'Reject Note',
+	  html: `<input type="text" id="sual" class="swal2-input" placeholder="Reject Note">`,
+	  confirmButtonText: 'Reject',
+	  focusConfirm: false,
+	  preConfirm: () => {
+		const login = Swal.getPopup().querySelector('#sual').value
+		//const password = Swal.getPopup().querySelector('#password').value
+		if (!login) {
+		  Swal.showValidationMessage(`Please enter reject note`)
+		}
+		return { login: login}
+	  }
+	}).then((result) => {
+	  /*Swal.fire(`
+		Login: ${result.value.login}
+		Password: ${result.value.password}
+	  `.trim())*/
+	  
+		if(id==0){
+			$("#notex").val(result.value.login);
+			savef(false,'REJE');
+		}else{
+			var dat={rowid:id,approver:thisid,notes:result.value.login,flag:'REJE',cols:'<?php echo base64_encode('approver,notes')?>',table:'<?php echo base64_encode($t)?>'};
+			sendData('#myf','mp/sv',dat);
+		}
+	})
+}
 function apprup(id=0){
 	if($("#approver").val()==""&&id==0){
 		alrt("Please select approver","error");
 	}else{
 		if($("#btnapp").text()=="Approve/Reject"||id!=0){
 			Swal.fire({
-			  title: 'Approve this MP?',
+			  text: 'Approve this MP?',
 			  icon: 'question',
-			  html: `<input type="text" id="sual" class="swal2-input" placeholder="Reject Note">`,
 			  showDenyButton: true,
 			  showCancelButton: true,
 			  confirmButtonText: 'Approve',
 			  denyButtonText: 'Reject',
 			  focusConfirm: false,
-			  preDeny: () => {
-				const sualx = Swal.getPopup().querySelector('#sual').value;
-				sual=sualx;
-			  }
 			}).then((result) => {
 			  /* Read more about isConfirmed, isDenied below */
 			  if (result.isConfirmed) {
@@ -644,17 +707,7 @@ function apprup(id=0){
 				}
 			  } else if (result.isDenied) {
 				//Swal.fire('Changes are not saved', '', 'info')
-				if (sual=='') {
-				  Swal.fire(`Please enter reject note.`);
-				}else{
-					if(id==0){
-						$("#notex").val(sual);
-						savef(false,'REJE');
-					}else{
-						var dat={rowid:id,approver:thisid,notes:sual,flag:'REJE',cols:'<?php echo base64_encode('approver,notes')?>',table:'<?php echo base64_encode($t)?>'};
-						sendData('#myf','mp/sv',dat);
-					}
-				}
+				rijek(id);
 			  }
 			});
 		}else{

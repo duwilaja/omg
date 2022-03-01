@@ -40,48 +40,51 @@ $this->load->view("_sidebar",$data);
 	  
         <!-- Info boxes -->
         <div class="row">
-          <div class="col-12 col-sm-6 col-md-4"><a href="<?php echo base_url()?>mp?w=p">
+          <div class="col-12 col-sm-6 col-md-4">
             <div class="info-box">
               <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-tasks"></i></span>
 
               <div class="info-box-content">
                 <span class="info-box-text">Pending Tasks</span>
-                <span class="info-box-number" id="pending_approval">0</span>
+                <span class="info-box-number"><a href="<?php echo base_url()?>mp?w=p">MP <span id="pending_approval">0</span></a></span>
+				<span class="info-box-number"><a href="<?php echo base_url()?>iv?w=p">SS <span id="ss_pending">0</span></a></span>
               </div>
               <!-- /.info-box-content -->
             </div>
             <!-- /.info-box -->
-          </a></div>
+          </div>
           <!-- /.col -->
-          <div class="col-12 col-sm-6 col-md-4"><a href="<?php echo base_url()?>mp?w=o">
+          <div class="col-12 col-sm-6 col-md-4">
             <div class="info-box mb-3">
               <span class="info-box-icon bg-info elevation-1"><i class="fas fa-people-carry"></i></span>
 
               <div class="info-box-content">
                 <span class="info-box-text">Ongoing Tasks</span>
-                <span class="info-box-number" id="rejected">0</span>
+                <span class="info-box-number"><a href="<?php echo base_url()?>mp?w=o">MP <span id="rejected">0</span></a></span>
+				<span class="info-box-number"><a href="<?php echo base_url()?>iv?w=o">SS <span id="ss_ongoing">0</span></a></span>
               </div>
               <!-- /.info-box-content -->
             </div>
             <!-- /.info-box -->
-          </a></div>
+          </div>
           <!-- /.col -->
 
           <!-- fix for small devices only -->
           <div class="clearfix hidden-md-up"></div>
 
-          <div class="col-12 col-sm-6 col-md-4"><a href="<?php echo base_url()?>mp?w=c">
+          <div class="col-12 col-sm-6 col-md-4">
             <div class="info-box mb-3">
               <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-money-check-alt"></i></span>
 
               <div class="info-box-content">
                 <span class="info-box-text">Completed Tasks</span>
-                <span class="info-box-number" id="approved">0</span>
+                <span class="info-box-number"><a href="<?php echo base_url()?>mp?w=c">MP <span id="approved">0</span></a></span>
+				<span class="info-box-number"><a href="<?php echo base_url()?>iv?w=c">SS <span id="ss_completed">0</span></a></span>
               </div>
               <!-- /.info-box-content -->
             </div>
             <!-- /.info-box -->
-          </a></div>
+          </div>
           <!-- /.col -->
         </div>
         <!-- /.row -->
@@ -91,7 +94,7 @@ $this->load->view("_sidebar",$data);
             <!-- PIE CHART -->
             <div class="card card-warning">
               <div class="card-header">
-                <h3 class="card-title">Pending Tasks</h3>
+                <h3 class="card-title">MP Pending Tasks</h3>
 
                 <div class="card-tools">
                   <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -140,7 +143,7 @@ $this->load->view("_sidebar",$data);
             <!-- LINE CHART -->
             <div class="card card-info">
               <div class="card-header">
-                <h3 class="card-title">Ongoing Tasks</h3>
+                <h3 class="card-title">MP Ongoing Tasks</h3>
 
                 <div class="card-tools">
                   <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -200,6 +203,7 @@ $this->load->view("_foot",$data);
 ?>
 <script>
 var total=<?php echo json_encode($tot)?>;
+var totss=<?php echo json_encode($totss)?>;
 //var line1="";
 $(document).ready(function(){
 	document_ready();
@@ -212,6 +216,11 @@ function tot(){
 		var x=total[i]["stts"].replace(" ","_").toLowerCase();
 		//log(x);
 		$("#"+x).html(total[i]["cnt"]);
+	}
+	for(var i=0;i<totss.length;i++){
+		var x=totss[i]["stts"].replace(" ","_").toLowerCase();
+		//log(x);
+		$("#"+x).html(totss[i]["cnt"]);
 	}
 }
 </script>
