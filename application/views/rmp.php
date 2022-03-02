@@ -37,7 +37,34 @@ $this->load->view("_sidebar",$data);
     <!-- Main content -->
     <div class="content">
       <div class="container-fluid">
-	  
+		<div class="card"><div class="card-body">
+			<div class="row">
+			<div class="form-group col-md-6">
+				<label for="" class="col-form-label">From - To</label>
+				<div class="row">
+				<div id="dari" class="col-md-5 input-group date" data-target-input="nearest">
+				  
+					<input type="text" id="df" class="form-control datetimepicker-input form-control-sm" data-target="#dari">
+					<div class="input-group-append" data-target="#dari" data-toggle="datetimepicker">
+						<div class="input-group-text"><i class="fas fa-calendar-alt"></i></div>
+					</div>
+				
+				</div>
+				<div id="sampai" class="col-md-5 input-group date" data-target-input="nearest">
+				  
+					<input type="text" id="dt" class="form-control datetimepicker-input form-control-sm" data-target="#sampai">
+					<div class="input-group-append" data-target="#sampai" data-toggle="datetimepicker">
+						<div class="input-group-text"><i class="fas fa-calendar-alt"></i></div>
+					</div>
+				
+				</div>
+				<div class="col-md-1">
+					<button class="btn btn-success btn-sm" onclick="reloadTable()"><i class="fas fa-paper-plane"></i></button>
+				</div>
+				</div>
+			</div>
+			</div>
+		</div></div>
 		<div class="card">
 			<!--div class="card-header">
 				<div class="card-tools">
@@ -48,7 +75,7 @@ $this->load->view("_sidebar",$data);
 			<div class="card-body table-responsive">
                 <table id="example1" class="table table-sm table-bordered table-striped">
                   <thead>
-					  <tr>
+					  <!--tr>
 						<th style="padding-right: 4px;"></th>
 						<th style="padding-right: 4px;"></th>
 						<th style="padding-right: 4px;"></th>
@@ -57,7 +84,7 @@ $this->load->view("_sidebar",$data);
 						<th style="padding-right: 4px;"></th>
 						<th style="padding-right: 4px;"></th>
 						<th style="padding-right: 4px;"></th>
-					  </tr>
+					  </tr-->
 					  <tr>
 						<th>MP#</th>
 						<th>Client</th>
@@ -89,26 +116,74 @@ $sql="select * from q_rmp";
 ?>
 <script>
 var mytbl;
+
+function getW(){
+	var w, df, dt;
+	df=$("#df").val();dt=$("#dt").val(); w=[];
+	if(df!="") w.push("subdt>='"+df+"'");
+	if(dt!="") w.push("subdt<='"+dt+"'");
+	
+	return btoa(w.join(" and "));
+}
+
 $(document).ready(function(){
 	document_ready();
 	mytbl = $("#example1").DataTable({
 		serverSide: false,
 		processing: true,
-		buttons: ["copy", "excel"],
+		buttons: ["copy", 
+		{
+			text: 'Excel',
+			action: function ( e, dt, node, config ) {
+				//alert( 'Button activated' );
+				window.open('data:application/vnd.ms-excel,' + encodeURIComponent( document.getElementById('example1').outerHTML));
+			}
+        }],
+		/*{
+            extend: 'excelHtml5',
+            customize: function(xlsx) {
+                var sheet = xlsx.xl.worksheets['sheet1.xml'];
+
+				// Loop over all cells in sheet
+				$('row c', sheet).each( function () {
+
+					// if cell starts with http
+					if ( $('is t', this).text().indexOf("http") === 0 ) {
+						
+						
+
+						// (2.) change the type to `str` which is a formula
+						$(this).attr('t', 'str');
+						//append the formula
+						$(this).append('<f>' + 'HYPERLINK("'+$('is t', this).text()+'","'+$('is t', this).text().substr(20)+'")'+ '</f>');
+						//remove the inlineStr
+						$('is', this).remove();
+						// (3.) underline
+						$(this).attr( 's', '4' );
+					}
+				});
+            }
+        }],*/
 		ajax: {
 			type: 'POST',
 			url: bu+'r/datatable',
 			data: function (d) {
 				d.s= '<?php echo base64_encode($sql); ?>',
+				d.w= getW(),
 				d.r= '<?php echo base64_encode($data["menu"]); ?>';
 			}
 		},
 		initComplete: function(){
-			filterDatatable(mytbl,[1,2]);
+			//filterDatatable(mytbl,[1,2]);
 			mytbl.buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
 		}
 	});
+	initDatePicker(["#dari","#sampai"]);
 })
+
+function reloadTable(frm=''){
+	mytbl.ajax.reload();
+}
 </script>
 </body>
 </html>

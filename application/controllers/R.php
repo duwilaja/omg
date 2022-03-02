@@ -15,6 +15,7 @@ class R extends CI_Controller {
 		$usr=$this->session->userdata('user_data');
 		if(isset($usr)){
 			$data["session"]=$usr;
+			$data["sitelength"]=strlen($this->site);
 			$this->load->view($this->input->get('v'),$data);
 		}else{
 			redirect(base_url()."sign/out/1");
@@ -27,16 +28,16 @@ class R extends CI_Controller {
 		$data=array();
 		if(isset($usr)){
 			$sql=base64_decode($this->input->post("s"));
+			$where=base64_decode($this->input->post("w"));
+			$sql.=$where==''?'':" where $where";
 			$rpt=base64_decode($this->input->post("r"));
 			$res=$this->db->query($sql)->result_array();
 			for($i=0;$i<count($res);$i++){
-				//$res[$i]["attc"]=$res[$i]["attc"]==""?"":'<a href="javascript:;" data-fancybox data-type="iframe" data-src="'.$this->path.$res[$i]["attc"].'">'.$res[$i]["attc"].'</a>';
 				switch($rpt){
 					case "rmp": $res[$i]=$this->rmp($res[$i]); break;
 				}
-				$dum=array_values($res[$i]);
-				//$rowid=$res[$i]['rowid'];
-				$data[]=$dum;
+				//$dum=array_values($res[$i]);
+				$data[]=array_values($res[$i]);//$dum;
 			}
 		}
 		$out=array('data'=>$data);
@@ -47,7 +48,9 @@ class R extends CI_Controller {
 		$r=array();
 		$ar=explode(";",$dat);
 		for($j=0;$j<count($ar);$j++){
-			if($ar[$j]!="") $r[]='<a href="javascript:;" data-fancybox data-type="iframe" data-src="'.$path.$ar[$j].'">'.$ar[$j].'</a>';
+			//if($ar[$j]!="") $r[]='<a href="javascript:;" data-fancybox data-type="iframe" data-src="'.$path.$ar[$j].'">'.$ar[$j].'</a>';
+			if($ar[$j]!="") $r[]='<a target="_blank" href="'.$path.$ar[$j].'">'.$ar[$j].'</a>';
+			//if($ar[$j]!="") $r[]=$path.$ar[$j];
 		}
 		return implode("<br />",$r);
 	}
