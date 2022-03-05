@@ -11,7 +11,7 @@ $data["bu"]=$bu;
 
 $sql="select invno,client,mp,mo,invdt as idt,supplier,curr,amt,attc,ssattc,ss,rowid from t_invoices";
 $cq="invno,client,mp,mo,invdt as idt,supplier,curr,amt,attc,ssattc,ss";
-$c="invno,client,mp,mo,invdt,supplier,curr,amt,attc,ssattc,ss";
+$c="invno,client,mp,mo,invdt,supplier,curr,amt,attc,ss,ssattc";
 $t="t_invoices";
 
 $this->load->view("_head",$data);
@@ -246,7 +246,7 @@ $this->load->view("_sidebar",$data);
 		  <input type="hidden" name="table" value="<?php echo base64_encode($t)?>">
 		  <input type="hidden" name="cols" value="<?php echo base64_encode("ssattc")?>">
 		  
-		  <input type="hidden" name="attc"  id="attc" value="">
+		  <input type="hidden" name="ssattc" value="">
 		  
 			<div class="card-body">
 			  <div class="form-group row hidden">
@@ -388,6 +388,10 @@ function removeclone(){
 function openf(id=0){
 	$("#rowid").val(id);
 	//$(".ssclone").remove();
+	if(id==0){
+		$("#attc").val("");
+		$("#ssattc").val("");
+	}
 	openForm('#myf','#modal-frm','iv/get','#ovl',id,'<?php echo base64_encode($t)?>','<?php echo base64_encode($cq)?>')
 }
 function savef(del=false){
