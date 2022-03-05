@@ -27,7 +27,7 @@ class Iv extends CI_Controller {
 			$res=$this->db->query($sql)->result_array();
 			for($i=0;$i<count($res);$i++){
 				$res[$i]["attc"]=$res[$i]["attc"]==""?"":'<a href="javascript:;" data-fancybox data-type="iframe" data-src="'.$this->path.$res[$i]["attc"].'">'.$res[$i]["attc"].'</a>';
-				$res[$i]["ssattc"]=$this->linkkan($res[$i]["ssattc"]);
+				$res[$i]["ssattc"]=$this->linkkan($res[$i],$usr);
 				$dum=array_values($res[$i]);
 				$rowid=$res[$i]['rowid'];
 				$dum[0]='<a href="#" onclick="openf('.$rowid.')">'.$dum[0].' </a>';
@@ -174,12 +174,13 @@ class Iv extends CI_Controller {
 		echo json_encode($ret);
 	}
 	
-	private function linkkan($dat){
+	private function linkkan($dat,$usr){
 		$r=array();
-		$ar=explode(";",$dat);
+		$ar=explode(";",$dat["ssattc"]);
 		for($j=0;$j<count($ar);$j++){
 			if($ar[$j]!="") $r[]='<a href="javascript:;" data-fancybox data-type="iframe" data-src="'.$this->sspath.$ar[$j].'">'.$ar[$j].'</a>';
 		}
+		if(count($r)==0 && $dat["ss"]==$usr["uid"]) $r[]='<button type="button" class="btn btn-secondary" onclick="openfa('.$dat["rowid"].');"><i class="fas fa-paperclip"></i></button>';
 		return implode("<br />",$r);
 	}
 }

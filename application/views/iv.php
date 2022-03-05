@@ -9,7 +9,7 @@ $data["pmenu"]="docs";
 $data["session"]=$session;
 $data["bu"]=$bu;
 
-$sql="select invno,client,mp,mo,invdt as idt,supplier,curr,amt,attc,ssattc,rowid from t_invoices";
+$sql="select invno,client,mp,mo,invdt as idt,supplier,curr,amt,attc,ssattc,ss,rowid from t_invoices";
 $cq="invno,client,mp,mo,invdt as idt,supplier,curr,amt,attc,ssattc,ss";
 $c="invno,client,mp,mo,invdt,supplier,curr,amt,attc,ssattc,ss";
 $t="t_invoices";
@@ -63,6 +63,7 @@ $this->load->view("_sidebar",$data);
 						<th style="padding-right: 4px;"></th>
 						<th style="padding-right: 4px;"></th>
 						<th style="padding-right: 4px;"></th>
+						<th style="padding-right: 4px;"></th>
 					  </tr>
 					  <tr>
 						<th>Invoice#</th>
@@ -75,6 +76,7 @@ $this->load->view("_sidebar",$data);
 						<th>Amount</th>
 						<th>Invoice Attachment</th>
 						<th>Screenshot</th>
+						<th>SS By</th>
 					  </tr>
                   </thead>
                   <tbody>
@@ -193,10 +195,10 @@ $this->load->view("_sidebar",$data);
 				<div class="input-group">
 				  <select name="ss" class="form-control form-control-sm select2" id="ss" placeholder="...">
 				  </select>
-				  <button type="button" onclick="klon()" class="btn"><a class="fas fa-plus-circle text-success"></a></button>
-				  <button type="button" onclick="removeclone()" class="btn"><a class="fas fa-minus-circle text-danger"></a></button>
+				  <button type="button" onclick="klon()" class="btn hidden"><a class="fas fa-plus-circle text-success"></a></button>
+				  <button type="button" onclick="removeclone()" class="btn hidden"><a class="fas fa-minus-circle text-danger"></a></button>
 				</div>
-				<div class="ssfiles">
+				<div class="ssfiles hidden">
 					<div class="row ssfile"><div class="col-md-12">
 					  <input type="file" name="ssuploadedfile[]" class="form-control form-control-sm" placeholder="...">
 					</div></div>
@@ -221,7 +223,68 @@ $this->load->view("_sidebar",$data);
 	<!-- /.modal-dialog -->
   </div>
 
-  
+
+  <div class="modal fade" id="modal-frma">
+	<div class="modal-dialog">
+	  <div class="modal-content">
+		<div id="ovl-attach" class="overlay" style="display:none;">
+			<i class="fas fa-2x fa-sync fa-spin"></i>
+		</div>
+		<div class="modal-header">
+		  <h4 class="modal-title attach-title">Screenshot</h4>
+		  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			<span aria-hidden="true">×</span>
+		  </button>
+		</div>
+		<div class="modal-body">
+		  
+		  <div class="card">
+		  <!-- form start -->
+		  <form id="myfa" class="form-horizontal">
+		  <input type="hidden" name="rowid" id="rowida" value="0">
+		  <input type="hidden" name="flag" id="flaga" value="SAVE">
+		  <input type="hidden" name="table" value="<?php echo base64_encode($t)?>">
+		  <input type="hidden" name="cols" value="<?php echo base64_encode("ssattc")?>">
+		  
+		  <input type="hidden" name="attc"  id="attc" value="">
+		  
+			<div class="card-body">
+			  <div class="form-group row hidden">
+				<label for="" class="col-sm-4 col-form-label">MP#</label>
+				<div class="col-sm-8 input-group">
+				  <input type="text" name="mp" readonly class="form-control form-control-sm" id="mp" placeholder="...">
+				</div>
+			  </div>
+			  <div class="form-group row hidden">
+				<label for="" class="col-sm-4 col-form-label">Doc. Name</label>
+				<div class="col-sm-8 input-group">
+				  <input type="text" name="doc" class="form-control form-control-sm" id="doc" placeholder="...">
+				</div>
+			  </div>
+			  <div class="form-group row">
+				<label for="" class="col-sm-4 col-form-label">File</label>
+				<div class="col-sm-8 input-group">
+				  <input type="file" name="ssuploadedfile[]" class="form-control form-control-sm" id="ssuploadedfile" placeholder="...">
+				</div>
+			  </div>
+			</div>
+			<!-- /.card-body -->
+		  </form>
+		  </div>
+		  <!-- /.card -->
+		  
+		</div>
+		<div class="modal-footer pull-right">
+		  <!--button type="button" id="btndela" class="btn btn-danger" onclick="savefa(true)">Delete</button-->
+		  <button type="button" class="btn btn-primary btnsavea" onclick="savefa();">Save</button>
+		  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		</div>
+	  </div>
+	  <!-- /.modal-content -->
+	</div>
+	<!-- /.modal-dialog -->
+  </div>
+
 <?php
 $this->load->view("_foot",$data);
 $cc="clientid as v,clientname as t";
@@ -324,7 +387,7 @@ function removeclone(){
 
 function openf(id=0){
 	$("#rowid").val(id);
-	$(".ssclone").remove();
+	//$(".ssclone").remove();
 	openForm('#myf','#modal-frm','iv/get','#ovl',id,'<?php echo base64_encode($t)?>','<?php echo base64_encode($cq)?>')
 }
 function savef(del=false){
@@ -333,6 +396,16 @@ function savef(del=false){
 	saveForm('#myf','iv/sv','#ovl',del,'#modal-frm');
 }
 
+
+function openfa(id=0){
+	resetForm('#myfa');
+	$('#modal-frma').modal('show');
+	$("#rowida").val(id);
+}
+function savefa(del=false){
+	$("#flaga").val('SAVE');
+	saveForm('#myfa','iv/sv','#ovl-attach',del,'#modal-frma');
+}
 
 var curr_mp='';
 function clientChange(tv,dv='',dv2=''){
