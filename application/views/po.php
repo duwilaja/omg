@@ -14,6 +14,8 @@ $cq="ponumber,client,mp,podt as pdt,curr,amt,attc";
 $c="ponumber,client,mp,podt,curr,amt,attc";
 $t="t_po";
 
+$sql="select * from q_po";
+
 $this->load->view("_head",$data);
 $this->load->view("_navbar",$data);
 $this->load->view("_sidebar",$data);
@@ -42,6 +44,34 @@ $this->load->view("_sidebar",$data);
     <!-- Main content -->
     <div class="content">
       <div class="container-fluid">
+		<div class="card"><div class="card-body">
+			<div class="row">
+			<div class="form-group col-md-6">
+				<label for="" class="col-form-label">From - To</label>
+				<div class="row">
+				<div id="dari" class="col-md-5 input-group date" data-target-input="nearest">
+				  
+					<input type="text" id="df" class="form-control datetimepicker-input form-control-sm" data-target="#dari">
+					<div class="input-group-append" data-target="#dari" data-toggle="datetimepicker">
+						<div class="input-group-text"><i class="fas fa-calendar-alt"></i></div>
+					</div>
+				
+				</div>
+				<div id="sampai" class="col-md-5 input-group date" data-target-input="nearest">
+				  
+					<input type="text" id="dt" class="form-control datetimepicker-input form-control-sm" data-target="#sampai">
+					<div class="input-group-append" data-target="#sampai" data-toggle="datetimepicker">
+						<div class="input-group-text"><i class="fas fa-calendar-alt"></i></div>
+					</div>
+				
+				</div>
+				<div class="col-md-1">
+					<button class="btn btn-success btn-sm" onclick="reloadTable()"><i class="fas fa-paper-plane"></i></button>
+				</div>
+				</div>
+			</div>
+			</div>
+		</div></div>
 		<div class="card">
 			<div class="card-header">
 				<div class="card-tools">
@@ -187,6 +217,7 @@ $cw="1=1 order by clientname";
 <script>
 var  mytbl;
 $(document).ready(function(){
+	$("#df").val("<?php echo date('Y-m-').'01'?>"); $("#dt").val("<?php echo date('Y-m-t')?>");
 	document_ready();
 	mytbl = $("#example1").DataTable({
 		serverSide: false,
@@ -195,7 +226,9 @@ $(document).ready(function(){
 			type: 'POST',
 			url: bu+'po/datatable',
 			data: function (d) {
-				d.s= '<?php echo base64_encode($sql); ?>';
+				d.s= '<?php echo base64_encode($sql); ?>',
+				d.df= $('#df').val(),
+				d.dt= $('#dt').val();
 			}
 		},
 		initComplete: function(){
@@ -237,7 +270,7 @@ $(document).ready(function(){
 		}
 	});
 	getCombo("po/gets",'<?php echo base64_encode($ct)?>','<?php echo base64_encode($cc)?>','<?php echo base64_encode($cw)?>','#client');
-	initDatePicker(["#podate"]);
+	initDatePicker(["#podate","#dari","#sampai"]);
 });
 
 function reloadTable(frm=''){
@@ -246,7 +279,7 @@ function reloadTable(frm=''){
 
 function openf(id=0){
 	$("#rowid").val(id);
-	openForm('#myf','#modal-frm','po/get','#ovl',id,'<?php echo base64_encode($t)?>','<?php echo base64_encode($cq)?>')
+	openForm('#myf','#modal-frm','po/get','#ovl',id,'<?php echo base64_encode("q_po")?>','<?php echo base64_encode("*")?>')
 }
 function savef(del=false){
 	$("#flag").val('SAVE');
