@@ -35,7 +35,7 @@ class Mp extends CI_Controller {
 				$stts=$res[$i]['stts'];
 				$crt=($stts!='Approved')?$res[$i]['creator']:'';
 				$btn=$res[$i]['countofdoc']>0?"btn-info":"btn-secondary";
-				$dum[0]='<a href="#" onclick="openf('.$rowid.')">'.$dum[0].' </a>';
+				$dum[0]=$res[$i]["creator"]==$usr['uid']?'<a href="#" onclick="openf('.$rowid.')">'.$dum[0].' </a>':$dum[0];
 				$dum[count($dum)-3]='<button type="button" class="btn '.$btn.'" onclick="attach(\''.$mpn.'\',\''.$camp.'\',\''.$crt.'\');"><i class="fas fa-paperclip"></i></button>';
 				$dum[count($dum)-2]='';
 				if($usr["uid"]==$approver && $stts=="Pending Approval") $dum[count($dum)-2]='<button type="button" class="btn btn-success" onclick="apprup('.$rowid.');">Approve/Reject</button>';

@@ -9,10 +9,12 @@ $data["pmenu"]="docs";
 $data["session"]=$session;
 $data["bu"]=$bu;
 
-$sql="select invno,client,mp,mo,invdt as idt,supplier,curr,amt,attc,ssattc,ss,rowid from t_invoices";
+$sql="select invno,client,mp,mo,invdt as idt,supplier,curr,amt,attc,ssattc,ss,creator,rowid from t_invoices";
 $cq="invno,client,mp,mo,invdt as idt,supplier,curr,amt,attc,ssattc,ss";
 $c="invno,client,mp,mo,invdt,supplier,curr,amt,attc,ss,ssattc";
 $t="t_invoices";
+
+$sql="select * from q_iv";
 
 $this->load->view("_head",$data);
 $this->load->view("_navbar",$data);
@@ -42,6 +44,35 @@ $this->load->view("_sidebar",$data);
     <!-- Main content -->
     <div class="content">
       <div class="container-fluid">
+		<div class="card"><div class="card-body">
+			<div class="row">
+			<div class="form-group col-md-6">
+				<label for="" class="col-form-label">From - To</label>
+				<div class="row">
+				<div id="dari" class="col-md-5 input-group date" data-target-input="nearest">
+				  
+					<input type="text" id="df" class="form-control datetimepicker-input form-control-sm" data-target="#dari">
+					<div class="input-group-append" data-target="#dari" data-toggle="datetimepicker">
+						<div class="input-group-text"><i class="fas fa-calendar-alt"></i></div>
+					</div>
+				
+				</div>
+				<div id="sampai" class="col-md-5 input-group date" data-target-input="nearest">
+				  
+					<input type="text" id="dt" class="form-control datetimepicker-input form-control-sm" data-target="#sampai">
+					<div class="input-group-append" data-target="#sampai" data-toggle="datetimepicker">
+						<div class="input-group-text"><i class="fas fa-calendar-alt"></i></div>
+					</div>
+				
+				</div>
+				<div class="col-md-1">
+					<button class="btn btn-success btn-sm" onclick="reloadTable()"><i class="fas fa-paper-plane"></i></button>
+				</div>
+				</div>
+			</div>
+			</div>
+		</div></div>
+
 		<div class="card">
 			<div class="card-header">
 				<div class="card-tools">
@@ -296,7 +327,7 @@ $sw="1=1 order by suppname";
 
 $where=" where 1=1";
 if($session["uaccess"]!="ADM"){
-	$where=" where (creator='".$session["uid"]."' or ss='".$session["uid"]."')";
+	//$where=" where (creator='".$session["uid"]."' or ss='".$session["uid"]."')";
 }
 $ttl="";
 switch($which){
@@ -309,7 +340,9 @@ switch($which){
 <script>
 var  mytbl;
 var whoami='<?php echo $session["uid"]?>';
+
 $(document).ready(function(){
+	if("<?php echo $which?>"=="") { $("#df").val("<?php echo date('Y-m-').'01'?>"); $("#dt").val("<?php echo date('Y-m-t')?>"); }
 	document_ready();
 	$(".titel").html($(".titel").html()+' <?php echo $ttl?>');
 	mytbl = $("#example1").DataTable({
@@ -319,7 +352,9 @@ $(document).ready(function(){
 			type: 'POST',
 			url: bu+'iv/datatable',
 			data: function (d) {
-				d.s= '<?php echo base64_encode($sql.$where); ?>';
+				d.s= '<?php echo base64_encode($sql.$where); ?>',
+				d.df= $("#df").val(),
+				d.dt= $("#dt").val();
 			}
 		},
 		initComplete: function () {
@@ -371,7 +406,7 @@ $(document).ready(function(){
 	getCombo("iv/gets",'<?php echo base64_encode($ct)?>','<?php echo base64_encode($cc)?>','<?php echo base64_encode($cw)?>','#client');
 	getCombo("iv/gets",'<?php echo base64_encode($st)?>','<?php echo base64_encode($sc)?>','<?php echo base64_encode($sw)?>','#supplier');
 	getCombo("md/gets",'<?php echo base64_encode("t_users")?>','<?php echo base64_encode("uid as v,uname as t")?>','<?php echo base64_encode(" 1=1 order by uname")?>','#ss');
-	initDatePicker(["#idate"]);
+	initDatePicker(["#idate","#dari","#sampai"]);
 });
 
 function reloadTable(frm){
@@ -392,7 +427,7 @@ function openf(id=0){
 		$("#attc").val("");
 		$("#ssattc").val("");
 	}
-	openForm('#myf','#modal-frm','iv/get','#ovl',id,'<?php echo base64_encode($t)?>','<?php echo base64_encode($cq)?>')
+	openForm('#myf','#modal-frm','iv/get','#ovl',id,'<?php echo base64_encode("q_iv")?>','<?php echo base64_encode("*")?>')
 }
 function savef(del=false){
 	$("#flag").val('SAVE');

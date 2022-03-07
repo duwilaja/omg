@@ -92,18 +92,18 @@ $this->load->view("_sidebar",$data);
 						<th style="padding-right: 4px;"></th>
 						<th style="padding-right: 4px;"></th>
 						<th style="padding-right: 4px;"></th>
-						<th></th>
-						<th style="padding-right: 4px;"></th>
-						<th></th>
-						<th></th>
-						<th></th>
-						<th style="padding-right: 4px;"></th>
-						<th></th>
 						<th style="padding-right: 4px;"></th>
 						<th style="padding-right: 4px;"></th>
-						<th></th>
-						<th></th>
-						<th></th>
+						<th style="padding-right: 4px;"></th>
+						<th style="padding-right: 4px;"></th>
+						<th style="padding-right: 4px;"></th>
+						<th style="padding-right: 4px;"></th>
+						<th style="padding-right: 4px;"></th>
+						<th style="padding-right: 4px;"></th>
+						<th style="padding-right: 4px;"></th>
+						<th style="padding-right: 4px;"></th>
+						<th style="padding-right: 4px;"></th>
+						<th style="padding-right: 4px;"></th>
 					  </tr>
 					  <tr>
 						<th>MP#</th>
@@ -175,7 +175,7 @@ $this->load->view("_sidebar",$data);
 						<option value=""></option>
 						<option value="OMGI">OMGI</option>
 						<option value="OMI">OMI</option>
-						<option value="KCI">SGD</option>
+						<option value="KCI">KCI</option>
 					  </select>
 					</div>
 				  </div>
@@ -446,7 +446,7 @@ $sqla="select mp,doc,attc,rowid from t_mpdoc";
 
 $where=" where 1=1";
 if($session["uaccess"]!="ADM"){
-	$where=" where (creator='".$session["uid"]."' or approver='".$session["uid"]."')";
+	//$where=" where (creator='".$session["uid"]."' or approver='".$session["uid"]."')";
 }
 $ttl="";
 switch($which){
@@ -463,6 +463,7 @@ var thisid='<?php echo $session["uid"]?>';
 var filteredcols=[1,2,3,4,6,10,12,13];
 
 $(document).ready(function(){
+	if("<?php echo $which?>"=="") { $("#df").val("<?php echo date('Y-m-').'01'?>"); $("#dt").val("<?php echo date('Y-m-t')?>"); }
 	document_ready();
 	$(".titel").html($(".titel").html()+' <?php echo $ttl?>');
 	mytbl = $("#example1").DataTable({
@@ -649,6 +650,9 @@ function formLoaded(frm,modal,overlay,data=""){
 						$("#btnapp").text("Resend Notification");
 					}
 					break;
+		}
+		if(!iscreator && !isapprover) {
+			$("#btnapp").hide(); $("#btndel").hide();
 		}
 	}
 }

@@ -21,7 +21,9 @@ class Mo extends CI_Controller {
 		$usr=$this->session->userdata('user_data');
 		$data=array();
 		if(isset($usr)){
-			$sql=base64_decode($this->input->post("s"));
+			$sql=base64_decode($this->input->post("s"))." where 1=1";
+			$sql.=$this->input->post("df")==''?'':" and odt>='".$this->input->post("df")."'";
+			$sql.=$this->input->post("dt")==''?'':" and odt<='".$this->input->post("dt")."'";
 			$res=$this->db->query($sql)->result_array();
 			for($i=0;$i<count($res);$i++){
 				$res[$i]["attc"]=$res[$i]["attc"]==""?"":'<a href="javascript:;" data-fancybox data-type="iframe" data-src="'.$this->path.$res[$i]["attc"].'">'.$res[$i]["attc"].'</a>';

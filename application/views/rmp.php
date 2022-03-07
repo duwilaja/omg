@@ -127,6 +127,7 @@ function getW(){
 }
 
 $(document).ready(function(){
+	$("#df").val("<?php echo date('Y-m-').'01'?>"); $("#dt").val("<?php echo date('Y-m-t')?>");
 	document_ready();
 	mytbl = $("#example1").DataTable({
 		serverSide: false,

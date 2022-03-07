@@ -24,13 +24,15 @@ class Iv extends CI_Controller {
 		$data=array();
 		if(isset($usr)){
 			$sql=base64_decode($this->input->post("s"));
+			$sql.=$this->input->post("df")==''?'':" and idt>='".$this->input->post("df")."'";
+			$sql.=$this->input->post("dt")==''?'':" and idt<='".$this->input->post("dt")."'";
 			$res=$this->db->query($sql)->result_array();
 			for($i=0;$i<count($res);$i++){
 				$res[$i]["attc"]=$res[$i]["attc"]==""?"":'<a href="javascript:;" data-fancybox data-type="iframe" data-src="'.$this->path.$res[$i]["attc"].'">'.$res[$i]["attc"].'</a>';
 				$res[$i]["ssattc"]=$this->linkkan($res[$i],$usr);
 				$dum=array_values($res[$i]);
 				$rowid=$res[$i]['rowid'];
-				$dum[0]='<a href="#" onclick="openf('.$rowid.')">'.$dum[0].' </a>';
+				$dum[0]=$res[$i]["creator"]==$usr['uid']?'<a href="#" onclick="openf('.$rowid.')">'.$dum[0].' </a>':$dum[0];
 				$data[]=$dum;
 			}
 		}

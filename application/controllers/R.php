@@ -52,7 +52,7 @@ class R extends CI_Controller {
 			if($ar[$j]!="") $r[]='<a target="_blank" href="'.$path.$ar[$j].'">'.$ar[$j].'</a>';
 			//if($ar[$j]!="") $r[]=$path.$ar[$j];
 		}
-		return implode("<br />",$r);
+		return implode(", ",$r);
 	}
 	
 	private function rmp($dat){
