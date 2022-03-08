@@ -121,4 +121,9 @@ var menuc=".<?php echo $menu?>";
 var pmenuc=".<?php echo $pmenu?>";
 $.fn.modal.Constructor.prototype._enforceFocus = function() {}; //swal input fix
 $(".select2").select2({theme: 'bootstrap4'});
+
+$.fn.dataTable.ext.errMode = function ( settings, helpPage, message ) { 
+    console.log(message);
+	alrt("Error loading data. could be caused by too many rows selected.");
+};
 </script>
