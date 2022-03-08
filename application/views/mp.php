@@ -599,7 +599,7 @@ function openf(id=0){
 	//$(".appruper").hide();
 	$("#btnapp").hide();
 	$(".btnsave").hide();
-	openForm('#myf','#modal-frm','mp/get','#ovl',id,'<?php echo base64_encode($t)?>','<?php echo base64_encode($cq)?>')
+	openForm('#myf','#modal-frm','mp/get','#ovl',id,'<?php echo base64_encode("q_mpx")?>','<?php echo base64_encode("*")?>')
 }
 function savef(del=false,flg='SAVE'){
 	$("#flag").val(flg);
