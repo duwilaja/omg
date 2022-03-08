@@ -151,7 +151,11 @@ $(document).ready(function(){
 		initComplete: function(){
 			filterDatatable(mytbl,[1,2]);
 			mytbl.buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-		}
+		},
+		columnDefs: [{
+			targets: [5,6,7,8,9,10],
+			render: $.fn.dataTable.render.number(',','.',0,'')
+		}]
 	});
 	initDatePicker(["#dari","#sampai"]);
 })
