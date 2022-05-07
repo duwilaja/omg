@@ -249,7 +249,7 @@ $this->load->view("_sidebar",$data);
 				</div>
 				<div class="row">
 				  <div class="form-group col-md-6">
-					<label for="" class="col-form-label">Submission Date</label>
+					<label for="" class="col-form-label">Submission To Client Date</label>
 					<div id="subdt" class="input-group date" data-target-input="nearest">
 					  
                         <input type="text" name="submitdt" id="submdt" class="form-control datetimepicker-input form-control-sm" data-target="#subdt">
@@ -292,7 +292,7 @@ $this->load->view("_sidebar",$data);
 				  <div class="form-group col-md-6">
 					<label for="" class="col-form-label">Budget</label>
 					<div class="input-group">
-					  <input type="text" name="amt" class="form-control form-control-sm" id="amt" placeholder="...">
+					  <input type="text" name="amt" class="form-control form-control-sm number" id="amt" placeholder="...">
 					</div>
 				  </div>
 				</div>
