@@ -230,7 +230,7 @@ $(document).ready(function(){
 			}
 		},
 		initComplete: function () {
-            filterDatatable(mytbl,[1,4]);
+            filterDatatable(mytbl,[1,5]);
 		}
 	});
 	$("#myf").validate({
@@ -269,7 +269,7 @@ $(document).ready(function(){
 });
 
 function reloadTable(frm){
-	mytbl.ajax.reload(function(){filterDatatable(mytbl,[1,4])},false);
+	mytbl.ajax.reload(function(){filterDatatable(mytbl,[1,5])},false);
 }
 
 function openf(id=0){
