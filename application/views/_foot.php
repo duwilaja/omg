@@ -110,6 +110,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <script src="<?php echo $bu;?>/plugins/datatables-buttons/js/buttons.print.min.js"></script>
 <script src="<?php echo $bu;?>/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
 
+<script src="<?php echo $bu;?>/plugins/jquery.inputmask.js"></script>
+
 <!-- AdminLTE App -->
 <script src="<?php echo $bu;?>/dist/js/adminlte.min.js"></script>
 
@@ -121,6 +123,7 @@ var menuc=".<?php echo $menu?>";
 var pmenuc=".<?php echo $pmenu?>";
 $.fn.modal.Constructor.prototype._enforceFocus = function() {}; //swal input fix
 $(".select2").select2({theme: 'bootstrap4'});
+$(".number").inputmask('integer', {autoUnmask:true, groupSeparator: ',', autoGroup: true, greedy: false});
 
 $.fn.dataTable.ext.errMode = function ( settings, helpPage, message ) { 
     console.log(message);

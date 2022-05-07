@@ -95,7 +95,7 @@ $this->load->view("_sidebar",$data);
 						<th>Product</th>
 						<th>Start</th>
 						<th>End</th>
-						<th>Amount</th>
+						<th>Budget</th>
 						<th>Invoice Amount</th>
 						<th>Invoice Count</th>
 						<th>Screenshot Count</th>

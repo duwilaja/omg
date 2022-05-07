@@ -9,9 +9,9 @@ $data["pmenu"]="docs";
 $data["session"]=$session;
 $data["bu"]=$bu;
 
-$sql="select ordernumber,client,mp,orderdt as odt,supplier,attc,rowid from t_mediaorders";
-$cq="ordernumber,client,mp,orderdt as odt,supplier,attc";
-$c="ordernumber,client,mp,orderdt,supplier,attc";
+$sql="select ordernumber,client,quotnum,mp,orderdt as odt,supplier,attc,rowid from t_mediaorders";
+$cq="ordernumber,client,quotnum,mp,orderdt as odt,supplier,attc";
+$c="ordernumber,quotnum,client,mp,orderdt,supplier,attc";
 $t="t_mediaorders";
 
 $sql="select * from q_mo";
@@ -91,8 +91,9 @@ $this->load->view("_sidebar",$data);
 						<th style="padding-right: 4px;"></th>
 					  </tr>
 					  <tr>
-						<th>Order#</th>
+						<th>MediaOrder#</th>
 						<th>Client</th>
+						<th>Quotation#</th>
 						<th>MP#</th>
 						<th>Date</th>
 						<th>Supplier</th>
@@ -136,9 +137,15 @@ $this->load->view("_sidebar",$data);
 		  
 			<div class="card-body">
 			  <div class="form-group row">
-				<label for="" class="col-sm-4 col-form-label">Order#</label>
+				<label for="" class="col-sm-4 col-form-label">Media Order Number</label>
 				<div class="col-sm-8 input-group">
 				  <input type="text" name="ordernumber" class="form-control form-control-sm" id="ordernumber" placeholder="...">
+				</div>
+			  </div>
+			  <div class="form-group row">
+				<label for="" class="col-sm-4 col-form-label">Vendor Quotation #</label>
+				<div class="col-sm-8 input-group">
+				  <input type="text" name="quotnum" class="form-control form-control-sm" id="quotnum" placeholder="...">
 				</div>
 			  </div>
 			  <div class="form-group row">
