@@ -3,6 +3,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Mydb extends CI_Model {
 	
+	private $smtp_prefix='ssl://';
+	
+	private $smtp_host='mail.omgdemo.website';
+	private $smtp_user='omg@omgdemo.website';
+	private $smtp_pass='omgbanget';
+	
 	public function esc($str){
 		return str_replace("'","''",$str);
 	}
@@ -72,10 +78,10 @@ class Mydb extends CI_Model {
 	public function sendmail($to,$sub,$msg){
 		$config = array(
 			'protocol' => 'smtp',
-			'smtp_host' => 'ssl://mail.omgdemo.website',
+			'smtp_host' => $this->smtp_prefix.$this->smtp_host,
 			'smtp_port' => 465,
-			'smtp_user' => 'omg@omgdemo.website',
-			'smtp_pass' => '0mGbanget',
+			'smtp_user' => $this->smtp_user,
+			'smtp_pass' => $this->smtp_pass,
 			'smtp_timeout' => 15,
 			'mailtype'  => 'html', 
 			'charset'   => 'utf-8'
@@ -90,7 +96,8 @@ class Mydb extends CI_Model {
 		return $this->email->send();
 	}
 	public function debugmail($to,$sub,$msg){
-		$debug = '';
+		//$debug = '';
+		$GLOBALS['debug']='';
 		require_once(APPPATH."third_party/phpmailer/PHPMailerAutoload.php");
         $mail = new PHPMailer;
 		$mail->SMTPDebug = 2;
@@ -99,18 +106,18 @@ class Mydb extends CI_Model {
 							};
 		$mail->isSMTP();
 		$mail->SMTPAuth = true;
-		$mail->Host = 'smtp.yandex.com';
+		$mail->Host = $this->smtp_host;
 		$mail->Port = 465;
 		$mail->SMTPSecure = 'ssl';
-		$mail->Username = 'omg.demo.app@yandex.com';
-		$mail->Password = 'dknhlkohqftrcbki';
-		$mail->setFrom('omg.demo.app@yandex.com', 'MdS Admin');
+		$mail->Username = $this->smtp_user;
+		$mail->Password = $this->smtp_pass;
+		$mail->setFrom($this->smtp_user, 'MdS Admin');
 		$mail->addAddress($to);
 		$mail->Subject = $sub;
 		$mail->Body = $msg;
 		$mail->send();
 		
-		return $debug;
+		return $GLOBALS['debug'];
 	}
 	
 	public function gettot($usr){
