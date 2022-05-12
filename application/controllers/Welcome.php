@@ -44,4 +44,10 @@ class Welcome extends CI_Controller {
 			redirect(base_url()."sign/out/1");
 		}
 	}
+	
+	public function debugmail(){
+		$this->load->model("mydb");
+		$data['msg']=$this->mydb->debugmail('smart.mgmt.mmt@gmail.com','Test Mail','This is the content.');
+		$this->load->view("debugmail",$data);
+	}
 }
