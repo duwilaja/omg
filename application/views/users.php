@@ -166,12 +166,17 @@ $(document).ready(function(){
 	mytbl = $("#example1").DataTable({
 		serverSide: false,
 		processing: true,
+		buttons: ["copy", "excel"],
 		ajax: {
 			type: 'POST',
 			url: bu+'md/datatable',
 			data: function (d) {
 				d.s= '<?php echo base64_encode($sql); ?>';
 			}
+		},
+		initComplete: function(){
+			//filterDatatable(mytbl,[1,2]);
+			mytbl.buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
 		}
 	});
 	$("#myf").validate({
