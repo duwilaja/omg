@@ -4,7 +4,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class R extends CI_Controller {
 	
 	//private $site="http://mp.omgdemo.website/";
-	private $site="http://localhost/omg/";
+	//private $site="http://localhost/test/omg/";
+	private $site="http://10.22.194.61/omg-main/";
 	
 	private $billpath="files/bp/";
 	private $invpath="files/iv/";

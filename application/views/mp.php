@@ -460,6 +460,7 @@ switch($which){
 var  mytbl, mytbla;
 var mpnb='';
 var thisid='<?php echo $session["uid"]?>';
+var thisaccess='<?php echo $session["uaccess"]?>';
 var filteredcols=[1,2,3,4,6,10,12,13];
 
 $(document).ready(function(){
@@ -653,6 +654,9 @@ function formLoaded(frm,modal,overlay,data=""){
 		}
 		if(!iscreator && !isapprover) {
 			$("#btnapp").hide(); $("#btndel").hide();
+		}
+		if(thisaccess=='ADM'){
+			$("#btndel").show();
 		}
 	}
 }
