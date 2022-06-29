@@ -308,7 +308,14 @@ $this->load->view("_sidebar",$data);
 $this->load->view("_foot",$data);
 $cc="clientid as v,clientname as t";
 $ct="t_clients";
-$cw="1=1 order by clientname";
+$cw=$session['ugrp']==''?'1=1':"clientid in (".$session['ugrp'].")";
+$cw.=" order by clientname";
+
+$where=' where 1=1';
+if($session["ugrp"]!=""){
+	$where=" where client in (".$session['ugrp'].")";
+}
+
 $sc="suppid as v,suppname as t";
 $st="t_suppliers";
 $sw="1=1 order by suppname";
@@ -329,6 +336,7 @@ $(document).ready(function(){
 			url: bu+'bp/datatable',
 			data: function (d) {
 				d.s= '<?php echo base64_encode($sql); ?>',
+				d.w= '<?php echo base64_encode($where); ?>',
 				d.df= $('#df').val(),
 				d.dt= $('#dt').val();
 			}

@@ -52,8 +52,8 @@ $this->load->view("_sidebar",$data);
                 <table id="example1" class="table table-sm table-bordered table-striped">
                   <thead>
 					  <tr>
-						<th>ID</th>
-						<th>Name</th>
+						<th>Group</th>
+						<th>Clients</th>
 					  </tr>
                   </thead>
                   <tbody>
@@ -91,15 +91,17 @@ $this->load->view("_sidebar",$data);
 		  
 			<div class="card-body">
 			  <div class="form-group row">
-				<label for="" class="col-sm-4 col-form-label">ID</label>
+				<label for="" class="col-sm-4 col-form-label">Group</label>
 				<div class="col-sm-8 input-group">
 				  <input type="text" name="grpid" class="form-control form-control-sm" id="grpid" placeholder="...">
 				</div>
 			  </div>
 			  <div class="form-group row">
-				<label for="" class="col-sm-4 col-form-label">Name</label>
+				<label for="" class="col-sm-4 col-form-label">Client</label>
 				<div class="col-sm-8 input-group">
-				  <input type="text" name="grpname" class="form-control form-control-sm" id="grpname" placeholder="...">
+				  <!--input type="text" name="grpname" class="form-control form-control-sm" id="grpname" placeholder="..."-->
+				  <select name="grpname" class="form-control form-control-sm select2" id="grpname" placeholder="..." onchange="">
+				  </select>
 				</div>
 			  </div>
 			</div>
@@ -123,6 +125,10 @@ $this->load->view("_sidebar",$data);
   
 <?php
 $this->load->view("_foot",$data);
+
+$cc="clientid as v,clientname as t";
+$ct="t_clients";
+$cw="1=1 order by clientname";
 ?>
 <script>
 var  mytbl;
@@ -166,6 +172,9 @@ $(document).ready(function(){
 		  }
 		}
 	})
+	
+	getCombo("md/gets",'<?php echo base64_encode($ct)?>','<?php echo base64_encode($cc)?>','<?php echo base64_encode($cw)?>','#grpname');
+	
 });
 
 function reloadTable(frm){
@@ -180,6 +189,10 @@ function savef(del=false){
 	$("#flag").val('SAVE');
 	if(del) $("#flag").val('DEL');
 	saveForm('#myf','md/sv','#ovl',del,'#modal-frm');
+}
+
+function formLoaded(frm,modal,overlay,data=""){
+	$("#grpname").trigger("change");
 }
 </script>
 </body>

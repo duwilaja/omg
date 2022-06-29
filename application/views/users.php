@@ -9,7 +9,7 @@ $data["pmenu"]="";
 $data["session"]=$session;
 $data["bu"]=$bu;
 
-$sql="select uid,uname,umail,uaccess,rowid from t_users";
+$sql="select uid,uname,umail,uaccess,ugrp,rowid from t_users";
 $c="uid,uname,ugrp,umail,uaccess";
 $t="t_users";
 
@@ -56,6 +56,7 @@ $this->load->view("_sidebar",$data);
 						<th>Name</th>
 						<th>Email</th>
 						<th>Access</th>
+						<th>Group</th>
 					  </tr>
                   </thead>
                   <tbody>
@@ -104,7 +105,7 @@ $this->load->view("_sidebar",$data);
 				  <input type="text" name="uname" class="form-control form-control-sm" id="uname" placeholder="...">
 				</div>
 			  </div>
-			  <div class="form-group row hidden">
+			  <div class="form-group row">
 				<label for="" class="col-sm-4 col-form-label">Group</label>
 				<div class="col-sm-8 input-group">
 				  <!--input type="text" name="ugrp" class="form-control form-control-sm" id="ugrp" placeholder="..."-->
@@ -155,7 +156,7 @@ $this->load->view("_sidebar",$data);
   
 <?php
 $this->load->view("_foot",$data);
-$cc="grpid as v,grpname as t";
+$cc="distinct grpid as v,grpid as t";
 $ct="t_usergrp";
 $cw="1=1";
 ?>
@@ -196,7 +197,7 @@ $(document).ready(function(){
 		  },
 		  ugrp: {
 			required: function(element){
-					if($("#uaccess").val()=="USR") return true;
+					//if($("#uaccess").val()=="USR") return true;
 					
 					return false;
 				}

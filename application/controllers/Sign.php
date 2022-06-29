@@ -31,6 +31,7 @@ class Sign extends CI_Controller {
 		$usr=$this->db->query($sql)->result_array();
 		if(count($usr)>0){
 			if($usr[0]['uid']==$uid && $usr[0]['upwd']==$upwd){
+				$usr[0]['ugrp']=$usr[0]['ugrp']==''?$usr[0]['ugrp']:$this->group($usr[0]['ugrp']);
 				$this->session->set_userdata('user_data',$usr[0]);
 				redirect(base_url()."welcome/home");
 			}
@@ -72,5 +73,16 @@ class Sign extends CI_Controller {
 			}
 		}
 		echo json_encode($ret);
+	}
+	
+	private function group($grp){
+		$ret=array();
+		$sql="select grpname from t_usergrp where grpid='$grp'";
+		$rs=$this->db->query($sql)->result_array();
+		foreach($rs as $row){
+			$ret[]=$row['grpname'];
+		}
+		if(count($ret)==0) $ret=array('not found');
+		return "'".implode("','",$ret)."'";
 	}
 }

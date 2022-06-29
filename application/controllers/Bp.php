@@ -21,7 +21,7 @@ class Bp extends CI_Controller {
 		$usr=$this->session->userdata('user_data');
 		$data=array();
 		if(isset($usr)){
-			$sql=base64_decode($this->input->post("s"))." where 1=1";
+			$sql=base64_decode($this->input->post("s")).base64_decode($this->input->post("w"));
 			$sql.=$this->input->post("df")==''?'':" and bdt>='".$this->input->post("df")."'";
 			$sql.=$this->input->post("dt")==''?'':" and bdt<='".$this->input->post("dt")."'";
 			$res=$this->db->query($sql)->result_array();
@@ -104,6 +104,7 @@ class Bp extends CI_Controller {
 			$data=$this->input->post(explode(",",$c));
 			$data["updby"]=$usr["uid"];
 			$data["lastupd"]=date('Y-m-d H:i:s');
+			if($rowid==0) $data['attc']='';
 			
 			$config['upload_path'] = $this->path;
 			$config['allowed_types'] = '*';

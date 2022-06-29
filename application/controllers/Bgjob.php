@@ -2,7 +2,8 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Bgjob extends CI_Controller {
-	private $link="http://mp.omgdemo.website";
+	//private $link="http://mp.omgdemo.website";
+	private $link="http://10.22.194.61";
 	
 	public function index()
 	{

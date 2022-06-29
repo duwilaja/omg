@@ -5,9 +5,9 @@ class Mydb extends CI_Model {
 	
 	private $smtp_prefix='ssl://';
 	
-	private $smtp_host='mail.omgdemo.website';
-	private $smtp_user='omg@omgdemo.website';
-	private $smtp_pass='omgbanget';
+	private $smtp_host='srv80.niagahoster.com';
+	private $smtp_user='adminsystem@notificationmds.website';
+	private $smtp_pass='Omnicom1234!';
 	
 	public function esc($str){
 		return str_replace("'","''",$str);

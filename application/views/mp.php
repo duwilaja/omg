@@ -436,7 +436,8 @@ $this->load->view("_sidebar",$data);
 $this->load->view("_foot",$data);
 $cc="clientid as v,clientname as t";
 $ct="t_clients";
-$cw="1=1 order by clientname";
+$cw=$session['ugrp']==''?'1=1':"clientid in (".$session['ugrp'].")";
+$cw.=" order by clientname";
 $ccc="prodid as v,prodname as t";
 $cct="t_products";
 $pcc="ponumber as v,ponumber as t";
@@ -445,8 +446,10 @@ $pct="t_po";
 $sqla="select mp,doc,attc,rowid from t_mpdoc";
 
 $where=" where 1=1";
-if($session["uaccess"]!="ADM"){
+//if($session["uaccess"]!="ADM"){
+if($session["ugrp"]!=""){
 	//$where=" where (creator='".$session["uid"]."' or approver='".$session["uid"]."')";
+	$where=" where client in (".$session['ugrp'].")";
 }
 $ttl="";
 switch($which){
