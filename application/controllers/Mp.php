@@ -33,7 +33,7 @@ class Mp extends CI_Controller {
 				$camp=base64_encode($res[$i]['campaign']);
 				$approver=$res[$i]['approver'];
 				$stts=$res[$i]['stts'];
-				$crt=($stts!='Approved')?$res[$i]['creator']:'';
+				$crt=$res[$i]['creator'];//($stts!='Approved')?$res[$i]['creator']:'';
 				$btn=$res[$i]['countofdoc']>0?"btn-info":"btn-secondary";
 				$dum[0]=$res[$i]["creator"]==$usr['uid']?'<a href="#" onclick="openf('.$rowid.')">'.$dum[0].' </a>':$dum[0];
 				$dum[count($dum)-3]='<button type="button" class="btn '.$btn.'" onclick="attach(\''.$mpn.'\',\''.$camp.'\',\''.$crt.'\');"><i class="fas fa-paperclip"></i></button>';
@@ -170,11 +170,12 @@ class Mp extends CI_Controller {
 			$config['file_ext_tolower'] = true;
 			$config['overwrite'] = true;
 			$this->load->library('upload',$config);
+			$fn='';
 			if ( $this->upload->do_upload('uploadedfile')){
 				$data['attc']= $this->upload->data('file_name');
-				//$fn=$data['attc'];
+				$fn=$data['attc'];
 			}else{
-				//$fn=$this->upload->display_errors();
+				$fn=$this->upload->display_errors();
 			}
 			
 			if($rowid==0){

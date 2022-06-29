@@ -130,6 +130,7 @@ class Iv extends CI_Controller {
 			$data=$this->input->post(explode(",",$c));
 			$data["updby"]=$usr["uid"];
 			$data["lastupd"]=date('Y-m-d H:i:s');
+			if($rowid==0) $data['attc']='';
 			
 			$config['upload_path'] = $this->path;
 			$config['allowed_types'] = '*';

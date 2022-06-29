@@ -168,7 +168,8 @@ $bux=base_url();
               </li>
             </ul>
           </li>
-		  <!--li class="nav-item setting">
+		<?php if($session["uaccess"]=='ADM'){?>
+		  <li class="nav-item setting">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-cogs"></i>
               <p>
@@ -183,7 +184,7 @@ $bux=base_url();
                   <p>User Group</p>
                 </a>
               </li>
-			  <li class="nav-item">
+			  <!--li class="nav-item">
                 <a href="#" class="nav-link">
                   <i class="fas fa-angle-right nav-icon"></i>
                   <p>Workflow</p>
@@ -194,9 +195,10 @@ $bux=base_url();
                   <i class="fas fa-angle-right nav-icon"></i>
                   <p>Notification</p>
                 </a>
-              </li>
+              </li-->
             </ul>
-          </li-->
+          </li>
+		<?php }?>
 		
 		</ul>
       </nav>
