@@ -3,6 +3,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Mydb extends CI_Model {
 	
+	private $link="http://10.22.194.61";
+	
 	private $smtp_prefix='ssl://';
 	
 	private $smtp_host='srv80.niagahoster.com';
@@ -61,6 +63,7 @@ class Mydb extends CI_Model {
 				$sub= "[MdS Notification] : ".$dt["taskname"];
 				$msg= "Dear ".$rs[0]["uname"]."$br $br";
 				$msg.=$dt["msgs"];
+				$msg.="$br $br Please <a href='".$this->link."'>click here</a> to log into MdS to review and approve the outstanding.$br";
 				$msg.=" $br $br Regards, $br MdS Admin";
 				$sent=$this->sendmail($to,$sub,$msg);
 				if($sent){
