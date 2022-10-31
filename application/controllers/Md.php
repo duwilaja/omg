@@ -9,7 +9,7 @@ class Md extends CI_Controller {
 		if(isset($usr)){
 			$view=$this->input->get("p");
 			$data["session"]=$usr;
-			if($view=='users' && $usr["uaccess"]!='ADM') $view='unauthorize';
+			if($usr["uaccess"]!='ADM') $view='unauthorize';
 			$this->load->view($view,$data);
 		}else{
 			redirect(base_url()."sign/out/1");
@@ -23,6 +23,8 @@ class Md extends CI_Controller {
 		if(isset($usr)){
 			$sql=base64_decode($this->input->post("s"));
 			$res=$this->db->query($sql)->result_array();
+			//$this->load->model("myodbc");
+			//$res=$this->myodbc->query($sql)->result_array();
 			for($i=0;$i<count($res);$i++){
 				$dum=array_values($res[$i]);
 				$rowid=$res[$i]['rowid'];

@@ -24,6 +24,7 @@ class Iv extends CI_Controller {
 		$data=array();
 		if(isset($usr)){
 			$sql=base64_decode($this->input->post("s"));
+			$sql.=$this->input->post("clnt")==''?'':" and client='".$this->input->post("clnt")."'";
 			$sql.=$this->input->post("df")==''?'':" and idt>='".$this->input->post("df")."'";
 			$sql.=$this->input->post("dt")==''?'':" and idt<='".$this->input->post("dt")."'";
 			$res=$this->db->query($sql)->result_array();

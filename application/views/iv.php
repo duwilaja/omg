@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 $bu=base_url()."adminlte310";
 
-$data["title"]="Supplier's Invoice";
+$data["title"]="Vendor Invoice";
 $data["menu"]="iv";
 $data["pmenu"]="docs";
 $data["session"]=$session;
@@ -46,6 +46,11 @@ $this->load->view("_sidebar",$data);
       <div class="container-fluid">
 		<div class="card"><div class="card-body">
 			<div class="row">
+			<div class="form-group col-md-4">
+				<label for="" class="col-form-label">Client</label>
+				<select class="form-control form-control-sm select2" id="clnt" placeholder="...">
+				</select>
+			</div>
 			<div class="form-group col-md-6">
 				<label for="" class="col-form-label">From - To</label>
 				<div class="row">
@@ -104,7 +109,7 @@ $this->load->view("_sidebar",$data);
 						<th>Date</th>
 						<th>Supplier</th>
 						<th>Currency</th>
-						<th>Amount</th>
+						<th>Amount exc.VAT</th>
 						<th>Invoice Attachment</th>
 						<th>Screenshot</th>
 						<th>SS By</th>
@@ -208,7 +213,7 @@ $this->load->view("_sidebar",$data);
 				</div>
 			  </div>
 			  <div class="form-group col-md-6">
-				<label for="" class="col-form-label">Amount</label>
+				<label for="" class="col-form-label">Amount exc.VAT</label>
 				<div class="input-group">
 				  <input type="text" name="amt" class="form-control form-control-sm" id="amt" placeholder="...">
 				</div>
@@ -229,8 +234,8 @@ $this->load->view("_sidebar",$data);
 				  <button type="button" onclick="klon()" class="btn hidden"><a class="fas fa-plus-circle text-success"></a></button>
 				  <button type="button" onclick="removeclone()" class="btn hidden"><a class="fas fa-minus-circle text-danger"></a></button>
 				</div>
-				<div class="ssfiles hidden">
-					<div class="row ssfile"><div class="col-md-12">
+				<div class="ssfilesx hidden">
+					<div class="row ssfilex"><div class="col-md-12">
 					  <input type="file" name="ssuploadedfile[]" class="form-control form-control-sm" placeholder="...">
 					</div></div>
 				</div>
@@ -294,8 +299,14 @@ $this->load->view("_sidebar",$data);
 			  </div>
 			  <div class="form-group row">
 				<label for="" class="col-sm-4 col-form-label">File</label>
-				<div class="col-sm-8 input-group">
-				  <input type="file" name="ssuploadedfile[]" class="form-control form-control-sm" id="ssuploadedfile" placeholder="...">
+				<div class="input-group">
+				  <button type="button" onclick="klon()" class="btn"><a class="fas fa-plus-circle text-success"></a></button>
+				  <button type="button" onclick="removeclone()" class="btn"><a class="fas fa-minus-circle text-danger"></a></button>
+				</div>
+				<div class="ssfiles">
+					<div class="row ssfile"><div class="col-md-12">
+					  <input type="file" name="ssuploadedfile[]" class="form-control form-control-sm" placeholder="...">
+					</div></div>
 				</div>
 			  </div>
 			</div>
@@ -356,6 +367,7 @@ $(document).ready(function(){
 			url: bu+'iv/datatable',
 			data: function (d) {
 				d.s= '<?php echo base64_encode($sql.$where); ?>',
+				d.clnt=$("#clnt").val(),
 				d.df= $("#df").val(),
 				d.dt= $("#dt").val();
 			}
@@ -409,6 +421,7 @@ $(document).ready(function(){
 	getCombo("iv/gets",'<?php echo base64_encode($ct)?>','<?php echo base64_encode($cc)?>','<?php echo base64_encode($cw)?>','#client');
 	getCombo("iv/gets",'<?php echo base64_encode($st)?>','<?php echo base64_encode($sc)?>','<?php echo base64_encode($sw)?>','#supplier');
 	getCombo("md/gets",'<?php echo base64_encode("t_users")?>','<?php echo base64_encode("uid as v,uname as t")?>','<?php echo base64_encode(" 1=1 order by uname")?>','#ss');
+	getCombo("iv/gets",'<?php echo base64_encode($ct)?>','<?php echo base64_encode($cc)?>','<?php echo base64_encode($cw)?>','#clnt','','--- All ---');
 	initDatePicker(["#idate","#dari","#sampai"]);
 });
 

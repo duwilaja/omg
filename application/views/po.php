@@ -46,6 +46,11 @@ $this->load->view("_sidebar",$data);
       <div class="container-fluid">
 		<div class="card"><div class="card-body">
 			<div class="row">
+			<div class="form-group col-md-4">
+				<label for="" class="col-form-label">Client</label>
+				<select class="form-control form-control-sm select2" id="clnt" placeholder="...">
+				</select>
+			</div>
 			<div class="form-group col-md-6">
 				<label for="" class="col-form-label">From - To</label>
 				<div class="row">
@@ -234,6 +239,7 @@ $(document).ready(function(){
 			data: function (d) {
 				d.s= '<?php echo base64_encode($sql); ?>',
 				d.w= '<?php echo base64_encode($where); ?>',
+				d.clnt=$("#clnt").val(),
 				d.df= $('#df').val(),
 				d.dt= $('#dt').val();
 			}
@@ -277,6 +283,7 @@ $(document).ready(function(){
 		}
 	});
 	getCombo("po/gets",'<?php echo base64_encode($ct)?>','<?php echo base64_encode($cc)?>','<?php echo base64_encode($cw)?>','#client');
+	getCombo("po/gets",'<?php echo base64_encode($ct)?>','<?php echo base64_encode($cc)?>','<?php echo base64_encode($cw)?>','#clnt','','--- All ---');
 	initDatePicker(["#podate","#dari","#sampai"]);
 });
 

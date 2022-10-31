@@ -8,8 +8,11 @@ class Mydb extends CI_Model {
 	private $smtp_prefix='ssl://';
 	
 	private $smtp_host='srv80.niagahoster.com';
+	private $smtp_port=465;
 	private $smtp_user='adminsystem@notificationmds.website';
 	private $smtp_pass='Omnicom1234!';
+	
+	private $mail_from='adminsystem@notificationmds.website';
 	
 	public function esc($str){
 		return str_replace("'","''",$str);
@@ -63,7 +66,7 @@ class Mydb extends CI_Model {
 				$sub= "[MdS Notification] : ".$dt["taskname"];
 				$msg= "Dear ".$rs[0]["uname"]."$br $br";
 				$msg.=$dt["msgs"];
-				$msg.="$br $br Please <a href='".$this->link."'>click here</a> to log into MdS to review and approve the outstanding.$br";
+				$msg.="$br $br Please <a href='".$this->link."'>click here</a> to log into MdS to review or approve the outstanding.$br";
 				$msg.=" $br $br Regards, $br MdS Admin";
 				$sent=$this->sendmail($to,$sub,$msg);
 				if($sent){
@@ -82,7 +85,7 @@ class Mydb extends CI_Model {
 		$config = array(
 			'protocol' => 'smtp',
 			'smtp_host' => $this->smtp_prefix.$this->smtp_host,
-			'smtp_port' => 465,
+			'smtp_port' => $this->smtp_port,
 			'smtp_user' => $this->smtp_user,
 			'smtp_pass' => $this->smtp_pass,
 			'smtp_timeout' => 15,
@@ -91,7 +94,7 @@ class Mydb extends CI_Model {
 		);
 		$this->load->library('email', $config);
 		
-		$this->email->from($config['smtp_user'], 'MdS Admin');
+		$this->email->from($this->mail_from, 'MdS Admin');
 		$this->email->to($to);
 		$this->email->subject($sub);
 		$this->email->message($msg);
@@ -110,11 +113,13 @@ class Mydb extends CI_Model {
 		$mail->isSMTP();
 		$mail->SMTPAuth = true;
 		$mail->Host = $this->smtp_host;
-		$mail->Port = 465;
-		$mail->SMTPSecure = 'ssl';
+		$mail->Port = $this->smtp_port;
+		if($this->smtp_prefix=='ssl://'){
+			$mail->SMTPSecure = 'ssl';
+		}
 		$mail->Username = $this->smtp_user;
 		$mail->Password = $this->smtp_pass;
-		$mail->setFrom($this->smtp_user, 'MdS Admin');
+		$mail->setFrom($this->mail_from, 'MdS Admin');
 		$mail->addAddress($to);
 		$mail->Subject = $sub;
 		$mail->Body = $msg;
