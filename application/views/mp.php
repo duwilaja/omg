@@ -17,11 +17,16 @@ $sql="select mpnumber,client,product,campaign,placement,startdt,enddt,submitdt,c
 $sql="select * from q_mp";
 $cq="mpnumber,legal,brand,client,product,campaign,placement,(startdt) as stdt,(enddt) as endt,(submitdt) as submdt,curr,stts,approver,approved,amt,creator";
 
-$c="mpnumber,client,product,campaign,placement,startdt,enddt,submitdt,curr,amt,notes,legal,brand";
+$c="mpnumber,client,product,campaign,placement,startdt,enddt,submitdt,curr,amt,notes,legal,brand,vat,asf";
 
 $this->load->view("_head",$data);
 $this->load->view("_navbar",$data);
 $this->load->view("_sidebar",$data);
+
+$legal=array("OMGI","OMI","KCI");
+$brand=array("OMG","PHD","HS");
+$placement=array("DIGITAL","TV","RADIO","NEWSPAPER","MAGAZINE","KOL","OOH","eCommerce","OMNET","OTHERS");
+$curr=array("IDR","USD","SGD");
 ?>
 
   <!-- Content Wrapper. Contains page content -->
@@ -49,6 +54,11 @@ $this->load->view("_sidebar",$data);
       <div class="container-fluid">
 		<div class="card"><div class="card-body">
 			<div class="row">
+			<div class="form-group col-md-4">
+				<label for="" class="col-form-label">Client</label>
+				<select class="form-control form-control-sm select2" id="clnt" placeholder="...">
+				</select>
+			</div>
 			<div class="form-group col-md-6">
 				<label for="" class="col-form-label">From - To</label>
 				<div class="row">
@@ -104,6 +114,7 @@ $this->load->view("_sidebar",$data);
 						<th style="padding-right: 4px;"></th>
 						<th style="padding-right: 4px;"></th>
 						<th style="padding-right: 4px;"></th>
+						<th style="padding-right: 4px;"></th>
 					  </tr>
 					  <tr>
 						<th>MP#</th>
@@ -117,9 +128,10 @@ $this->load->view("_sidebar",$data);
 						<th>End</th>
 						<th>Submission</th>
 						<th>Currency</th>
-						<th>Budget</th>
+						<th>Nett Media Cost</th>
 						<th>Status</th>
 						<th>Approver</th>
+						<th>Creator</th>
 						<th>Note</th>
 						<th>Attachments</th>
 						<th>Action</th>
@@ -173,9 +185,9 @@ $this->load->view("_sidebar",$data);
 					<div class="input-group">
 					  <select name="legal" class="form-control form-control-sm" id="legal" placeholder="...">
 						<option value=""></option>
-						<option value="OMGI">OMGI</option>
-						<option value="OMI">OMI</option>
-						<option value="KCI">KCI</option>
+						<?php foreach($legal as $l){
+							echo '<option value="'.$l.'">'.$l.'</option>';
+						} ?>
 					  </select>
 					</div>
 				  </div>
@@ -186,9 +198,9 @@ $this->load->view("_sidebar",$data);
 					<div class="input-group">
 					  <select name="brand" class="form-control form-control-sm" id="brand" placeholder="...">
 						<option value=""></option>
-						<option value="OMD">OMD</option>
-						<option value="PHD">PHD</option>
-						<option value="HS">HS</option>
+						<?php foreach($brand as $b){
+							echo '<option value="'.$b.'">'.$b.'</option>';
+						} ?>
 					  </select>
 					</div>
 				  </div>
@@ -265,14 +277,9 @@ $this->load->view("_sidebar",$data);
 					  <!--input type="text" name="stts" class="form-control form-control-sm" id="stts" placeholder="..."-->
 					  <select name="placement" class="form-control form-control-sm" id="placement" placeholder="...">
 						<option value=""></option>
-						<option value="DIGITAL">DIGITAL</option>
-						<option value="TV">TV</option>
-						<option value="RADIO">RADIO</option>
-						<option value="NEWSPAPER">NEWSPAPER</option>
-						<option value="MAGAZINE">MAGAZINE</option>
-						<option value="KOL">KOL</option>
-						<option value="OOH">OOH</option>
-						<option value="OTHERS">OTHERS</option>
+						<?php foreach($placement as $p){
+							echo '<option value="'.$p.'">'.$p.'</option>';
+						} ?>
 					  </select>
 					</div>
 				  </div>
@@ -283,16 +290,30 @@ $this->load->view("_sidebar",$data);
 					<div class="input-group">
 					  <select name="curr" class="form-control form-control-sm" id="curr" placeholder="...">
 						<option value=""></option>
-						<option value="IDR">IDR</option>
-						<option value="USD">USD</option>
-						<option value="SGD">SGD</option>
+						<?php foreach($curr as $cur){
+							echo '<option value="'.$cur.'">'.$cur.'</option>';
+						} ?>
 					  </select>
 					</div>
 				  </div>
 				  <div class="form-group col-md-6">
-					<label for="" class="col-form-label">Budget</label>
+					<label for="" class="col-form-label">Nett Media Cost</label>
 					<div class="input-group">
 					  <input type="text" name="amt" class="form-control form-control-sm number" id="amt" placeholder="...">
+					</div>
+				  </div>
+				</div>
+				<div class="row">
+				  <div class="form-group col-md-6">
+					<label for="" class="col-form-label">VAT</label>
+					<div class="input-group">
+					  <input type="text" name="vat" class="form-control form-control-sm number" id="vat" placeholder="...">
+					</div>
+				  </div>
+				  <div class="form-group col-md-6">
+					<label for="" class="col-form-label">ASF</label>
+					<div class="input-group">
+					  <input type="text" name="asf" class="form-control form-control-sm number" id="asf" placeholder="...">
 					</div>
 				  </div>
 				</div>
@@ -325,6 +346,7 @@ $this->load->view("_sidebar",$data);
 		  
 		</div>
 		<div class="modal-footer pull-right">
+		  <button type="button" id="btnrfc" class="btn btn-success" onclick="rfc();">Change MP</button>
 		  <button type="button" id="btnapp" class="btn btn-success" onclick="apprup();">Approve</button>
 		  <button type="button" id="btndel" class="btn btn-danger" onclick="savef(true)">Delete</button>
 		  <button type="button" class="btn btn-primary btnsave" onclick="savef();">Save</button>
@@ -446,17 +468,28 @@ $pct="t_po";
 $sqla="select mp,doc,attc,rowid from t_mpdoc";
 
 $where=" where 1=1";
-//if($session["uaccess"]!="ADM"){
 if($session["ugrp"]!=""){
 	//$where=" where (creator='".$session["uid"]."' or approver='".$session["uid"]."')";
 	$where=" where client in (".$session['ugrp'].")";
+//	echo $where;
 }
 $ttl="";
-switch($which){
-	//case "": $where.=" or stts='Approved'"; break;
-	case "c": $where.=" and stts='Approved'"; $ttl="(Completed)"; break;
-	case "o": $where.=" and stts='Rejected'"; $ttl="(Ongoing)"; break;
-	case "p": $where.=" and stts='Pending Approval'"; $ttl="(Pending)"; break;
+if($session["uaccess"]=="ADM"){
+	switch($which){
+		//case "": $where.=" or stts='Approved'"; break;
+		case "c": $where.=" and stts='Approved'"; $ttl="(Completed)"; break;
+		case "o": $where.=" and stts in ('Rejected','Changed')"; $ttl="(Ongoing)"; break;
+		case "p": $where.=" and stts='Pending Approval'"; $ttl="(Pending)"; break;
+	}
+}else{
+	switch($which){
+		//case "": $where.=" or stts='Approved'"; break;
+		case "c": $where.=" and stts='Approved'"; $ttl="(Completed)"; break;
+		case "o": $where.=" and (approver='".$session["uid"]."' and stts in ('Rejected','Changed')) or (creator='".$session["uid"]."' and stts in ('Pending Approval'))"; 
+					$ttl="(Ongoing)"; break;
+		case "p": $where.=" and (creator='".$session["uid"]."' and stts in ('Rejected','Changed')) or (approver='".$session["uid"]."' and stts in ('Pending Approval'))";
+					$ttl="(Pending)"; break;
+	}
 }
 ?>
 <script>
@@ -464,7 +497,8 @@ var  mytbl, mytbla;
 var mpnb='';
 var thisid='<?php echo $session["uid"]?>';
 var thisaccess='<?php echo $session["uaccess"]?>';
-var filteredcols=[1,2,3,4,6,10,12,13];
+var filteredcols=[1,2,3,4,6,10,12,13,14];
+var thisapprover='';
 
 $(document).ready(function(){
 	if("<?php echo $which?>"=="") { $("#df").val("<?php echo date('Y-m-').'01'?>"); $("#dt").val("<?php echo date('Y-m-t')?>"); }
@@ -479,6 +513,7 @@ $(document).ready(function(){
 			data: function (d) {
 				d.s= '<?php echo base64_encode($sql); ?>',
 				d.w= '<?php echo base64_encode($where); ?>',
+				d.clnt=$("#clnt").val(),
 				d.df=$("#df").val(),
 				d.dt=$("#dt").val();
 			}
@@ -540,7 +575,16 @@ $(document).ready(function(){
 			required: true
 		  },
 		  amt:{
-			required: true
+			required: true,
+			number: true
+		  },
+		  vat:{
+			required: true,
+			number: true
+		  },
+		  asf:{
+			required: true,
+			number: true
 		  },
 		  umail: {
 			  required: true,
@@ -565,6 +609,7 @@ $(document).ready(function(){
 	
 	getCombo("md/gets",'<?php echo base64_encode($ct)?>','<?php echo base64_encode($cc)?>','<?php echo base64_encode($cw)?>','#client');
 	getCombo("md/gets",'<?php echo base64_encode("t_users")?>','<?php echo base64_encode("uid as v,uname as t")?>','<?php echo base64_encode(" 1=1 order by uname")?>','#approver');
+	getCombo("md/gets",'<?php echo base64_encode($ct)?>','<?php echo base64_encode($cc)?>','<?php echo base64_encode($cw)?>','#clnt','','--- All ---');
 	initDatePicker(["#periodend","#periodstart","#subdt","#dari","#sampai"]);
 });
 
@@ -588,6 +633,7 @@ function mydtfilterchanged(){
 				case 5: flds.push("currency");break;
 				case 6: flds.push("status");break;
 				case 7: flds.push("approver");break;
+				case 8: flds.push("creator");break;
 			}
 		}
 	});
@@ -600,7 +646,7 @@ function mydtfilterchanged(){
 function openf(id=0){
 	$("#rowid").val(id);
 	$("#approver").attr("disabled",true);
-	//$(".appruper").hide();
+	$("#btnrfc").hide();
 	$("#btnapp").hide();
 	$(".btnsave").hide();
 	openForm('#myf','#modal-frm','mp/get','#ovl',id,'<?php echo base64_encode("q_mpx")?>','<?php echo base64_encode("*")?>')
@@ -621,6 +667,7 @@ function clientChange(tv,dv='',dv2=''){
 function formLoaded(frm,modal,overlay,data=""){
 	if(frm=='#myf'){
 		curr_prod='';
+		thisapprover='';
 		var dv='';
 		var dv2='';
 		var iscreator=false;
@@ -629,6 +676,7 @@ function formLoaded(frm,modal,overlay,data=""){
 			dv=data['product'];
 			curr_prod=dv;
 			dv2=data['po'];
+			thisapprover=data['approver'];
 			isapprover=data['approver']==thisid;
 			iscreator=data['creator']==thisid;
 		}
@@ -639,7 +687,8 @@ function formLoaded(frm,modal,overlay,data=""){
 		
 		switch($("#stts").val()){
 			case "": $("#approver").attr("disabled",false); $(".btnsave").show(); break;
-			case "Approved": $(".btnsave").hide(); if(!isapprover){$("#btndel").hide();} break;
+			case "Approved": $(".btnsave").hide(); if(!isapprover){$("#btndel").hide();} if(iscreator){$("#btnrfc").show();} break;
+			case "Changed": 
 			case "Rejected": $("#approver").attr("disabled",false); 
 					if(iscreator){
 						$(".btnsave").show(); $("#btnapp").show(); $("#btnapp").text("Send for approval");
@@ -660,6 +709,8 @@ function formLoaded(frm,modal,overlay,data=""){
 		}
 		if(thisaccess=='ADM'){
 			$("#btndel").show();
+		}else{
+			$("#btndel").hide();
 		}
 	}
 }
@@ -726,6 +777,10 @@ function apprup(id=0){
 			savef(false,'SNDA');
 		}
 	}
+}
+function rfc(){
+	var dat={rowid:$("#rowid").val(),mpnumber:$("#mpnumber").val(),notes:'',stts:'Changed',approver:thisapprover,flag:'URFC',cols:'<?php echo base64_encode('mpnumber,stts,approver,notes')?>',table:'<?php echo base64_encode($t)?>'};
+	sendData('#myf','mp/sv',dat);
 }
 
 //attachments

@@ -46,7 +46,7 @@ $this->load->view("_sidebar",$data);
 
               <div class="info-box-content">
                 <span class="info-box-text">Pending Tasks</span>
-                <span class="info-box-number"><a href="<?php echo base_url()?>mp?w=p">MP <span id="pending_approval">0</span></a></span>
+                <span class="info-box-number"><a href="<?php echo base_url()?>mp?w=p">MP <span id="pending">0</span></a></span>
 				<span class="info-box-number"><a href="<?php echo base_url()?>iv?w=p">SS <span id="ss_pending">0</span></a></span>
               </div>
               <!-- /.info-box-content -->
@@ -60,7 +60,7 @@ $this->load->view("_sidebar",$data);
 
               <div class="info-box-content">
                 <span class="info-box-text">Ongoing Tasks</span>
-                <span class="info-box-number"><a href="<?php echo base_url()?>mp?w=o">MP <span id="rejected">0</span></a></span>
+                <span class="info-box-number"><a href="<?php echo base_url()?>mp?w=o">MP <span id="ongoing">0</span></a></span>
 				<span class="info-box-number"><a href="<?php echo base_url()?>iv?w=o">SS <span id="ss_ongoing">0</span></a></span>
               </div>
               <!-- /.info-box-content -->
@@ -78,7 +78,7 @@ $this->load->view("_sidebar",$data);
 
               <div class="info-box-content">
                 <span class="info-box-text">Completed Tasks</span>
-                <span class="info-box-number"><a href="<?php echo base_url()?>mp?w=c">MP <span id="approved">0</span></a></span>
+                <span class="info-box-number"><a href="<?php echo base_url()?>mp?w=c">MP <span id="completed">0</span></a></span>
 				<span class="info-box-number"><a href="<?php echo base_url()?>iv?w=c">SS <span id="ss_completed">0</span></a></span>
               </div>
               <!-- /.info-box-content -->
@@ -204,19 +204,22 @@ $this->load->view("_foot",$data);
 <script>
 var total=<?php echo json_encode($tot)?>;
 var totss=<?php echo json_encode($totss)?>;
+var pwd=<?php echo (date("Y-m-d",strtotime($session["lastupd"]))<=date("Y-m-d",strtotime("-3 month")))?"true":"false"; ?>;
 //var line1="";
 $(document).ready(function(){
 	document_ready();
 //	line();
 //	pie();
 	tot();
+	if(pwd) {
+		$("#modal-pwd").modal("show");
+		alrt("Your password is expired, please change","warning");
+	}
 });
 function tot(){
-	for(var i=0;i<total.length;i++){
-		var x=total[i]["stts"].replace(" ","_").toLowerCase();
-		//log(x);
-		$("#"+x).html(total[i]["cnt"]);
-	}
+	$.each(total,function(key,val){
+		$("#"+key).html(val);
+	});
 	for(var i=0;i<totss.length;i++){
 		var x=totss[i]["stts"].replace(" ","_").toLowerCase();
 		//log(x);

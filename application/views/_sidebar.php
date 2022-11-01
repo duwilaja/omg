@@ -90,7 +90,7 @@ $bux=base_url();
 			  <li class="nav-item">
                 <a href="<?php echo $bux?>iv" class="nav-link iv">
                   <i class="fas fa-angle-right nav-icon"></i>
-                  <p>Supplier Invoice</p>
+                  <p>Vendor Invoice</p>
                 </a>
               </li>
 			  <!--li class="nav-item">
@@ -102,11 +102,12 @@ $bux=base_url();
               <li class="nav-item">
                 <a href="<?php echo $bux?>bp" class="nav-link bp">
                   <i class="fas fa-angle-right nav-icon"></i>
-                  <p>Billing</p>
+                  <p>Client Invoice</p>
                 </a>
               </li>
             </ul>
           </li>
+		<?php if($session["uaccess"]=='ADM'){?>
 		  <li class="nav-item master">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-database"></i>
@@ -136,6 +137,7 @@ $bux=base_url();
               </li>
             </ul>
           </li>
+		<?php } ?>
           <!--li class="nav-item">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-th"></i>
@@ -164,6 +166,12 @@ $bux=base_url();
                 <a href="<?php echo $bux;?>r/?v=rmp" class="nav-link rmp">
                   <i class="fas fa-angle-right nav-icon"></i>
                   <p>Media Detail</p>
+                </a>
+              </li>
+			  <li class="nav-item">
+                <a href="<?php echo $bux;?>r/?v=rmpdoc" class="nav-link rmpdoc">
+                  <i class="fas fa-angle-right nav-icon"></i>
+                  <p>Media Document</p>
                 </a>
               </li>
             </ul>

@@ -16,13 +16,47 @@ class Mp extends CI_Controller {
 			redirect(base_url()."sign/out/1");
 		}
 	}
-	
+	public function check()
+	{
+		$usr=$this->session->userdata('user_data');
+		if(isset($usr)){
+			$data["session"]=$usr;
+			if($usr["uaccess"]=='ADM'){
+				$mpd=$this->db->query("select mpnumber from t_mediaplans")->result_array();
+				foreach($mpd as $d){
+					$omp=$d["mpnumber"];
+					$amp=explode("/",$omp);
+					if(strlen($amp[0])<4){
+						$amp[0]=str_pad($amp[0],4,"0",STR_PAD_LEFT);
+						$nmp=implode("/",$amp);
+						$nmp=str_replace("'","''",$nmp);
+						$omp=str_replace("'","''",$omp);
+						$r=$this->db->query("update t_mediaplans set mpnumber='$nmp' where mpnumber='$omp'"); //mp
+						$r=$this->db->query("update t_billings set mp='$nmp' where mp='$omp'"); //bill
+						$r=$this->db->query("update t_invoices set mp='$nmp' where mp='$omp'"); //inv
+						$r=$this->db->query("update t_mediaorders set mp='$nmp' where mp='$omp'"); //med
+						$r=$this->db->query("update t_mpdoc set mp='$nmp' where mp='$omp'"); //mpdoc
+						$r=$this->db->query("update t_po set mp='$nmp' where mp='$omp'"); //inv
+						echo $omp." changed to ".$nmp."<br />";
+					}else{
+						echo $omp." no change<br />";
+					}
+				}
+			}else{
+				$data["which"]=$this->input->get("w");
+				$this->load->view("mp",$data);
+			}
+		}else{
+			redirect(base_url()."sign/out/1");
+		}
+	}
 	public function datatable()
 	{
 		$usr=$this->session->userdata('user_data');
 		$data=array();
 		if(isset($usr)){
 			$sql=base64_decode($this->input->post("s")).base64_decode($this->input->post("w"));
+			$sql.=$this->input->post("clnt")==''?'':" and client='".$this->input->post("clnt")."'";
 			$sql.=$this->input->post("df")==''?'':" and sbdt>='".$this->input->post("df")."'";
 			$sql.=$this->input->post("dt")==''?'':" and sbdt<='".$this->input->post("dt")."'";
 			$res=$this->db->query($sql)->result_array();
@@ -36,9 +70,9 @@ class Mp extends CI_Controller {
 				$crt=$res[$i]['creator'];//($stts!='Approved')?$res[$i]['creator']:'';
 				$btn=$res[$i]['countofdoc']>0?"btn-info":"btn-secondary";
 				$dum[0]=$res[$i]["creator"]==$usr['uid']?'<a href="#" onclick="openf('.$rowid.')">'.$dum[0].' </a>':$dum[0];
-				$dum[count($dum)-3]='<button type="button" class="btn '.$btn.'" onclick="attach(\''.$mpn.'\',\''.$camp.'\',\''.$crt.'\');"><i class="fas fa-paperclip"></i></button>';
-				$dum[count($dum)-2]='';
-				if($usr["uid"]==$approver && $stts=="Pending Approval") $dum[count($dum)-2]='<button type="button" class="btn btn-success" onclick="apprup('.$rowid.');">Approve/Reject</button>';
+				$dum[16]='<button type="button" class="btn '.$btn.'" onclick="attach(\''.$mpn.'\',\''.$camp.'\',\''.$crt.'\');"><i class="fas fa-paperclip"></i></button>';
+				$dum[17]='';
+				if($usr["uid"]==$approver && $stts=="Pending Approval") $dum[17]='<button type="button" class="btn btn-success" onclick="apprup('.$rowid.');">Approve/Reject</button>';
 				$data[]=$dum;
 			}
 		}
@@ -52,6 +86,7 @@ class Mp extends CI_Controller {
 		if(isset($usr)){
 			$sql=base64_decode($this->input->post("s"));
 			$w=base64_decode($this->input->post("w"));
+			$w=str_replace("'","''",$w);
 			$sql.=" where mp='$w'";
 			$res=$this->db->query($sql)->result_array();
 			for($i=0;$i<count($res);$i++){
@@ -82,16 +117,15 @@ class Mp extends CI_Controller {
 	}
 	
 	private function getNR(){
-		$data=$this->db->query("select max(nr) as mnr from t_mediaplans")->result_array();
+		$y=date("Y");
+		$data=$this->db->query("select max(nr) as mnr from t_mediaplans where Format([submitdt],'yyyy')='$y'")->result_array();
 		$nr=1;
 		if(count($data)>0){
 			$mnr=$data[0]['mnr'];
 			$nr=is_numeric($mnr)?$mnr+1:$nr;
 		}
-		$nrx=$nr<100?'0'.$nr:$nr;
-		$nrx=$nr<10?'00'.$nr:$nr;
 		
-		return  $nrx;
+		return  str_pad($nr,4,"0",STR_PAD_LEFT);
 	}
 	public function sv()
 	{
@@ -115,8 +149,8 @@ class Mp extends CI_Controller {
 			
 			if($rowid==0){
 				$subm=$data['submitdt'];
-				$period=date("Ymd",strtotime($data['startdt'])).'_'.date("Ymd",strtotime($data['enddt']));
-				$camp=str_ireplace(" ","_",strtoupper($data['campaign']));
+				$period=date("dMY",strtotime($data['startdt'])).'_'.date("dMY",strtotime($data['enddt']));
+				$camp=substr(str_ireplace(" ","_",strtoupper($data['campaign'])),0,60);
 				$nr=$this->getNR();
 				$data['nr']=$nr;
 				//$data['mpnumber']=$nr.'/'.substr($subm,5,3).substr($subm,2,2).'/'.$camp.'/'.$data['placement'];
@@ -131,12 +165,17 @@ class Mp extends CI_Controller {
 			$this->db->query($sql);
 			if($this->db->affected_rows()>0) {
 				$msgs='Success'; $typ="success";
+				$br="<br />";
 				if($rowid==0||$flag=='SNDA') {
 					$msgs="Data Saved. ";
-					$br="<br />";
 					$m="This is a reminder that there are outstanding tasks in MdS that require your attention.$br Please log into MdS to review and approve the outstanding.$br";
 					$m.="Mediaplan#: ".$data['mpnumber'].$br."Campaign: ".$data['campaign'].$br."Client: ".$data['client'];
 					$msgs.=$this->mydb->notify(array("assignedto"=>$data["approver"],"taskname"=>"Mediaplan Approval","msgs"=>$m));
+				}
+				if($flag=='URFC'){
+					$msgs="Status changed. ";
+					$m="This is a notification that Mediaplan#:".$data['mpnumber']." is requested for change by ".$usr["uid"];
+					$msgs.=$this->mydb->notify(array("assignedto"=>$data["approver"],"taskname"=>"Mediaplan Change Notification","msgs"=>$m));
 				}
 			}else{
 				$msgs=$this->mydb->error($this->db->error());

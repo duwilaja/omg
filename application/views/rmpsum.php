@@ -40,6 +40,11 @@ $this->load->view("_sidebar",$data);
 	  
 		<div class="card"><div class="card-body">
 			<div class="row">
+			<div class="form-group col-md-4">
+				<label for="" class="col-form-label">Client</label>
+				<select class="form-control form-control-sm select2" id="clnt" placeholder="...">
+				</select>
+			</div>
 			<div class="form-group col-md-6">
 				<label for="" class="col-form-label">From - To</label>
 				<div class="row">
@@ -95,12 +100,14 @@ $this->load->view("_sidebar",$data);
 						<th>Product</th>
 						<th>Start</th>
 						<th>End</th>
-						<th>Budget</th>
-						<th>Invoice Amount</th>
-						<th>Invoice Count</th>
+						<th>Nett Media Cost</th>
+						<th>VAT</th>
+						<th>ASF</th>
+						<th>Vendor Invoice Amount</th>
+						<th>Vendor Invoice Count</th>
 						<th>Screenshot Count</th>
-						<th>Billing Amount</th>
-						<th>Billing Count</th>
+						<th>Client Invoice Amount</th>
+						<th>Client Invoice Count</th>
 					  </tr>
                   </thead>
                   <tbody>
@@ -120,15 +127,23 @@ $this->load->view("_sidebar",$data);
 $this->load->view("_foot",$data);
 
 $sql="select * from q_rmpsum";
+
+$cc="clientname as v,clientname as t";
+$ct="t_clients";
+$cw=$session['ugrp']==''?'1=1':"clientid in (".$session['ugrp'].")";
+
 ?>
 <script>
 var mytbl;
 
 function getW(){
-	var w, df, dt;
+	var w, df, dt, clnt;
 	df=$("#df").val();dt=$("#dt").val(); w=[];
+	clnt=$("#clnt").val();
+	
 	if(df!="") w.push("subdt>='"+df+"'");
 	if(dt!="") w.push("subdt<='"+dt+"'");
+	if(clnt!="") w.push("clientname='"+clnt+"'");
 	
 	return btoa(w.join(" and "));
 }
@@ -139,7 +154,11 @@ $(document).ready(function(){
 	mytbl = $("#example1").DataTable({
 		serverSide: false,
 		processing: true,
-		buttons: ["copy", "excel"],
+		lengthMenu: [[10,50,100,500,-1],[10,50,100,500,"All"]],
+		buttons: [ "copy", "excel"
+				//{ extend: 'copy',  exportOptions: { modifier: { page: 'all', search: 'none' } } },
+				//{ extend: 'excel', exportOptions: { modifier: { page: 'all', search: 'none' } } }
+				],
 		ajax: {
 			type: 'POST',
 			url: bu+'r/datatable',
@@ -158,6 +177,7 @@ $(document).ready(function(){
 		}]
 	});
 	initDatePicker(["#dari","#sampai"]);
+	getCombo("md/gets",'<?php echo base64_encode($ct)?>','<?php echo base64_encode($cc)?>','<?php echo base64_encode($cw)?>','#clnt','','--- All ---');
 })
 
 function reloadTable(frm=''){

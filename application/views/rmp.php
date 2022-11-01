@@ -39,6 +39,11 @@ $this->load->view("_sidebar",$data);
       <div class="container-fluid">
 		<div class="card"><div class="card-body">
 			<div class="row">
+			<div class="form-group col-md-4">
+				<label for="" class="col-form-label">Client</label>
+				<select class="form-control form-control-sm select2" id="clnt" placeholder="...">
+				</select>
+			</div>
 			<div class="form-group col-md-6">
 				<label for="" class="col-form-label">From - To</label>
 				<div class="row">
@@ -91,9 +96,9 @@ $this->load->view("_sidebar",$data);
 						<th>Product</th>
 						<th>Start</th>
 						<th>End</th>
-						<th>Invoice</th>
+						<th>Vendor Invoice</th>
 						<th>Screenshot</th>
-						<th>Billing</th>
+						<th>Client Invoice</th>
 					  </tr>
                   </thead>
                   <tbody>
@@ -113,15 +118,23 @@ $this->load->view("_sidebar",$data);
 $this->load->view("_foot",$data);
 
 $sql="select * from q_rmp";
+
+$cc="clientname as v,clientname as t";
+$ct="t_clients";
+$cw=$session['ugrp']==''?'1=1':"clientid in (".$session['ugrp'].")";
+
 ?>
 <script>
 var mytbl;
 
 function getW(){
-	var w, df, dt;
+	var w, df, dt, clnt;
 	df=$("#df").val();dt=$("#dt").val(); w=[];
+	clnt=$("#clnt").val();
+	
 	if(df!="") w.push("subdt>='"+df+"'");
 	if(dt!="") w.push("subdt<='"+dt+"'");
+	if(clnt!="") w.push("clientname='"+clnt+"'");
 	
 	return btoa(w.join(" and "));
 }
@@ -132,14 +145,17 @@ $(document).ready(function(){
 	mytbl = $("#example1").DataTable({
 		serverSide: false,
 		processing: true,
-		buttons: ["copy", 
-		{
-			text: 'Excel',
-			action: function ( e, dt, node, config ) {
-				//alert( 'Button activated' );
-				window.open('data:application/vnd.ms-excel,' + encodeURIComponent( document.getElementById('example1').outerHTML));
-			}
-        }],
+		lengthMenu: [[10,50,100,500,-1],[10,50,100,500,"All"]],
+		buttons: [ "copy",
+				//{ extend: 'copy',  exportOptions: { modifier: { page: 'all', search: 'none' } } },
+				{
+					text: 'Excel',
+					action: function ( e, dt, node, config ) {
+						//alert( 'Button activated' );
+						window.open('data:application/vnd.ms-excel,' + encodeURIComponent( document.getElementById('example1').outerHTML));
+					},
+					//exportOptions: { modifier: { page: 'all', search: 'none' } }
+				}],
 		/*{
             extend: 'excelHtml5',
             customize: function(xlsx) {
@@ -180,6 +196,7 @@ $(document).ready(function(){
 		}
 	});
 	initDatePicker(["#dari","#sampai"]);
+	getCombo("md/gets",'<?php echo base64_encode($ct)?>','<?php echo base64_encode($cc)?>','<?php echo base64_encode($cw)?>','#clnt','','--- All ---');
 })
 
 function reloadTable(frm=''){

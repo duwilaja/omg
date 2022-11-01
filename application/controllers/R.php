@@ -7,6 +7,7 @@ class R extends CI_Controller {
 	//private $site="http://localhost/test/omg/";
 	private $site="http://10.22.194.61/omg-main/";
 	
+	private $mppath="files/mp/";
 	private $billpath="files/bp/";
 	private $invpath="files/iv/";
 	private $sspath="files/ss/";
@@ -36,6 +37,7 @@ class R extends CI_Controller {
 			for($i=0;$i<count($res);$i++){
 				switch($rpt){
 					case "rmp": $res[$i]=$this->rmp($res[$i]); break;
+					case "rmpdoc": $res[$i]=$this->rmpdoc($res[$i]); break;
 				}
 				//$dum=array_values($res[$i]);
 				$data[]=array_values($res[$i]);//$dum;
@@ -61,6 +63,12 @@ class R extends CI_Controller {
 		$d["invattc"]=$this->linkkan($dat["invattc"],$this->site.$this->invpath);
 		$d["ssattc"]=$this->linkkan($dat["ssattc"],$this->site.$this->sspath);
 		$d["billattc"]=$this->linkkan($dat["billattc"],$this->site.$this->billpath);
+		$d["attc"]=$this->linkkan($dat["attc"],$this->site.$this->mppath);
+		return $d;
+	}
+	private function rmpdoc($dat){
+		$d=$dat;
+		$d["attc"]=$this->linkkan($dat["attc"],$this->site.$this->mppath);
 		return $d;
 	}
 	

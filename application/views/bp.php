@@ -46,6 +46,11 @@ $this->load->view("_sidebar",$data);
       <div class="container-fluid">
 		<div class="card"><div class="card-body">
 			<div class="row">
+			<div class="form-group col-md-4">
+				<label for="" class="col-form-label">Client</label>
+				<select class="form-control form-control-sm select2" id="clnt" placeholder="...">
+				</select>
+			</div>
 			<div class="form-group col-md-6">
 				<label for="" class="col-form-label">From - To</label>
 				<div class="row">
@@ -97,7 +102,7 @@ $this->load->view("_sidebar",$data);
 						<th>Client</th>
 						<th>MP#</th>
 						<th>Currency</th>
-						<th>Amount</th>
+						<th>Amount exc.VAT</th>
 						<th>Attachment</th>
 					  </tr>
                   </thead>
@@ -178,7 +183,7 @@ $this->load->view("_sidebar",$data);
 				</div>
 			  </div>
 			  <div class="form-group row">
-				<label for="" class="col-sm-4 col-form-label">Amount</label>
+				<label for="" class="col-sm-4 col-form-label">Amount exc.VAT</label>
 				<div class="col-sm-8 input-group">
 				  <input type="text" name="amt" class="form-control form-control-sm" id="amt" placeholder="...">
 				</div>
@@ -337,6 +342,7 @@ $(document).ready(function(){
 			data: function (d) {
 				d.s= '<?php echo base64_encode($sql); ?>',
 				d.w= '<?php echo base64_encode($where); ?>',
+				d.clnt=$("#clnt").val(),
 				d.df= $('#df').val(),
 				d.dt= $('#dt').val();
 			}
@@ -406,6 +412,7 @@ $(document).ready(function(){
 		}
 	});
 	getCombo("bp/gets",'<?php echo base64_encode($ct)?>','<?php echo base64_encode($cc)?>','<?php echo base64_encode($cw)?>','#client');
+	getCombo("bp/gets",'<?php echo base64_encode($ct)?>','<?php echo base64_encode($cc)?>','<?php echo base64_encode($cw)?>','#clnt','','--- All ---');
 	initDatePicker(["#bdate","#dari","#sampai"]);
 });
 
