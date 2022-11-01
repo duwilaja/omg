@@ -145,15 +145,16 @@ $(document).ready(function(){
 	mytbl = $("#example1").DataTable({
 		serverSide: false,
 		processing: true,
-		buttons: [
-				{ extend: 'copy',  exportOptions: { modifier: { page: 'all', search: 'none' } } },
+		lengthMenu: [[10,50,100,500,-1],[10,50,100,500,"All"]],
+		buttons: [ "copy",
+				//{ extend: 'copy',  exportOptions: { modifier: { page: 'all', search: 'none' } } },
 				{
 					text: 'Excel',
 					action: function ( e, dt, node, config ) {
 						//alert( 'Button activated' );
 						window.open('data:application/vnd.ms-excel,' + encodeURIComponent( document.getElementById('example1').outerHTML));
 					},
-					exportOptions: { modifier: { page: 'all', search: 'none' } }
+					//exportOptions: { modifier: { page: 'all', search: 'none' } }
 				}],
 		/*{
             extend: 'excelHtml5',

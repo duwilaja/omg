@@ -154,9 +154,10 @@ $(document).ready(function(){
 	mytbl = $("#example1").DataTable({
 		serverSide: false,
 		processing: true,
-		buttons: [
-				{ extend: 'copy',  exportOptions: { modifier: { page: 'all', search: 'none' } } },
-				{ extend: 'excel', exportOptions: { modifier: { page: 'all', search: 'none' } } }
+		lengthMenu: [[10,50,100,500,-1],[10,50,100,500,"All"]],
+		buttons: [ "copy", "excel"
+				//{ extend: 'copy',  exportOptions: { modifier: { page: 'all', search: 'none' } } },
+				//{ extend: 'excel', exportOptions: { modifier: { page: 'all', search: 'none' } } }
 				],
 		ajax: {
 			type: 'POST',
