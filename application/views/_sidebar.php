@@ -192,13 +192,13 @@ $bux=base_url();
                   <p>User Group</p>
                 </a>
               </li>
-			  <!--li class="nav-item">
-                <a href="#" class="nav-link">
+			  <li class="nav-item">
+                <a href="<?php echo $bux?>md/?p=num" class="nav-link num">
                   <i class="fas fa-angle-right nav-icon"></i>
-                  <p>Workflow</p>
+                  <p>MP Numbering</p>
                 </a>
               </li>
-			  <li class="nav-item">
+			  <!--li class="nav-item">
                 <a href="#" class="nav-link">
                   <i class="fas fa-angle-right nav-icon"></i>
                   <p>Notification</p>
