@@ -499,6 +499,7 @@ var thisid='<?php echo $session["uid"]?>';
 var thisaccess='<?php echo $session["uaccess"]?>';
 var filteredcols=[1,2,3,4,6,10,12,13,14];
 var thisapprover='';
+var today='<?php echo date('Y')?>';
 
 $(document).ready(function(){
 	if("<?php echo $which?>"=="") { $("#df").val("<?php echo date('Y-m-').'01'?>"); $("#dt").val("<?php echo date('Y-m-t')?>"); }
@@ -649,12 +650,17 @@ function openf(id=0){
 	$("#btnrfc").hide();
 	$("#btnapp").hide();
 	$(".btnsave").hide();
+	$("#submdt").attr("readonly",false);
 	openForm('#myf','#modal-frm','mp/get','#ovl',id,'<?php echo base64_encode("q_mpx")?>','<?php echo base64_encode("*")?>')
 }
 function savef(del=false,flg='SAVE'){
-	$("#flag").val(flg);
-	if(del) $("#flag").val('DEL');
-	saveForm('#myf','mp/sv','#ovl',del,'#modal-frm');
+	if($("#submdt").val().substr(0,4)<today){
+		alrt("Submission Date should be at least year "+today,"error");
+	}else{
+		$("#flag").val(flg);
+		if(del) $("#flag").val('DEL');
+		saveForm('#myf','mp/sv','#ovl',del,'#modal-frm');
+	}
 }
 var curr_prod='';
 function clientChange(tv,dv='',dv2=''){
@@ -672,7 +678,9 @@ function formLoaded(frm,modal,overlay,data=""){
 		var dv2='';
 		var iscreator=false;
 		var isapprover=false;
+		var rowid=0;
 		if(data!="") {
+			rowid=data["rowid"];
 			dv=data['product'];
 			curr_prod=dv;
 			dv2=data['po'];
@@ -711,7 +719,40 @@ function formLoaded(frm,modal,overlay,data=""){
 			$("#btndel").show();
 		}else{
 			$("#btndel").hide();
+			if($("#submdt").val().substr(0,4)!='<?php echo date('Y')?>' && rowid!=0){
+				$("#submdt").attr("readonly","");
+				sendData("nr",'mp/get',{c:'<?php echo base64_encode("nr")?>',t:'<?php echo base64_encode("t_mediaplans")?>',id:rowid});
+			}
 		}
+	}
+}
+function sendDataCallback(frm,overlay,data){
+	if(frm=='nr'){
+		try{
+			var json = JSON.parse(data);
+			//log(json);
+			if(json['code']=="200"){
+				if(json['data'][0]['nr']=='0'){
+					$("#submdt").attr("readonly",false);
+					//log('masuk dunk');
+				}
+			}
+			//log("kol bek disini")
+			//alrt(json['msgs'],json['type']);
+		}catch(e){
+			//alrt(data,'error');
+			log(data);
+		}
+	}else{
+		if(overlay!='') $(overlay).hide();
+		try{
+			var json = JSON.parse(data);
+			alrt(json['msgs'],json['type']);
+		}catch(e){
+			alrt(data,'error');
+			log(data);
+		}
+		if(typeof(reloadTable)=='function') reloadTable(frm);
 	}
 }
 //var sual='';

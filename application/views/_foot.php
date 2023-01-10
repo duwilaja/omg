@@ -127,6 +127,6 @@ $(".number").inputmask('integer', {autoUnmask:true, groupSeparator: ',', autoGro
 
 $.fn.dataTable.ext.errMode = function ( settings, helpPage, message ) { 
     console.log(message);
-	alrt("Error loading data. could be caused by too many rows selected.");
+	//alrt("Error loading data. could be caused by too many rows selected.");
 };
 </script>
