@@ -499,6 +499,7 @@ var thisid='<?php echo $session["uid"]?>';
 var thisaccess='<?php echo $session["uaccess"]?>';
 var filteredcols=[1,2,3,4,6,10,12,13,14];
 var thisapprover='';
+var today='<?php echo date('Y')?>';
 
 $(document).ready(function(){
 	if("<?php echo $which?>"=="") { $("#df").val("<?php echo date('Y-m-').'01'?>"); $("#dt").val("<?php echo date('Y-m-t')?>"); }
@@ -653,9 +654,13 @@ function openf(id=0){
 	openForm('#myf','#modal-frm','mp/get','#ovl',id,'<?php echo base64_encode("q_mpx")?>','<?php echo base64_encode("*")?>')
 }
 function savef(del=false,flg='SAVE'){
-	$("#flag").val(flg);
-	if(del) $("#flag").val('DEL');
-	saveForm('#myf','mp/sv','#ovl',del,'#modal-frm');
+	if($("#submdt").val().substr(0,4)<today){
+		alrt("Submission Date should be at least year "+today,"error");
+	}else{
+		$("#flag").val(flg);
+		if(del) $("#flag").val('DEL');
+		saveForm('#myf','mp/sv','#ovl',del,'#modal-frm');
+	}
 }
 var curr_prod='';
 function clientChange(tv,dv='',dv2=''){
