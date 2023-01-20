@@ -373,7 +373,7 @@ $(document).ready(function(){
 			}
 		},
 		initComplete: function () {
-            filterDatatable(mytbl,[1,5]);
+            filterDatatable(mytbl,[1,5,10]);
 		}
 	});
 	$("#myf").validate({
@@ -426,7 +426,7 @@ $(document).ready(function(){
 });
 
 function reloadTable(frm){
-	mytbl.ajax.reload(function(){filterDatatable(mytbl,[1,5])},false);
+	mytbl.ajax.reload(function(){filterDatatable(mytbl,[1,5,10])},false);
 }
 
 function klon(){
